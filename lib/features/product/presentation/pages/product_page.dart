@@ -98,12 +98,12 @@ class _ProductPageState extends ConsumerState<ProductPage> {
         content: Text('Apakah Anda yakin ingin menghapus "${product.name}"?'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => context.pop(),
             child: const Text('Batal'),
           ),
           TextButton(
             onPressed: () {
-              Navigator.of(context).pop();
+              context.pop();
               ref.read(productProvider.notifier).deleteProduct(product.id!);
             },
             style: TextButton.styleFrom(foregroundColor: context.colorScheme.error),
