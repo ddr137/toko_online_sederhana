@@ -42,7 +42,7 @@ class UserModel extends Equatable {
     String? name,
     String? phone,
     String? address,
-    String? role, required DateTime createdAt,
+    String? role,
   }) {
     return UserModel(
       id: id ?? this.id,

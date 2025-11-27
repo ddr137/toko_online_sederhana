@@ -9,15 +9,19 @@ part 'user_dao.g.dart';
 class UserDao extends DatabaseAccessor<AppDatabase> with _$UserDaoMixin {
   UserDao(super.db);
 
-  Future<List<UserTableData>> getAll() {
-    return select(userTable).get();
-  }
-
   Future<UserTableData?> findById(int id) {
     return (select(userTable)..where((t) => t.id.equals(id))).getSingleOrNull();
   }
 
+  Future<List<UserTableData>> getAll() {
+    return select(userTable).get();
+  }
+
   Future<int> insert(UserTableCompanion entry) {
     return into(userTable).insert(entry);
+  }
+
+  Future<int> deleteUser(int id) {
+    return (delete(userTable)..where((tbl) => tbl.id.equals(id))).go();
   }
 }

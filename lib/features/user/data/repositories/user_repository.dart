@@ -4,9 +4,10 @@ import 'package:toko_online_sederhana/features/user/data/datasources/user_local_
 import '../models/user_model.dart';
 
 abstract class UserRepository {
-  Future<List<UserModel>> getUsers();
   Future<UserModel?> getUser(int id);
+  Future<List<UserModel>> getUsers();
   Future<int> createUser(UserModel user);
+  Future<bool> deleteUser(int id);
 }
 
 class UserRepositoryImpl implements UserRepository {
@@ -15,19 +16,22 @@ class UserRepositoryImpl implements UserRepository {
   UserRepositoryImpl(this._local);
 
   @override
-  Future<List<UserModel>> getUsers() {
-    return _local.getAllUsers();
-  }
-
-  @override
   Future<UserModel?> getUser(int id) {
     return _local.getUserById(id);
   }
 
   @override
+  Future<List<UserModel>> getUsers() {
+    return _local.getAllUsers();
+  }
+
+  @override
   Future<int> createUser(UserModel user) {
-    return _local.insertUser(
-      user.copyWith(createdAt: DateTime.now()),
-    );
+    return _local.insertUser(user);
+  }
+
+  @override
+  Future<bool> deleteUser(int id) {
+    return _local.deleteUser(id);
   }
 }

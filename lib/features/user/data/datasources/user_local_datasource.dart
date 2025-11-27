@@ -2,9 +2,10 @@ import 'package:toko_online_sederhana/features/user/data/datasources/dao/user_da
 import 'package:toko_online_sederhana/features/user/data/models/user_model.dart';
 
 abstract class UserLocalDataSource {
-  Future<List<UserModel>> getAllUsers();
   Future<UserModel?> getUserById(int id);
+  Future<List<UserModel>> getAllUsers();
   Future<int> insertUser(UserModel user);
+  Future<bool> deleteUser(int id);
 }
 
 class UserLocalDataSourceImpl implements UserLocalDataSource {
@@ -13,19 +14,24 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
   UserLocalDataSourceImpl(this._dao);
 
   @override
-  Future<List<UserModel>> getAllUsers() async {
-    final rows = await _dao.getAll();
-    return rows.map(UserModel.fromDrift).toList();
-  }
-
-  @override
   Future<UserModel?> getUserById(int id) async {
     final row = await _dao.findById(id);
     return row == null ? null : UserModel.fromDrift(row);
   }
 
   @override
+  Future<List<UserModel>> getAllUsers() async {
+    final rows = await _dao.getAll();
+    return rows.map((row) => UserModel.fromDrift(row)).toList();
+  }
+
+  @override
   Future<int> insertUser(UserModel user) {
     return _dao.insert(user.toCompanion());
+  }
+
+  @override
+  Future<bool> deleteUser(int id) async {
+    return await _dao.deleteUser(id) > 0;
   }
 }
