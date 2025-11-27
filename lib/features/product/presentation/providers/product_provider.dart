@@ -7,6 +7,18 @@ import 'package:toko_online_sederhana/features/product/data/repositories/product
 part 'product_provider.g.dart';
 
 @riverpod
+ProductLocalDataSource productLocalDataSource(Ref ref) {
+  final database = ref.watch(appDatabaseProvider);
+  return ProductLocalDataSourceImpl(database.productDao);
+}
+
+@riverpod
+ProductRepository productRepository(Ref ref) {
+  final localDataSource = ref.watch(productLocalDataSourceProvider);
+  return ProductRepositoryImpl(localDataSource);
+}
+
+@riverpod
 class ProductNotifier extends _$ProductNotifier {
   @override
   AsyncValue<List<ProductModel>> build() {
@@ -33,7 +45,6 @@ class ProductNotifier extends _$ProductNotifier {
       final repository = ref.read(productRepositoryProvider);
       await repository.deleteProduct(id);
 
-      // Update the local state by removing the deleted product
       state.whenData((products) {
         state = AsyncValue.data(products.where((p) => p.id != id).toList());
       });
@@ -100,13 +111,30 @@ class ProductNotifier extends _$ProductNotifier {
 }
 
 @riverpod
-ProductLocalDataSource productLocalDataSource(Ref ref) {
-  final database = ref.watch(appDatabaseProvider);
-  return ProductLocalDataSourceImpl(database.productDao);
-}
+class ProductDetailNotifier extends _$ProductDetailNotifier {
+  @override
+  AsyncValue<ProductModel?> build(String productId) {
+    return const AsyncValue.loading();
+  }
 
-@riverpod
-ProductRepository productRepository(Ref ref) {
-  final localDataSource = ref.watch(productLocalDataSourceProvider);
-  return ProductRepositoryImpl(localDataSource);
+  Future<void> loadProductDetail() async {
+    state = const AsyncValue.loading();
+    try {
+      final repository = ref.read(productRepositoryProvider);
+      final product = await repository.getProduct(int.parse(productId));
+      state = AsyncValue.data(product);
+    } catch (error, stackTrace) {
+      state = AsyncValue.error(error, stackTrace);
+    }
+  }
+
+  void onBuyPressed() {
+    // TODO: Implement buy logic
+    print('Buy button pressed for product: $productId');
+  }
+
+  void onAddToCartPressed() {
+    // TODO: Implement add to cart logic
+    print('Add to cart button pressed for product: $productId');
+  }
 }
