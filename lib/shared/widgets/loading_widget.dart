@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import '../extensions/context_extensions.dart';
+import '../extensions/context_ext.dart';
+import '../../core/utils/spacing.dart';
 
 class LoadingWidget extends StatelessWidget {
   final String? message;
   final double? size;
-  
+
   const LoadingWidget({
     super.key,
     this.message,
@@ -23,7 +24,7 @@ class LoadingWidget extends StatelessWidget {
             child: const CircularProgressIndicator(),
           ),
           if (message != null) ...[
-            const SizedBox(height: 16),
+            AppSpacing.md,
             Text(
               message!,
               style: context.textTheme.bodyMedium,

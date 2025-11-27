@@ -1,10 +1,11 @@
 import 'package:drift/drift.dart';
+import 'package:equatable/equatable.dart';
 import 'package:toko_online_sederhana/core/db/app_database.dart';
 
-class ProductModel {
+class ProductModel extends Equatable {
   final int? id;
   final String name;
-  final double price;
+  final int price;
   final int stock;
   final String? thumbnail;
   final DateTime createdAt;
@@ -47,7 +48,7 @@ class ProductModel {
   ProductModel copyWith({
     int? id,
     String? name,
-    double? price,
+    int? price,
     int? stock,
     String? thumbnail,
     DateTime? createdAt,
@@ -63,4 +64,15 @@ class ProductModel {
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }
+
+  @override
+  List<Object?> get props => [
+        id,
+        name,
+        price,
+        stock,
+        thumbnail,
+        createdAt,
+        updatedAt,
+      ];
 }

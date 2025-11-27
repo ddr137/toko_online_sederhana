@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import '../extensions/context_ext.dart';
 import '../../core/utils/spacing.dart';
 
-class EmptyStateWidget extends StatelessWidget {
+class ErrorStateWidget extends StatelessWidget {
   final String title;
-  final String? subtitle;
+  final String? message;
+  final VoidCallback? onRetry;
   final Widget? icon;
-  final Widget? action;
 
-  const EmptyStateWidget({
+  const ErrorStateWidget({
     super.key,
     required this.title,
-    this.subtitle,
+    this.message,
+    this.onRetry,
     this.icon,
-    this.action,
   });
 
   @override
@@ -27,23 +27,32 @@ class EmptyStateWidget extends StatelessWidget {
             if (icon != null) ...[
               icon!,
               AppSpacing.lg,
-            ],
+            ] else
+              Icon(
+                Icons.error_outline,
+                size: 64,
+                color: context.colorScheme.error,
+              ),
+            AppSpacing.lg,
             Text(
               title,
               style: context.textTheme.headlineSmall,
               textAlign: TextAlign.center,
             ),
-            if (subtitle != null) ...[
+            if (message != null) ...[
               AppSpacing.sm,
               Text(
-                subtitle!,
+                message!,
                 style: context.textTheme.bodyMedium,
                 textAlign: TextAlign.center,
               ),
             ],
-            if (action != null) ...[
+            if (onRetry != null) ...[
               AppSpacing.lg,
-              action!,
+              ElevatedButton(
+                onPressed: onRetry,
+                child: const Text('Coba Lagi'),
+              ),
             ],
           ],
         ),

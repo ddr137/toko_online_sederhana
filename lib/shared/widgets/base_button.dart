@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/utils/spacing.dart';
 
 class BaseButton extends StatelessWidget {
   final String text;
@@ -63,7 +64,7 @@ class BaseButton extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           icon!,
-          const SizedBox(width: 8),
+          AppSpacing.sm,
           Text(text),
         ],
       );

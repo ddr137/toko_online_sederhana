@@ -1,7 +1,8 @@
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:toko_online_sederhana/features/product/presentation/pages/product_page.dart';
+import 'package:toko_online_sederhana/core/router/router.dart';
+
 import 'core/constants/constants.dart';
 
 void main() {
@@ -13,17 +14,19 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
     return DynamicColorBuilder(
-       builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
-           return MaterialApp(
-             title: AppConstants.appName,
-             theme: AppTheme.lightTheme(context, lightDynamic),
-             darkTheme: AppTheme.darkTheme(context, darkDynamic),
-             themeMode: ThemeMode.system,
-             home: ProductPage(),
-           );
-       },
+      builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
+        return MaterialApp.router(
+          title: AppConstants.appName,
+          theme: AppTheme.lightTheme(context, lightDynamic),
+          darkTheme: AppTheme.darkTheme(context, darkDynamic),
+          themeMode: ThemeMode.system,
+
+          routeInformationParser: goRouter.routeInformationParser,
+          routerDelegate: goRouter.routerDelegate,
+          routeInformationProvider: goRouter.routeInformationProvider,
+        );
+      },
     );
   }
 }

@@ -33,11 +33,11 @@ class $ProductTableTable extends ProductTable
   );
   static const VerificationMeta _priceMeta = const VerificationMeta('price');
   @override
-  late final GeneratedColumn<double> price = GeneratedColumn<double>(
+  late final GeneratedColumn<int> price = GeneratedColumn<int>(
     'price',
     aliasedName,
     false,
-    type: DriftSqlType.double,
+    type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
   static const VerificationMeta _stockMeta = const VerificationMeta('stock');
@@ -168,7 +168,7 @@ class $ProductTableTable extends ProductTable
         data['${effectivePrefix}name'],
       )!,
       price: attachedDatabase.typeMapping.read(
-        DriftSqlType.double,
+        DriftSqlType.int,
         data['${effectivePrefix}price'],
       )!,
       stock: attachedDatabase.typeMapping.read(
@@ -200,7 +200,7 @@ class ProductTableData extends DataClass
     implements Insertable<ProductTableData> {
   final int id;
   final String name;
-  final double price;
+  final int price;
   final int stock;
   final String? thumbnail;
   final DateTime createdAt;
@@ -219,7 +219,7 @@ class ProductTableData extends DataClass
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['name'] = Variable<String>(name);
-    map['price'] = Variable<double>(price);
+    map['price'] = Variable<int>(price);
     map['stock'] = Variable<int>(stock);
     if (!nullToAbsent || thumbnail != null) {
       map['thumbnail'] = Variable<String>(thumbnail);
@@ -255,7 +255,7 @@ class ProductTableData extends DataClass
     return ProductTableData(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
-      price: serializer.fromJson<double>(json['price']),
+      price: serializer.fromJson<int>(json['price']),
       stock: serializer.fromJson<int>(json['stock']),
       thumbnail: serializer.fromJson<String?>(json['thumbnail']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
@@ -268,7 +268,7 @@ class ProductTableData extends DataClass
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
-      'price': serializer.toJson<double>(price),
+      'price': serializer.toJson<int>(price),
       'stock': serializer.toJson<int>(stock),
       'thumbnail': serializer.toJson<String?>(thumbnail),
       'createdAt': serializer.toJson<DateTime>(createdAt),
@@ -279,7 +279,7 @@ class ProductTableData extends DataClass
   ProductTableData copyWith({
     int? id,
     String? name,
-    double? price,
+    int? price,
     int? stock,
     Value<String?> thumbnail = const Value.absent(),
     DateTime? createdAt,
@@ -338,7 +338,7 @@ class ProductTableData extends DataClass
 class ProductTableCompanion extends UpdateCompanion<ProductTableData> {
   final Value<int> id;
   final Value<String> name;
-  final Value<double> price;
+  final Value<int> price;
   final Value<int> stock;
   final Value<String?> thumbnail;
   final Value<DateTime> createdAt;
@@ -355,7 +355,7 @@ class ProductTableCompanion extends UpdateCompanion<ProductTableData> {
   ProductTableCompanion.insert({
     this.id = const Value.absent(),
     required String name,
-    required double price,
+    required int price,
     required int stock,
     this.thumbnail = const Value.absent(),
     this.createdAt = const Value.absent(),
@@ -366,7 +366,7 @@ class ProductTableCompanion extends UpdateCompanion<ProductTableData> {
   static Insertable<ProductTableData> custom({
     Expression<int>? id,
     Expression<String>? name,
-    Expression<double>? price,
+    Expression<int>? price,
     Expression<int>? stock,
     Expression<String>? thumbnail,
     Expression<DateTime>? createdAt,
@@ -386,7 +386,7 @@ class ProductTableCompanion extends UpdateCompanion<ProductTableData> {
   ProductTableCompanion copyWith({
     Value<int>? id,
     Value<String>? name,
-    Value<double>? price,
+    Value<int>? price,
     Value<int>? stock,
     Value<String?>? thumbnail,
     Value<DateTime>? createdAt,
@@ -413,7 +413,7 @@ class ProductTableCompanion extends UpdateCompanion<ProductTableData> {
       map['name'] = Variable<String>(name.value);
     }
     if (price.present) {
-      map['price'] = Variable<double>(price.value);
+      map['price'] = Variable<int>(price.value);
     }
     if (stock.present) {
       map['stock'] = Variable<int>(stock.value);
@@ -461,7 +461,7 @@ typedef $$ProductTableTableCreateCompanionBuilder =
     ProductTableCompanion Function({
       Value<int> id,
       required String name,
-      required double price,
+      required int price,
       required int stock,
       Value<String?> thumbnail,
       Value<DateTime> createdAt,
@@ -471,7 +471,7 @@ typedef $$ProductTableTableUpdateCompanionBuilder =
     ProductTableCompanion Function({
       Value<int> id,
       Value<String> name,
-      Value<double> price,
+      Value<int> price,
       Value<int> stock,
       Value<String?> thumbnail,
       Value<DateTime> createdAt,
@@ -497,7 +497,7 @@ class $$ProductTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<double> get price => $composableBuilder(
+  ColumnFilters<int> get price => $composableBuilder(
     column: $table.price,
     builder: (column) => ColumnFilters(column),
   );
@@ -542,7 +542,7 @@ class $$ProductTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<double> get price => $composableBuilder(
+  ColumnOrderings<int> get price => $composableBuilder(
     column: $table.price,
     builder: (column) => ColumnOrderings(column),
   );
@@ -583,7 +583,7 @@ class $$ProductTableTableAnnotationComposer
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
 
-  GeneratedColumn<double> get price =>
+  GeneratedColumn<int> get price =>
       $composableBuilder(column: $table.price, builder: (column) => column);
 
   GeneratedColumn<int> get stock =>
@@ -632,7 +632,7 @@ class $$ProductTableTableTableManager
               ({
                 Value<int> id = const Value.absent(),
                 Value<String> name = const Value.absent(),
-                Value<double> price = const Value.absent(),
+                Value<int> price = const Value.absent(),
                 Value<int> stock = const Value.absent(),
                 Value<String?> thumbnail = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
@@ -650,7 +650,7 @@ class $$ProductTableTableTableManager
               ({
                 Value<int> id = const Value.absent(),
                 required String name,
-                required double price,
+                required int price,
                 required int stock,
                 Value<String?> thumbnail = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
