@@ -511,7 +511,8 @@ class $UserTableTable extends UserTable
     aliasedName,
     false,
     type: DriftSqlType.dateTime,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
   );
   static const VerificationMeta _updatedAtMeta = const VerificationMeta(
     'updatedAt',
@@ -520,9 +521,9 @@ class $UserTableTable extends UserTable
   late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
     'updated_at',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.dateTime,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
   );
   @override
   List<GeneratedColumn> get $columns => [
@@ -586,16 +587,12 @@ class $UserTableTable extends UserTable
         _createdAtMeta,
         createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
       );
-    } else if (isInserting) {
-      context.missing(_createdAtMeta);
     }
     if (data.containsKey('updated_at')) {
       context.handle(
         _updatedAtMeta,
         updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
       );
-    } else if (isInserting) {
-      context.missing(_updatedAtMeta);
     }
     return context;
   }
@@ -633,7 +630,7 @@ class $UserTableTable extends UserTable
       updatedAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}updated_at'],
-      )!,
+      ),
     );
   }
 
@@ -650,7 +647,7 @@ class UserTableData extends DataClass implements Insertable<UserTableData> {
   final String address;
   final String role;
   final DateTime createdAt;
-  final DateTime updatedAt;
+  final DateTime? updatedAt;
   const UserTableData({
     required this.id,
     required this.name,
@@ -658,7 +655,7 @@ class UserTableData extends DataClass implements Insertable<UserTableData> {
     required this.address,
     required this.role,
     required this.createdAt,
-    required this.updatedAt,
+    this.updatedAt,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -669,7 +666,9 @@ class UserTableData extends DataClass implements Insertable<UserTableData> {
     map['address'] = Variable<String>(address);
     map['role'] = Variable<String>(role);
     map['created_at'] = Variable<DateTime>(createdAt);
-    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || updatedAt != null) {
+      map['updated_at'] = Variable<DateTime>(updatedAt);
+    }
     return map;
   }
 
@@ -681,7 +680,9 @@ class UserTableData extends DataClass implements Insertable<UserTableData> {
       address: Value(address),
       role: Value(role),
       createdAt: Value(createdAt),
-      updatedAt: Value(updatedAt),
+      updatedAt: updatedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(updatedAt),
     );
   }
 
@@ -697,7 +698,7 @@ class UserTableData extends DataClass implements Insertable<UserTableData> {
       address: serializer.fromJson<String>(json['address']),
       role: serializer.fromJson<String>(json['role']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
-      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      updatedAt: serializer.fromJson<DateTime?>(json['updatedAt']),
     );
   }
   @override
@@ -710,7 +711,7 @@ class UserTableData extends DataClass implements Insertable<UserTableData> {
       'address': serializer.toJson<String>(address),
       'role': serializer.toJson<String>(role),
       'createdAt': serializer.toJson<DateTime>(createdAt),
-      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'updatedAt': serializer.toJson<DateTime?>(updatedAt),
     };
   }
 
@@ -721,7 +722,7 @@ class UserTableData extends DataClass implements Insertable<UserTableData> {
     String? address,
     String? role,
     DateTime? createdAt,
-    DateTime? updatedAt,
+    Value<DateTime?> updatedAt = const Value.absent(),
   }) => UserTableData(
     id: id ?? this.id,
     name: name ?? this.name,
@@ -729,7 +730,7 @@ class UserTableData extends DataClass implements Insertable<UserTableData> {
     address: address ?? this.address,
     role: role ?? this.role,
     createdAt: createdAt ?? this.createdAt,
-    updatedAt: updatedAt ?? this.updatedAt,
+    updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
   );
   UserTableData copyWithCompanion(UserTableCompanion data) {
     return UserTableData(
@@ -780,7 +781,7 @@ class UserTableCompanion extends UpdateCompanion<UserTableData> {
   final Value<String> address;
   final Value<String> role;
   final Value<DateTime> createdAt;
-  final Value<DateTime> updatedAt;
+  final Value<DateTime?> updatedAt;
   const UserTableCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
@@ -796,14 +797,12 @@ class UserTableCompanion extends UpdateCompanion<UserTableData> {
     required String phone,
     required String address,
     required String role,
-    required DateTime createdAt,
-    required DateTime updatedAt,
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
   }) : name = Value(name),
        phone = Value(phone),
        address = Value(address),
-       role = Value(role),
-       createdAt = Value(createdAt),
-       updatedAt = Value(updatedAt);
+       role = Value(role);
   static Insertable<UserTableData> custom({
     Expression<int>? id,
     Expression<String>? name,
@@ -831,7 +830,7 @@ class UserTableCompanion extends UpdateCompanion<UserTableData> {
     Value<String>? address,
     Value<String>? role,
     Value<DateTime>? createdAt,
-    Value<DateTime>? updatedAt,
+    Value<DateTime?>? updatedAt,
   }) {
     return UserTableCompanion(
       id: id ?? this.id,
@@ -1139,8 +1138,8 @@ typedef $$UserTableTableCreateCompanionBuilder =
       required String phone,
       required String address,
       required String role,
-      required DateTime createdAt,
-      required DateTime updatedAt,
+      Value<DateTime> createdAt,
+      Value<DateTime?> updatedAt,
     });
 typedef $$UserTableTableUpdateCompanionBuilder =
     UserTableCompanion Function({
@@ -1150,7 +1149,7 @@ typedef $$UserTableTableUpdateCompanionBuilder =
       Value<String> address,
       Value<String> role,
       Value<DateTime> createdAt,
-      Value<DateTime> updatedAt,
+      Value<DateTime?> updatedAt,
     });
 
 class $$UserTableTableFilterComposer
@@ -1311,7 +1310,7 @@ class $$UserTableTableTableManager
                 Value<String> address = const Value.absent(),
                 Value<String> role = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
-                Value<DateTime> updatedAt = const Value.absent(),
+                Value<DateTime?> updatedAt = const Value.absent(),
               }) => UserTableCompanion(
                 id: id,
                 name: name,
@@ -1328,8 +1327,8 @@ class $$UserTableTableTableManager
                 required String phone,
                 required String address,
                 required String role,
-                required DateTime createdAt,
-                required DateTime updatedAt,
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime?> updatedAt = const Value.absent(),
               }) => UserTableCompanion.insert(
                 id: id,
                 name: name,

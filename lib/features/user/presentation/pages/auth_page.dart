@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:toko_online_sederhana/features/user/data/models/user_model.dart';
 import 'package:toko_online_sederhana/features/user/presentation/providers/user_provider.dart';
+import 'package:toko_online_sederhana/shared/extensions/context_ext.dart';
+import 'package:toko_online_sederhana/shared/widgets/empty_state_widget.dart';
+import 'package:toko_online_sederhana/shared/widgets/error_state_widget.dart';
+import 'package:toko_online_sederhana/shared/widgets/loading_widget.dart';
 
 class AuthPage extends ConsumerStatefulWidget {
   const AuthPage({super.key});
@@ -12,64 +15,100 @@ class AuthPage extends ConsumerStatefulWidget {
 
 class _AuthPageState extends ConsumerState<AuthPage> {
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final userState = ref.read(userProvider.notifier);
+      await userState.addSampleUsers();
+      await userState.loadUsers();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final userState = ref.watch(userProvider);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Auth Page'),
+        title: const Text('Login'),
         centerTitle: true,
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                ref
-                    .read(userProvider.notifier)
-                    .addUser(
-                      UserModel(
-                        name: 'Satria',
-                        role: 'pembeli',
-                        phone: '08123456789',
-                        address: 'Jl. Satria No. 1',
+        child: userState.when(
+          loading: () => const LoadingWidget(message: 'Memuat data...'),
+          error: (error, stackTrace) => ErrorStateWidget(
+            title: 'Terjadi kesalahan',
+            message: error.toString(),
+            onRetry: () {
+              ref.read(userProvider.notifier).loadUsers();
+            },
+          ),
+          data: (users) {
+            if (users.isEmpty) {
+              return EmptyStateWidget(
+                title: 'Belum ada data',
+                subtitle: 'Tambahkan data pertama Anda untuk memulai',
+                icon: Icon(
+                  Icons.inventory_2_outlined,
+                  size: 64,
+                  color: context.colorScheme.onSurfaceVariant,
+                ),
+              );
+            }
+
+            return SizedBox(
+              height: 380,
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Pilih user untuk masuk ke aplikasi',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: context.colorScheme.onSurface,
                       ),
-                    );
-              },
-              child: const Text('Pembeli'),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                ref
-                    .read(userProvider.notifier)
-                    .addUser(
-                      UserModel(
-                        name: 'CS Layer 1',
-                        role: 'cs',
-                        phone: '08123456789',
-                        address: 'Jl. Satria No. 1',
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      'Setiap role memiliki tampilan menu yang berbeda.',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: context.colorScheme.onSurfaceVariant,
                       ),
-                    );
-              },
-              child: const Text('CS Layer 1'),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                ref
-                    .read(userProvider.notifier)
-                    .addUser(
-                      UserModel(
-                        name: 'CS Layer 2',
-                        role: 'cs',
-                        phone: '08123456789',
-                        address: 'Jl. Satria No. 1',
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 20),
+
+                    Expanded(
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 8,
+                          horizontal: 16,
+                        ),
+                        itemCount: users.length,
+                        itemBuilder: (context, index) {
+                          final user = users[index];
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 6),
+                            child: ElevatedButton(
+                              onPressed: () {},
+                              child: Text(
+                                '${user.name} (${user.role.toUpperCase()})',
+                              ),
+                            ),
+                          );
+                        },
                       ),
-                    );
-              },
-              child: const Text('CS Layer 2'),
-            ),
-          ],
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
         ),
       ),
     );

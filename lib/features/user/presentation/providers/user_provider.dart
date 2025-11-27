@@ -25,24 +25,67 @@ class UserNotifier extends _$UserNotifier {
     return const AsyncValue.loading();
   }
 
-  Future<void> addUser(UserModel user) async {
+  Future<void> loadUsers() async {
+    state = const AsyncValue.loading();
     try {
       final repository = ref.read(userRepositoryProvider);
-      await repository.createUser(user);
-
+      final users = await repository.getUsers();
+      state = AsyncValue.data(users);
     } catch (error, stackTrace) {
       state = AsyncValue.error(error, stackTrace);
     }
   }
 
-  Future<void> deleteUser(int id) async {
+  Future<void> refreshUsers() async {
+    await loadUsers();
+  }
+
+  Future<void> addUser(UserModel user) async {
     try {
       final repository = ref.read(userRepositoryProvider);
-      await repository.deleteUser(id);
+      await repository.createUser(user);
 
-      state.whenData((users) {
-        state = AsyncValue.data(users.where((p) => p.id != id).toList());
-      });
+      await loadUsers();
+    } catch (error, stackTrace) {
+      state = AsyncValue.error(error, stackTrace);
+    }
+  }
+
+  Future<void> addSampleUsers() async {
+    try {
+      final repository = ref.read(userRepositoryProvider);
+
+      final existing = await repository.getUsers();
+      if (existing.isNotEmpty) {
+        return;
+      }
+
+      final sampleUsers = [
+        UserModel(
+          name: 'Alice Smith',
+          phone: '08123456789',
+          address: '123 Main St',
+          role: 'customer',
+        ),
+        UserModel(
+          name: 'CS 1',
+          phone: '08987654321',
+          address: '456 Elm St',
+          role: 'cs1',
+        ),
+        UserModel(
+          name: 'CS 2',
+          phone: '08765432198',
+          address: '789 Oak St',
+          role: 'cs2',
+        ),
+      ];
+
+      for (final user in sampleUsers) {
+        await repository.createUser(user);
+      }
+
+      await loadUsers();
     } catch (error, stackTrace) {
       state = AsyncValue.error(error, stackTrace);
     }
