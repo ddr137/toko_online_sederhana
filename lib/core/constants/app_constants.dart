@@ -4,7 +4,7 @@ class AppConstants {
 
   // Database
   static const String databaseName = 'toko_online.db';
-  static const int databaseVersion = 1;
+  static const int databaseVersion = 2;
 
   // API
   static const String baseUrl = 'https://api.example.com';
