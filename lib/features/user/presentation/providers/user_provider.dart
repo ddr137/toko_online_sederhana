@@ -25,33 +25,28 @@ class UserNotifier extends _$UserNotifier {
     return const AsyncValue.loading();
   }
 
-  Future<void> loadUsers() async {
-    state = const AsyncValue.loading();
-    try {
-      final repository = ref.read(userRepositoryProvider);
-      final users = await repository.getUsers(); // This method might need to be added to the repository
-      state = AsyncValue.data(users);
-    } catch (error, stackTrace) {
-      state = AsyncValue.error(error, stackTrace);
-    }
-  }
-
-  Future<void> refreshUsers() async {
-    await loadUsers();
-  }
-
   Future<void> addUser(UserModel user) async {
     try {
       final repository = ref.read(userRepositoryProvider);
       await repository.createUser(user);
 
-      // Refresh the users list to include the new user
-      await loadUsers();
     } catch (error, stackTrace) {
       state = AsyncValue.error(error, stackTrace);
     }
   }
 
+  Future<void> deleteUser(int id) async {
+    try {
+      final repository = ref.read(userRepositoryProvider);
+      await repository.deleteUser(id);
+
+      state.whenData((users) {
+        state = AsyncValue.data(users.where((p) => p.id != id).toList());
+      });
+    } catch (error, stackTrace) {
+      state = AsyncValue.error(error, stackTrace);
+    }
+  }
 }
 
 @riverpod

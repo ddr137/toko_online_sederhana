@@ -13,10 +13,6 @@ class UserDao extends DatabaseAccessor<AppDatabase> with _$UserDaoMixin {
     return (select(userTable)..where((t) => t.id.equals(id))).getSingleOrNull();
   }
 
-  Future<List<UserTableData>> getAll() {
-    return select(userTable).get();
-  }
-
   Future<int> insert(UserTableCompanion entry) {
     return into(userTable).insert(entry);
   }
