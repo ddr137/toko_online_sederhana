@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:toko_online_sederhana/core/router/bottom_navigation_page.dart';
 import 'package:toko_online_sederhana/features/cart/presentation/pages/cart_page.dart';
+import 'package:toko_online_sederhana/features/order/presentation/pages/checkout_page.dart';
 import 'package:toko_online_sederhana/features/order/presentation/pages/order_page.dart';
 import 'package:toko_online_sederhana/features/product/presentation/pages/product_detail_page.dart';
 import 'package:toko_online_sederhana/features/product/presentation/pages/product_page.dart';
@@ -96,6 +97,11 @@ final GoRouter _goRouter = GoRouter(
         final id = state.pathParameters['id']!;
         return ProductDetailPage(productId: id);
       },
+    ),
+    GoRoute(
+      path: '/checkout',
+      name: 'checkout',
+      builder: (context, state) => const CheckoutPage(),
     ),
   ],
 );

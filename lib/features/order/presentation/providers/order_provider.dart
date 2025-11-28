@@ -1,8 +1,15 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:toko_online_sederhana/core/di/providers.dart';
+import 'package:toko_online_sederhana/features/cart/data/repositories/cart_repository.dart';
+import 'package:toko_online_sederhana/features/cart/presentation/providers/cart_provider.dart';
 import 'package:toko_online_sederhana/features/order/data/datasources/order_local_datasource.dart';
+import 'package:toko_online_sederhana/features/order/data/models/checkout_model.dart';
 import 'package:toko_online_sederhana/features/order/data/models/order_model.dart';
 import 'package:toko_online_sederhana/features/order/data/repositories/order_repository.dart';
+import 'package:toko_online_sederhana/features/product/data/repositories/product_repository.dart';
+import 'package:toko_online_sederhana/features/product/presentation/providers/product_provider.dart';
+import 'package:toko_online_sederhana/features/user/data/repositories/user_repository.dart';
+import 'package:toko_online_sederhana/features/user/presentation/providers/user_provider.dart';
 
 part 'order_provider.g.dart';
 
@@ -129,15 +136,41 @@ class OrderDetailNotifier extends _$OrderDetailNotifier {
     if (order != null) {
       try {
         await _repo.saveOrder(
-          order.copyWith(
-            status: newStatus,
-            updatedAt: DateTime.now(),
-          ),
+          order.copyWith(status: newStatus, updatedAt: DateTime.now()),
         );
         await loadOrderDetail();
       } catch (e, st) {
         state = AsyncValue.error(e, st);
       }
+    }
+  }
+}
+
+@riverpod
+class CheckoutNotifier extends _$CheckoutNotifier {
+  CartRepository get _cartRepo => ref.read(cartRepositoryProvider);
+  UserRepository get _userRepo => ref.read(userRepositoryProvider);
+  ProductRepository get _productRepo => ref.read(productRepositoryProvider);
+
+  @override
+  AsyncValue<CheckoutData> build() {
+    return const AsyncValue.loading();
+  }
+
+  Future<Object> loadCheckout() async {
+    state = const AsyncValue.loading();
+    try {
+      final user = await _userRepo.getUser();
+      final cartItems = await _cartRepo.getCartItems();
+      final products = await _productRepo.getProducts();
+
+      final data = CheckoutData(user: user, items: cartItems);
+
+      state = AsyncValue.data(data);
+      return data;
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+      return AsyncValue.error(e, st);
     }
   }
 }

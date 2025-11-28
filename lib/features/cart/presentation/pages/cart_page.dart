@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:toko_online_sederhana/core/utils/spacing.dart';
 import 'package:toko_online_sederhana/features/cart/data/models/cart_model.dart';
 import 'package:toko_online_sederhana/features/cart/presentation/providers/cart_provider.dart';
@@ -113,7 +114,7 @@ class _CartSummary extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Total (${totalItems} item${totalItems > 1 ? 's' : ''})',
+                'Total ($totalItems item${totalItems > 1 ? 's' : ''})',
                 style: context.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
@@ -138,12 +139,7 @@ class _CartSummary extends ConsumerWidget {
             text: 'Checkout',
             width: double.infinity,
             onPressed: () {
-              // Implement checkout functionality
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Checkout functionality will be implemented here'),
-                ),
-              );
+              context.push('/checkout');
             },
           ),
         ],

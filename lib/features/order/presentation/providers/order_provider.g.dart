@@ -257,3 +257,57 @@ abstract class _$OrderDetailNotifier
     element.handleValue(ref, created);
   }
 }
+
+@ProviderFor(CheckoutNotifier)
+const checkoutProvider = CheckoutNotifierProvider._();
+
+final class CheckoutNotifierProvider
+    extends $NotifierProvider<CheckoutNotifier, AsyncValue<CheckoutData>> {
+  const CheckoutNotifierProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'checkoutProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$checkoutNotifierHash();
+
+  @$internal
+  @override
+  CheckoutNotifier create() => CheckoutNotifier();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AsyncValue<CheckoutData> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<AsyncValue<CheckoutData>>(value),
+    );
+  }
+}
+
+String _$checkoutNotifierHash() => r'0f063ad62bd8a45000282c7282522a089a8d86dd';
+
+abstract class _$CheckoutNotifier extends $Notifier<AsyncValue<CheckoutData>> {
+  AsyncValue<CheckoutData> build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref =
+        this.ref as $Ref<AsyncValue<CheckoutData>, AsyncValue<CheckoutData>>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<CheckoutData>, AsyncValue<CheckoutData>>,
+              AsyncValue<CheckoutData>,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
+}

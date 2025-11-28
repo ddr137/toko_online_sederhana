@@ -130,7 +130,7 @@ final class UserListNotifierProvider
   }
 }
 
-String _$userListNotifierHash() => r'e416d431ed10ad6ea40496b73637f70bf2e65955';
+String _$userListNotifierHash() => r'407796eaefdab0eb15b19109085ba537410f326a';
 
 abstract class _$UserListNotifier
     extends $Notifier<AsyncValue<List<UserModel>>> {
@@ -190,7 +190,7 @@ final class UserDetailNotifierProvider
 }
 
 String _$userDetailNotifierHash() =>
-    r'f9cfd5041c403d4983cff649450e1d8b4b148c64';
+    r'b9ff981b65496ee3db680bd953f645a91f962f6e';
 
 abstract class _$UserDetailNotifier extends $Notifier<AsyncValue<UserModel?>> {
   AsyncValue<UserModel?> build();
