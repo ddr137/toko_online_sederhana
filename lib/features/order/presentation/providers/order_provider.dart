@@ -39,15 +39,62 @@ class OrderNotifier extends _$OrderNotifier {
     try {
       final orders = await _repo.getOrders();
 
-      // Check if ref is still mounted before updating state
-      if (!ref.mounted) return;
+      // Auto-cancel logic
+      final now = DateTime.now();
+      bool hasChanges = false;
 
-      state = AsyncValue.data(orders);
+      for (final order in orders) {
+        if ((order.status == 'MENUNGGU_UPLOAD_BUKTI' ||
+                order.status == 'MENUNGGU_VERIFIKASI_CS1') &&
+            now.difference(order.createdAt).inHours >= 24) {
+          await _cancelOrder(order);
+          hasChanges = true;
+        }
+      }
+
+      if (hasChanges) {
+        final updatedOrders = await _repo.getOrders();
+        if (!ref.mounted) return;
+        state = AsyncValue.data(updatedOrders);
+      } else {
+        if (!ref.mounted) return;
+        state = AsyncValue.data(orders);
+      }
     } catch (e, st) {
-      // Only update state if still mounted
       if (ref.mounted) {
         state = AsyncValue.error(e, st);
       }
+    }
+  }
+
+  Future<void> _cancelOrder(OrderModel order) async {
+    try {
+      // 1. Restore stock
+      // Need to fetch full order details including items
+      final fullOrder = await _repo.getOrder(order.id!);
+      if (fullOrder != null &&
+          fullOrder.items != null &&
+          fullOrder.items!.isNotEmpty) {
+        final productRepo = ref.read(productRepositoryProvider);
+        for (final item in fullOrder.items!) {
+          final product = await productRepo.getProduct(item.productId);
+          if (product != null) {
+            await productRepo.saveProduct(
+              product.copyWith(
+                stock: product.stock + item.quantity,
+                updatedAt: DateTime.now(),
+              ),
+            );
+          }
+        }
+      }
+
+      // 2. Update status to DIBATALKAN
+      await _repo.saveOrder(
+        order.copyWith(status: 'DIBATALKAN', updatedAt: DateTime.now()),
+      );
+    } catch (e) {
+      print('Error auto-cancelling order ${order.id}: $e');
     }
   }
 
@@ -111,13 +158,18 @@ class OrderNotifier extends _$OrderNotifier {
       final orders = state.value ?? [];
       final order = orders.firstWhere((o) => o.id == orderId);
 
-      // Update the order status
-      final updatedOrder = order.copyWith(
-        status: newStatus,
-        updatedAt: DateTime.now(),
-      );
+      // If cancelling manually, also restore stock
+      if (newStatus == 'DIBATALKAN' && order.status != 'DIBATALKAN') {
+        await _cancelOrder(order);
+      } else {
+        // Update the order status
+        final updatedOrder = order.copyWith(
+          status: newStatus,
+          updatedAt: DateTime.now(),
+        );
 
-      await _repo.saveOrder(updatedOrder);
+        await _repo.saveOrder(updatedOrder);
+      }
 
       // Check if ref is still mounted before updating state
       if (!ref.mounted) return;
