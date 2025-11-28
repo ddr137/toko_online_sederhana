@@ -10,36 +10,52 @@ import 'package:toko_online_sederhana/shared/widgets/base_button.dart';
 import 'package:toko_online_sederhana/shared/widgets/error_state_widget.dart';
 import 'package:toko_online_sederhana/shared/widgets/loading_widget.dart';
 
-class ProductDetailPage extends ConsumerWidget {
+class ProductDetailPage extends ConsumerStatefulWidget {
   const ProductDetailPage({super.key, required this.productId});
 
   final String productId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    ref.read(productDetailProvider(productId).notifier).loadProductDetail();
+  ConsumerState<ProductDetailPage> createState() => _ProductDetailPageState();
+}
 
-    final productState = ref.watch(productDetailProvider(productId));
-    final notifier = ref.read(productDetailProvider(productId).notifier);
+class _ProductDetailPageState extends ConsumerState<ProductDetailPage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref
+          .read(productDetailProvider(widget.productId).notifier)
+          .loadProductDetail();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final productDetailState = ref.watch(
+      productDetailProvider(widget.productId),
+    );
+    final productDetailNotifier = ref.read(
+      productDetailProvider(widget.productId).notifier,
+    );
 
     return Scaffold(
       appBar: AppBar(title: const Text('Detail Produk')),
-      body: productState.when(
+      body: productDetailState.when(
         loading: () => const LoadingWidget(),
         error: (error, stackTrace) => ErrorStateWidget(
           title: 'Gagal Mengambil Data Produk',
           message: error.toString(),
-          onRetry: () => notifier.loadProductDetail(),
+          onRetry: () => productDetailNotifier.loadProductDetail(),
         ),
         data: (product) {
           if (product == null) {
             return const Center(child: Text('Produk tidak ditemukan'));
           }
-
           return _ProductDetailContent(
             product: product,
-            onBuyPressed: notifier.onBuyPressed,
-            onAddToCartPressed: notifier.onAddToCartPressed,
+            onBuyPressed: productDetailNotifier.onBuyPressed,
+            onAddToCartPressed: productDetailNotifier.onAddToCartPressed,
           );
         },
       ),
@@ -121,7 +137,9 @@ class _ProductDetailContent extends StatelessWidget {
                   ),
                   AppSpacing.xs,
                   Text(
-                    product.stock > 0 ? 'Stok: ${product.stock}' : 'Stok Habis',
+                    product.stock > 0
+                        ? 'Stok: ${product.stock}'
+                        : 'Stok Habis',
                     style: context.textTheme.bodyMedium?.copyWith(
                       color: product.stock > 0
                           ? AppColors.success(context)
@@ -135,9 +153,10 @@ class _ProductDetailContent extends StatelessWidget {
 
               Text(
                 'Deskripsi Produk',
-                style: Theme.of(
-                  context,
-                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                style: Theme.of(context)
+                    .textTheme
+                    .titleMedium
+                    ?.copyWith(fontWeight: FontWeight.bold),
               ),
               AppSpacing.sm,
               Text(
@@ -173,7 +192,8 @@ class _ProductDetailContent extends StatelessWidget {
                   Expanded(
                     child: BaseButton(
                       text: 'Tambah ke Keranjang',
-                      onPressed: product.stock > 0 ? onAddToCartPressed : null,
+                      onPressed:
+                          product.stock > 0 ? onAddToCartPressed : null,
                       isOutlined: true,
                     ),
                   ),
