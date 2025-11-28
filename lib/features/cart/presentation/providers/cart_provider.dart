@@ -109,6 +109,15 @@ class CartNotifier extends _$CartNotifier {
     }
   }
 
+  Future<void> clearCart() async {
+    try {
+      await _repo.clearCart();
+      await loadCartItems(showLoading: false);
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
+  }
+
   int getTotalItems() {
     final cartItems = state.asData?.value;
     if (cartItems == null) return 0;

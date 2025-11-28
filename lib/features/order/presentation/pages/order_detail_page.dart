@@ -172,9 +172,10 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
     final order = orderDetailState.asData?.value;
     final userState = ref.watch(userDetailProvider);
     final isCs1 = userState.value?.role == 'cs1';
+    final isCs2 = userState.value?.role == 'cs2';
 
     return Scaffold(
-      bottomNavigationBar: _buildBottomBar(context, order, isCs1),
+      bottomNavigationBar: _buildBottomBar(context, order, isCs1, isCs2),
       appBar: AppBar(
         title: const Text('Detail Pesanan'),
         centerTitle: true,
@@ -682,11 +683,42 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
     );
   }
 
-  Widget? _buildBottomBar(BuildContext context, OrderModel? order, bool isCs1) {
-    if (order == null || !isCs1 || order.status != 'MENUNGGU_VERIFIKASI_CS1') {
-      return null;
+  Widget? _buildBottomBar(
+    BuildContext context,
+    OrderModel? order,
+    bool isCs1,
+    bool isCs2,
+  ) {
+    if (order == null) return null;
+
+    if (isCs1 && order.status == 'MENUNGGU_VERIFIKASI_CS1') {
+      return _buildCs1BottomBar(context, order);
     }
 
+    if (isCs2) {
+      if (order.status == 'MENUNGGU_VERIFIKASI_CS2') {
+        return _buildCs2BottomBar(
+          context,
+          order,
+          'SEDANG_DIPROSES',
+          'Proses Pesanan',
+        );
+      } else if (order.status == 'SEDANG_DIPROSES') {
+        return _buildCs2BottomBar(context, order, 'DIKIRIM', 'Kirim Pesanan');
+      } else if (order.status == 'DIKIRIM') {
+        return _buildCs2BottomBar(
+          context,
+          order,
+          'SELESAI',
+          'Selesaikan Pesanan',
+        );
+      }
+    }
+
+    return null;
+  }
+
+  Widget _buildCs1BottomBar(BuildContext context, OrderModel order) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -724,6 +756,70 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildCs2BottomBar(
+    BuildContext context,
+    OrderModel order,
+    String nextStatus,
+    String buttonText,
+  ) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: context.colorScheme.surface,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, -5),
+          ),
+        ],
+      ),
+      child: SafeArea(
+        child: SizedBox(
+          width: double.infinity,
+          child: FilledButton(
+            onPressed: () => _handleStatusUpdate(context, order, nextStatus),
+            style: FilledButton.styleFrom(
+              backgroundColor: context.colorScheme.primary,
+            ),
+            child: Text(buttonText),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _handleStatusUpdate(
+    BuildContext context,
+    OrderModel order,
+    String nextStatus,
+  ) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Update Status Pesanan'),
+        content: Text(
+          'Apakah Anda yakin ingin mengubah status pesanan menjadi "$nextStatus"?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => context.pop(),
+            child: const Text('Batal'),
+          ),
+          FilledButton(
+            onPressed: () {
+              context.pop();
+              ref
+                  .read(orderDetailProvider(widget.orderId).notifier)
+                  .updateOrderStatus(nextStatus);
+            },
+            child: const Text('Ya, Update'),
+          ),
+        ],
       ),
     );
   }

@@ -131,7 +131,7 @@ final class OrderNotifierProvider
   }
 }
 
-String _$orderNotifierHash() => r'14c80198a776f591f0f69a64fdf339cda83a9669';
+String _$orderNotifierHash() => r'767167aa5267d875a854b9a111f71d02769439ac';
 
 abstract class _$OrderNotifier extends $Notifier<AsyncValue<List<OrderModel>>> {
   AsyncValue<List<OrderModel>> build();
@@ -207,7 +207,7 @@ final class OrderDetailNotifierProvider
 }
 
 String _$orderDetailNotifierHash() =>
-    r'deeb6e75e8362c4219b229a4737fdc7221713464';
+    r'd460f237e8eb3f1c50a5202318a9f518d8819344';
 
 final class OrderDetailNotifierFamily extends $Family
     with

@@ -127,10 +127,7 @@ class OrderNotifier extends _$OrderNotifier {
 
       // Try to clear cart and update state, but don't fail the operation if these fail
       try {
-        final cartRepo = ref.read(cartRepositoryProvider);
-        await cartRepo.clearCart();
-        // Explicitly reload cart to reflect empty state
-        await ref.read(cartProvider.notifier).loadCartItems(showLoading: false);
+        await ref.read(cartProvider.notifier).clearCart();
 
         if (ref.mounted) {
           final updated = await _repo.getOrders();

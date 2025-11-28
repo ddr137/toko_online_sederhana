@@ -33,6 +33,7 @@ class _OrderPageState extends ConsumerState<OrderPage> {
     final userState = ref.watch(userDetailProvider);
     final isCustomer = userState.value?.role == 'customer';
     final isCs1 = userState.value?.role == 'cs1';
+    final isCs2 = userState.value?.role == 'cs2';
 
     return Scaffold(
       appBar: AppBar(
@@ -59,6 +60,15 @@ class _OrderPageState extends ConsumerState<OrderPage> {
             if (isCs1) {
               displayedOrders = orders
                   .where((o) => o.status == 'MENUNGGU_VERIFIKASI_CS1')
+                  .toList();
+            } else if (isCs2) {
+              displayedOrders = orders
+                  .where(
+                    (o) =>
+                        o.status == 'MENUNGGU_VERIFIKASI_CS2' ||
+                        o.status == 'SEDANG_DIPROSES' ||
+                        o.status == 'DIKIRIM',
+                  )
                   .toList();
             }
 

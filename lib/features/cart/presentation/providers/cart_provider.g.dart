@@ -130,7 +130,7 @@ final class CartNotifierProvider
   }
 }
 
-String _$cartNotifierHash() => r'dbaae26fd9b5ab776955e39ff38be8faef98c815';
+String _$cartNotifierHash() => r'a14ac9a2f8042df5f2d05d2cea8027a67dadee6a';
 
 abstract class _$CartNotifier extends $Notifier<AsyncValue<List<CartModel>>> {
   AsyncValue<List<CartModel>> build();
