@@ -5,7 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:toko_online_sederhana/core/enums/snack_bar_status_enum.dart';
+import 'package:toko_online_sederhana/features/order/data/models/order_model.dart';
 import 'package:toko_online_sederhana/features/order/presentation/providers/order_provider.dart';
+import 'package:toko_online_sederhana/features/order/presentation/services/invoice_service.dart';
 import 'package:toko_online_sederhana/shared/extensions/context_ext.dart';
 import 'package:toko_online_sederhana/shared/extensions/copy_to_clipboard_ext.dart';
 import 'package:toko_online_sederhana/shared/extensions/currency_ext.dart';
@@ -25,6 +27,7 @@ class OrderDetailPage extends ConsumerStatefulWidget {
 
 class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
   bool _isUploading = false;
+  bool _isDownloadingInvoice = false;
   final ImagePicker _picker = ImagePicker();
 
   // Bank transfer information (hardcoded for demo)
@@ -124,6 +127,38 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
       if (mounted) {
         setState(() {
           _isUploading = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _downloadInvoice(OrderModel order) async {
+    if (_isDownloadingInvoice) return;
+
+    setState(() {
+      _isDownloadingInvoice = true;
+    });
+
+    try {
+      await InvoiceService.saveInvoice(order);
+
+      if (mounted) {
+        context.showSnackBar(
+          'Invoice berhasil dibagikan!',
+          status: SnackBarStatus.success,
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        context.showSnackBar(
+          'Gagal mengunduh invoice: ${e.toString()}',
+          status: SnackBarStatus.error,
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isDownloadingInvoice = false;
         });
       }
     }
@@ -432,6 +467,18 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
                   ),
                 ),
                 const SizedBox(height: 24),
+
+                // Download Invoice Button
+                SizedBox(
+                  width: double.infinity,
+                  child: BaseButton(
+                    onPressed: () => _downloadInvoice(order),
+                    text: 'Unduh Invoice (PDF)',
+                    isLoading: _isDownloadingInvoice,
+                    icon: const Icon(Icons.download),
+                  ),
+                ),
+                const SizedBox(height: 12),
 
                 // Back Button
                 SizedBox(

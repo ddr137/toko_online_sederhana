@@ -46,9 +46,12 @@ dependencies:
   logger: ^2.6.2
   path: ^1.9.1
   path_provider: ^2.1.5
+  pdf: ^3.11.1
+  printing: ^5.13.4
   riverpod_annotation: ^3.0.3
   shared_preferences: ^2.5.3
   sqlite3_flutter_libs: ^0.5.40
+
 
 dev_dependencies:
 
