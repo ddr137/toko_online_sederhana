@@ -112,12 +112,40 @@ class _UserPageState extends ConsumerState<UserPage> {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () async {
-                          final ok = await ref
-                              .read(userDetailProvider.notifier)
-                              .logout();
+                          final confirm = await showDialog<bool>(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: const Text('Logout'),
+                                content: const Text(
+                                  'Yakin mau keluar dari akun ini?',
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () =>
+                                        context.pop(false),
+                                    child: const Text('Batal'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () =>
+                                        context.pop(true),
+                                    style: TextButton.styleFrom(
+                                      foregroundColor: Colors.red,
+                                    ),
+                                    child: const Text('Logout'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
 
-                          if (ok && context.mounted) {
-                            context.go('/');
+                          if (confirm == true) {
+                            final ok = await ref
+                                .read(userDetailProvider.notifier)
+                                .logout();
+                            if (ok && context.mounted) {
+                              context.go('/');
+                            }
                           }
                         },
                         style: ElevatedButton.styleFrom(
