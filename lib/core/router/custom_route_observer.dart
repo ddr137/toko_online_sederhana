@@ -52,3 +52,4 @@ class CustomRouteObserver extends RouteObserver<PageRoute<dynamic>> {
     );
   }
 }
+

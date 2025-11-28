@@ -48,3 +48,4 @@ class UserRepositoryImpl implements UserRepository {
     return _local.logout();
   }
 }
+

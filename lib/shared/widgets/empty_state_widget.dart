@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../extensions/context_ext.dart';
-import '../../core/utils/spacing.dart';
+import 'package:toko_online_sederhana/core/utils/spacing.dart';
+import 'package:toko_online_sederhana/shared/extensions/context_ext.dart';
 
 class EmptyStateWidget extends StatelessWidget {
   final String title;
@@ -24,10 +24,7 @@ class EmptyStateWidget extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (icon != null) ...[
-              icon!,
-              AppSpacing.lg,
-            ],
+            if (icon != null) ...[icon!, AppSpacing.lg],
             Text(
               title,
               style: context.textTheme.headlineSmall,
@@ -41,13 +38,11 @@ class EmptyStateWidget extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
             ],
-            if (action != null) ...[
-              AppSpacing.lg,
-              action!,
-            ],
+            if (action != null) ...[AppSpacing.lg, action!],
           ],
         ),
       ),
     );
   }
 }
+

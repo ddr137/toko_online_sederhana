@@ -28,11 +28,9 @@ class _BottomNavState extends ConsumerState<BottomNav> {
     return userState.when(
       data: (user) {
         if (user == null) {
-          // If no user, show default navigation
           return _buildDefaultNav();
         }
 
-        // CS1 and CS2: Only Orders and Profile
         if (user.role == 'cs1' || user.role == 'cs2') {
           return NavigationBar(
             destinations: const [
@@ -46,7 +44,6 @@ class _BottomNavState extends ConsumerState<BottomNav> {
                 ? widget.navigationShell.currentIndex - 2
                 : 0,
             onDestinationSelected: (int index) {
-              // Map to actual branch index (Orders=2, Profile=3)
               final actualIndex = index + 2;
               widget.navigationShell.goBranch(
                 actualIndex,
@@ -56,7 +53,6 @@ class _BottomNavState extends ConsumerState<BottomNav> {
           );
         }
 
-        // Customer: All tabs (Product, Cart, Orders, Profile)
         return _buildDefaultNav();
       },
       loading: () => _buildDefaultNav(),
@@ -85,3 +81,4 @@ class _BottomNavState extends ConsumerState<BottomNav> {
     );
   }
 }
+

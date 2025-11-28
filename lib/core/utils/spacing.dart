@@ -7,7 +7,7 @@ class AppSpacing {
   static const Widget lg = SizedBox(width: 24, height: 24);
   static const Widget xl = SizedBox(width: 32, height: 32);
   static const Widget xxl = SizedBox(width: 48, height: 48);
-  
+
   static Widget horizontal(double value) => SizedBox(width: value);
   static Widget vertical(double value) => SizedBox(height: value);
 }

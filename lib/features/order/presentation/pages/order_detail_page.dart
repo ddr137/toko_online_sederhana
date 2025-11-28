@@ -32,7 +32,6 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
   bool _isDownloadingInvoice = false;
   final ImagePicker _picker = ImagePicker();
 
-  // Bank transfer information (hardcoded for demo)
   final String _bankName = 'Bank Central Asia (BCA)';
   final String _accountNumber = '1234567890';
   final String _accountName = 'PT Toko Online Sederhana';
@@ -216,7 +215,6 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Status Card
                 Card(
                   elevation: 0,
                   color: context.colorScheme.surfaceContainerHighest.withAlpha(
@@ -240,9 +238,8 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
                             color: context.colorScheme.onSurface,
                           ),
                         ),
-                        const SizedBox(height: 8),
+                        AppSpacing.vertical(AppGaps.sm),
 
-                        // BADGE PINDAH KE SINI
                         Align(
                           alignment: Alignment.centerLeft,
                           child: Container(
@@ -254,13 +251,13 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
                               color: _getStatusColor(
                                 context,
                                 order.status,
-                              ).withOpacity(0.1),
+                              ).withAlpha(25),
                               borderRadius: BorderRadius.circular(20),
                               border: Border.all(
                                 color: _getStatusColor(
                                   context,
                                   order.status,
-                                ).withOpacity(0.2),
+                                ).withAlpha(51),
                               ),
                             ),
                             child: Text(
@@ -273,7 +270,7 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
                           ),
                         ),
 
-                        const SizedBox(height: 16),
+                        AppSpacing.vertical(AppGaps.md),
 
                         _buildInfoRow(context, 'ID Pesanan', '#${order.id}'),
                         _buildInfoRow(
@@ -289,7 +286,6 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
 
                 AppSpacing.md,
 
-                // Bank Transfer Information (only show if waiting for upload)
                 if (canUpload) ...[
                   Card(
                     elevation: 0,
@@ -305,7 +301,7 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
                                 Icons.account_balance,
                                 color: context.colorScheme.primary,
                               ),
-                              const SizedBox(width: 8),
+                              AppSpacing.horizontal(AppGaps.sm),
                               Text(
                                 'Informasi Transfer',
                                 style: context.textTheme.titleMedium?.copyWith(
@@ -315,7 +311,7 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 16),
+                          AppSpacing.vertical(AppGaps.md),
                           _buildCopyableRow(context, 'Bank', _bankName),
                           _buildCopyableRow(
                             context,
@@ -335,10 +331,9 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  AppSpacing.vertical(AppGaps.md),
                 ],
 
-                // Payment Proof Section
                 if (canUpload || hasUploadedProof) ...[
                   Card(
                     color: context.colorScheme.surfaceContainerHighest
@@ -361,7 +356,7 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
                               color: context.colorScheme.onSurface,
                             ),
                           ),
-                          const SizedBox(height: 16),
+                          AppSpacing.vertical(AppGaps.md),
                           if (hasUploadedProof) ...[
                             GestureDetector(
                               onTap: () => _showImagePreview(
@@ -378,7 +373,7 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
                                   errorBuilder: (context, error, stackTrace) {
                                     return Container(
                                       height: 200,
-                                      color: context.colorScheme.surfaceVariant,
+                                      color: context.colorScheme.surfaceContainerHighest,
                                       child: Center(
                                         child: Column(
                                           mainAxisAlignment:
@@ -391,7 +386,7 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
                                                   .colorScheme
                                                   .onSurfaceVariant,
                                             ),
-                                            const SizedBox(height: 8),
+                                            AppSpacing.vertical(AppGaps.sm),
                                             Text(
                                               'Gambar tidak dapat dimuat',
                                               style:
@@ -413,7 +408,7 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
                                   size: 16,
                                   color: context.colorScheme.primary,
                                 ),
-                                const SizedBox(width: 8),
+                                AppSpacing.horizontal(AppGaps.sm),
                                 Text(
                                   'Bukti transfer telah diupload',
                                   style: context.textTheme.bodySmall?.copyWith(
@@ -442,7 +437,7 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
                                     size: 48,
                                     color: context.colorScheme.primary,
                                   ),
-                                  const SizedBox(height: 8),
+                                  AppSpacing.vertical(AppGaps.sm),
                                   Text(
                                     'Belum ada bukti transfer',
                                     style: context.textTheme.bodyMedium
@@ -457,7 +452,7 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
                             ),
                           ],
                           if (canUpload) ...[
-                            const SizedBox(height: 16),
+                            AppSpacing.vertical(AppGaps.md),
                             SizedBox(
                               width: double.infinity,
                               child: BaseButton(
@@ -473,20 +468,19 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  AppSpacing.vertical(AppGaps.md),
                 ],
 
-                // Item Details Section
                 if (order.items != null && order.items!.isNotEmpty) ...[
                   Card(
                     elevation: 0,
                     color: context.colorScheme.surfaceContainerHighest
-                        .withOpacity(0.3),
+                        .withAlpha(76),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                       side: BorderSide(
-                        color: context.colorScheme.outlineVariant.withOpacity(
-                          0.5,
+                        color: context.colorScheme.outlineVariant.withAlpha(
+                          64,
                         ),
                       ),
                     ),
@@ -502,7 +496,7 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
                               color: context.colorScheme.onSurface,
                             ),
                           ),
-                          const SizedBox(height: 16),
+                          AppSpacing.vertical(AppGaps.md),
                           ListView.separated(
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
@@ -514,7 +508,6 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
                               return Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  // Product Details
                                   Expanded(
                                     child: Column(
                                       crossAxisAlignment:
@@ -529,7 +522,7 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
                                           maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
                                         ),
-                                        const SizedBox(height: 4),
+                                        AppSpacing.vertical(AppGaps.xs),
                                         Text(
                                           '${item.quantity} x ${item.price.currencyFormatRp}',
                                           style: context.textTheme.bodySmall
@@ -542,7 +535,6 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
                                       ],
                                     ),
                                   ),
-                                  // Total Price for Item
                                   Text(
                                     (item.quantity * item.price)
                                         .currencyFormatRp,
@@ -560,19 +552,18 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  AppSpacing.vertical(AppGaps.md),
                 ],
 
-                // Customer Information
                 Card(
                   elevation: 0,
                   color: context.colorScheme.surfaceContainerHighest
-                      .withOpacity(0.3),
+                      .withAlpha(76),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                     side: BorderSide(
-                      color: context.colorScheme.outlineVariant.withOpacity(
-                        0.5,
+                      color: context.colorScheme.outlineVariant.withAlpha(
+                        64,
                       ),
                     ),
                   ),
@@ -588,7 +579,7 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
                             color: context.colorScheme.onSurface,
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        AppSpacing.vertical(AppGaps.md),
                         _buildInfoRow(context, 'Nama', order.customerName),
                         _buildInfoRow(context, 'Role', order.customerRole),
                         _buildInfoRow(context, 'Telepon', order.customerPhone),
@@ -601,18 +592,17 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 16),
+                AppSpacing.vertical(AppGaps.md),
 
-                // Payment Summary
                 Card(
                   elevation: 0,
                   color: context.colorScheme.surfaceContainerHighest
-                      .withOpacity(0.3),
+                      .withAlpha(76),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                     side: BorderSide(
-                      color: context.colorScheme.outlineVariant.withOpacity(
-                        0.5,
+                      color: context.colorScheme.outlineVariant.withAlpha(
+                        64,
                       ),
                     ),
                   ),
@@ -628,7 +618,7 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
                             color: context.colorScheme.onSurface,
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        AppSpacing.vertical(AppGaps.md),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -651,9 +641,8 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 24),
+                AppSpacing.vertical(AppGaps.lg),
 
-                // Download Invoice Button
                 SizedBox(
                   width: double.infinity,
                   child: BaseButton(
@@ -665,7 +654,6 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
                 ),
                 const SizedBox(height: 12),
 
-                // Back Button
                 SizedBox(
                   width: double.infinity,
                   child: OutlinedButton(
@@ -725,7 +713,7 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
         color: context.colorScheme.surface,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withAlpha(13),
             blurRadius: 10,
             offset: const Offset(0, -5),
           ),
@@ -772,7 +760,7 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
         color: context.colorScheme.surface,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withAlpha(13),
             blurRadius: 10,
             offset: const Offset(0, -5),
           ),
@@ -860,14 +848,12 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
         child: Stack(
           alignment: Alignment.center,
           children: [
-            // Background dismiss
             Positioned.fill(
               child: GestureDetector(
                 onTap: () => context.pop(),
                 child: Container(color: Colors.black87),
               ),
             ),
-            // Zoomable Image
             InteractiveViewer(
               panEnabled: true,
               boundaryMargin: const EdgeInsets.all(20),
@@ -875,7 +861,6 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
               maxScale: 4,
               child: Image.file(File(imagePath), fit: BoxFit.contain),
             ),
-            // Close Button
             Positioned(
               top: 40,
               right: 20,
@@ -933,7 +918,7 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
               color: context.colorScheme.onSurfaceVariant,
             ),
           ),
-          const SizedBox(height: 4),
+          AppSpacing.vertical(AppGaps.xs),
           Text(value, style: context.textTheme.bodyMedium),
         ],
       ),
@@ -962,7 +947,7 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
                     color: context.colorScheme.onSurfaceVariant,
                   ),
                 ),
-                const SizedBox(height: 4),
+                AppSpacing.vertical(AppGaps.xs),
                 Text(
                   displayValue,
                   style: context.textTheme.bodyMedium?.copyWith(
@@ -974,7 +959,7 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
             ),
           ),
           if (canCopy) ...[
-            const SizedBox(width: 8),
+            AppSpacing.horizontal(AppGaps.sm),
             IconButton(
               onPressed: () {
                 context.copyToClipboardAndShowSnackBar(value ?? displayValue);
@@ -992,3 +977,7 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
     );
   }
 }
+
+
+
+

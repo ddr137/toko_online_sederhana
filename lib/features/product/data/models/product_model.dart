@@ -76,3 +76,4 @@ class ProductModel extends Equatable {
         updatedAt,
       ];
 }
+

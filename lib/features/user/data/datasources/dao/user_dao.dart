@@ -25,3 +25,4 @@ class UserDao extends DatabaseAccessor<AppDatabase> with _$UserDaoMixin {
     return (delete(userTable)..where((tbl) => tbl.id.equals(id))).go();
   }
 }
+

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../extensions/context_ext.dart';
-import '../../core/utils/spacing.dart';
+import 'package:toko_online_sederhana/core/utils/spacing.dart';
+import 'package:toko_online_sederhana/shared/extensions/context_ext.dart';
 
 class ErrorStateWidget extends StatelessWidget {
   final String title;
@@ -60,3 +60,4 @@ class ErrorStateWidget extends StatelessWidget {
     );
   }
 }
+

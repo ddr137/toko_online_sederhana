@@ -77,14 +77,13 @@ class _UserPageState extends ConsumerState<UserPage> {
             padding: const EdgeInsets.all(20),
             child: Column(
               children: [
-                const SizedBox(height: 20),
-                // Profile Header
+                AppSpacing.vertical(20),
                 Container(
                   padding: const EdgeInsets.all(4),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: context.colorScheme.primary.withOpacity(0.2),
+                      color: context.colorScheme.primary.withAlpha(51),
                       width: 2,
                     ),
                   ),
@@ -128,9 +127,8 @@ class _UserPageState extends ConsumerState<UserPage> {
                   ),
                 ),
 
-                const SizedBox(height: 32),
+                AppSpacing.vertical(AppGaps.xl),
 
-                // User Info Card
                 Card(
                   elevation: 0,
                   color: context.colorScheme.surfaceContainerHighest.withAlpha(
@@ -171,9 +169,8 @@ class _UserPageState extends ConsumerState<UserPage> {
                   ),
                 ),
 
-                const SizedBox(height: 32),
+                AppSpacing.vertical(AppGaps.xl),
 
-                // Logout Button
                 SizedBox(
                   width: double.infinity,
                   child: FilledButton.icon(
@@ -265,3 +262,7 @@ class _UserPageState extends ConsumerState<UserPage> {
     }
   }
 }
+
+
+
+

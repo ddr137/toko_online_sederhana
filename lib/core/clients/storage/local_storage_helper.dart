@@ -40,3 +40,4 @@ class LocalStorageException implements Exception {
   @override
   String toString() => 'LocalStorageException: $message';
 }
+

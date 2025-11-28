@@ -62,3 +62,4 @@ class UserModel extends Equatable {
         role,
       ];
 }
+

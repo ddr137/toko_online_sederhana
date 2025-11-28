@@ -5,19 +5,18 @@ import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
 import 'package:printing/printing.dart';
+import 'package:toko_online_sederhana/core/utils/spacing.dart';
 import 'package:toko_online_sederhana/features/order/data/models/order_model.dart';
 
 class InvoiceService {
   static Future<Uint8List> generateInvoice(OrderModel order) async {
     final pdf = Document();
 
-    // Format currency - use simple format without locale
     String formatCurrency(int amount) {
       final formatter = NumberFormat('#,###', 'en_US');
       return 'Rp ${formatter.format(amount).replaceAll(',', '.')}';
     }
 
-    // Format date - use simple format without locale dependency
     String formatDate(DateTime date) {
       final months = [
         'Januari',
@@ -36,14 +35,12 @@ class InvoiceService {
       return '${date.day} ${months[date.month - 1]} ${date.year}, ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
     }
 
-    // Load payment proof image if exists
     MemoryImage? paymentProofImage;
     if (order.paymentProofPath != null && order.paymentProofPath!.isNotEmpty) {
       try {
         final imageBytes = await _loadImageBytes(order.paymentProofPath!);
         paymentProofImage = MemoryImage(imageBytes);
       } catch (e) {
-        // If failed to load, will show placeholder
         paymentProofImage = null;
       }
     }
@@ -56,7 +53,6 @@ class InvoiceService {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -70,7 +66,7 @@ class InvoiceService {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 4),
+                      SizedBox(height: AppGaps.xs),
                       Text(
                         'Toko Online Sederhana',
                         style: const TextStyle(
@@ -90,7 +86,7 @@ class InvoiceService {
                           color: PdfColors.grey700,
                         ),
                       ),
-                      SizedBox(height: 4),
+                      SizedBox(height: AppGaps.xs),
                       Text(
                         '#${order.id?.toString().padLeft(6, '0') ?? '000000'}',
                         style: TextStyle(
@@ -98,7 +94,7 @@ class InvoiceService {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 8),
+                      SizedBox(height: AppGaps.sm),
                       Text(
                         'Tanggal',
                         style: const TextStyle(
@@ -106,7 +102,7 @@ class InvoiceService {
                           color: PdfColors.grey700,
                         ),
                       ),
-                      SizedBox(height: 4),
+                      SizedBox(height: AppGaps.xs),
                       Text(
                         formatDate(order.createdAt),
                         style: const TextStyle(fontSize: 12),
@@ -115,13 +111,9 @@ class InvoiceService {
                   ),
                 ],
               ),
-              SizedBox(height: 32),
-
-              // Divider
+              SizedBox(height: AppGaps.xl),
               Divider(thickness: 2),
-              SizedBox(height: 24),
-
-              // Customer Information
+              SizedBox(height: AppGaps.lg),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -145,7 +137,7 @@ class InvoiceService {
                       ],
                     ),
                   ),
-                  SizedBox(width: 32),
+                  SizedBox(width: AppGaps.xl),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -187,9 +179,7 @@ class InvoiceService {
                   ),
                 ],
               ),
-              SizedBox(height: 32),
-
-              // Items Table
+              SizedBox(height: AppGaps.xl),
               Text(
                 'RINCIAN PESANAN',
                 style: TextStyle(
@@ -199,53 +189,95 @@ class InvoiceService {
                 ),
               ),
               SizedBox(height: 12),
-              Table(
-                border: TableBorder.all(color: PdfColors.grey300),
-                children: [
-                  // Header
-                  TableRow(
-                    decoration: const BoxDecoration(
-                      color: PdfColors.grey200,
+              if (order.items != null && order.items!.isNotEmpty)
+                Table(
+                  border: TableBorder.all(color: PdfColors.grey300),
+                  children: [
+                    TableRow(
+                      decoration: const BoxDecoration(color: PdfColors.grey200),
+                      children: [
+                        _buildTableCell('Produk', isHeader: true),
+                        _buildTableCell(
+                          'Qty',
+                          isHeader: true,
+                          align: TextAlign.center,
+                        ),
+                        _buildTableCell(
+                          'Harga',
+                          isHeader: true,
+                          align: TextAlign.right,
+                        ),
+                        _buildTableCell(
+                          'Subtotal',
+                          isHeader: true,
+                          align: TextAlign.right,
+                        ),
+                      ],
                     ),
-                    children: [
-                      _buildTableCell('Deskripsi', isHeader: true),
-                      _buildTableCell(
-                        'Qty',
-                        isHeader: true,
-                        align: TextAlign.center,
-                      ),
-                      _buildTableCell(
-                        'Harga',
-                        isHeader: true,
-                        align: TextAlign.right,
-                      ),
-                      _buildTableCell(
-                        'Subtotal',
-                        isHeader: true,
-                        align: TextAlign.right,
-                      ),
-                    ],
-                  ),
-                  // Items - Since we don't have detailed items, we'll show total
-                  TableRow(
-                    children: [
-                      _buildTableCell('Pesanan ${order.customerName}'),
-                      _buildTableCell('1', align: TextAlign.center),
-                      _buildTableCell(
-                        formatCurrency(order.totalPrice),
-                        align: TextAlign.right,
-                      ),
-                      _buildTableCell(
-                        formatCurrency(order.totalPrice),
-                        align: TextAlign.right,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              SizedBox(height: 16),
-
-              // Total
+                    ...order.items!.map((item) {
+                      final subtotal = item.price * item.quantity;
+                      return TableRow(
+                        children: [
+                          _buildTableCell(item.productName),
+                          _buildTableCell(
+                            item.quantity.toString(),
+                            align: TextAlign.center,
+                          ),
+                          _buildTableCell(
+                            formatCurrency(item.price),
+                            align: TextAlign.right,
+                          ),
+                          _buildTableCell(
+                            formatCurrency(subtotal),
+                            align: TextAlign.right,
+                          ),
+                        ],
+                      );
+                    }).toList(),
+                  ],
+                )
+              else
+                Table(
+                  border: TableBorder.all(color: PdfColors.grey300),
+                  children: [
+                    TableRow(
+                      decoration: const BoxDecoration(color: PdfColors.grey200),
+                      children: [
+                        _buildTableCell('Deskripsi', isHeader: true),
+                        _buildTableCell(
+                          'Qty',
+                          isHeader: true,
+                          align: TextAlign.center,
+                        ),
+                        _buildTableCell(
+                          'Harga',
+                          isHeader: true,
+                          align: TextAlign.right,
+                        ),
+                        _buildTableCell(
+                          'Subtotal',
+                          isHeader: true,
+                          align: TextAlign.right,
+                        ),
+                      ],
+                    ),
+                    TableRow(
+                      children: [
+                        _buildTableCell('Pesanan ${order.customerName}'),
+                        _buildTableCell('1', align: TextAlign.center),
+                        _buildTableCell(
+                          formatCurrency(order.totalPrice),
+                          align: TextAlign.right,
+                        ),
+                        _buildTableCell(
+                          formatCurrency(order.totalPrice),
+                          align: TextAlign.right,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              SizedBox(height: AppGaps.md),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -254,7 +286,7 @@ class InvoiceService {
                     child: Column(
                       children: [
                         Divider(thickness: 1),
-                        SizedBox(height: 8),
+                        SizedBox(height: AppGaps.sm),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -280,11 +312,9 @@ class InvoiceService {
                   ),
                 ],
               ),
-              SizedBox(height: 32),
-
-              // Payment Proof Section
+              SizedBox(height: AppGaps.xl),
               Divider(thickness: 1),
-              SizedBox(height: 16),
+              SizedBox(height: AppGaps.md),
               Text(
                 'BUKTI PEMBAYARAN',
                 style: TextStyle(
@@ -324,12 +354,9 @@ class InvoiceService {
                     ),
                   ),
                 ),
-
               Spacer(),
-
-              // Footer
               Divider(),
-              SizedBox(height: 8),
+              SizedBox(height: AppGaps.sm),
               Center(
                 child: Text(
                   'Terima kasih atas kepercayaan Anda',
@@ -342,10 +369,7 @@ class InvoiceService {
               Center(
                 child: Text(
                   'Toko Online Sederhana • www.tokoonlinesederhana.com',
-                  style: const TextStyle(
-                    fontSize: 9,
-                    color: PdfColors.grey500,
-                  ),
+                  style: const TextStyle(fontSize: 9, color: PdfColors.grey500),
                 ),
               ),
             ],
@@ -407,6 +431,7 @@ class InvoiceService {
         return PdfColors.red700;
       case 'MENUNGGU_VERIFIKASI_CS1':
       case 'MENUNGGU_VERIFIKASI_CS2':
+      case 'MENUNGGU_DIPROSES_CS2':
         return PdfColors.purple700;
       case 'SEDANG_DIPROSES':
         return PdfColors.orange700;
@@ -429,6 +454,8 @@ class InvoiceService {
         return 'Menunggu Verifikasi CS1';
       case 'MENUNGGU_VERIFIKASI_CS2':
         return 'Menunggu Verifikasi CS2';
+      case 'MENUNGGU_DIPROSES_CS2':
+        return 'Menunggu Diproses CS2';
       case 'SEDANG_DIPROSES':
         return 'Sedang Diproses';
       case 'DIKIRIM':
@@ -442,12 +469,10 @@ class InvoiceService {
     }
   }
 
-  /// Save PDF to device downloads folder and return the file path
   static Future<String?> saveInvoice(OrderModel order) async {
     try {
       final pdfData = await generateInvoice(order);
 
-      // Use printing package to save/share PDF
       await Printing.sharePdf(
         bytes: pdfData,
         filename:
@@ -460,21 +485,18 @@ class InvoiceService {
     }
   }
 
-  /// Preview PDF before saving
   static Future<void> previewInvoice(OrderModel order) async {
     final pdfData = await generateInvoice(order);
 
     await Printing.layoutPdf(onLayout: (PdfPageFormat format) async => pdfData);
   }
 
-  /// Load image bytes from file path
   static Future<Uint8List> _loadImageBytes(String imagePath) async {
     try {
       final file = File(imagePath);
       if (await file.exists()) {
         return await file.readAsBytes();
       } else {
-        // Return a placeholder or empty bytes if file doesn't exist
         throw Exception('File tidak ditemukan: $imagePath');
       }
     } catch (e) {

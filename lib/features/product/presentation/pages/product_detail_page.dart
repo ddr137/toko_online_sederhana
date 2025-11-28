@@ -216,7 +216,7 @@ class _ProductDetailContent extends StatelessWidget {
                 'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. '
                 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.',
                 style: context.textTheme.bodyMedium?.copyWith(
-                  color: context.colorScheme.onSurface.withOpacity(0.6),
+                  color: context.colorScheme.onSurface.withAlpha(128),
                 ),
               ),
             ],
@@ -257,3 +257,6 @@ class _ProductDetailContent extends StatelessWidget {
     );
   }
 }
+
+
+

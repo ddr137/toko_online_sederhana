@@ -29,3 +29,4 @@ class OrderDao extends DatabaseAccessor<AppDatabase> with _$OrderDaoMixin {
 
   Future<void> deleteAll() => delete(orderTable).go();
 }
+

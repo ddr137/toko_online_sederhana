@@ -17,3 +17,4 @@ extension CopyToClipboard on BuildContext {
     );
   }
 }
+

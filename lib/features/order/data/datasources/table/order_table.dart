@@ -12,3 +12,4 @@ class OrderTable extends Table {
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime().nullable()();
 }
+

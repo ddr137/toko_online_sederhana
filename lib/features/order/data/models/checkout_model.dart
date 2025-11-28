@@ -15,3 +15,4 @@ class CheckoutItem {
 
   CheckoutItem({required this.product, required this.cart});
 }
+

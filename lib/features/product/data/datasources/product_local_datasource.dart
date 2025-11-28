@@ -47,3 +47,4 @@ class ProductLocalDataSourceImpl implements ProductLocalDataSource {
     await _dao.deleteAll();
   }
 }
+

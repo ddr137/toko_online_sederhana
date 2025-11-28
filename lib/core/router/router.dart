@@ -116,3 +116,4 @@ final GoRouter _goRouter = GoRouter(
 );
 
 GoRouter get goRouter => _goRouter;
+

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:toko_online_sederhana/core/utils/spacing.dart';
 import 'package:toko_online_sederhana/features/cart/presentation/providers/cart_provider.dart';
 import 'package:toko_online_sederhana/features/order/data/models/checkout_model.dart';
 import 'package:toko_online_sederhana/features/order/data/models/order_model.dart';
@@ -37,7 +38,6 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
       _isProcessingOrder = true;
     });
 
-    // Show loading dialog
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -60,21 +60,17 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
           .addOrder(order, checkout.items);
 
       if (mounted) {
-        // Clear cart before navigation to avoid disposed Ref issue
         try {
           print('CheckoutPage: Clearing cart before navigation...');
           await ref.read(cartProvider.notifier).clearCart();
           print('CheckoutPage: Cart cleared successfully');
         } catch (e) {
           print('CheckoutPage: Error clearing cart: $e');
-          // Continue anyway, order is already created
         }
 
-        // Dismiss loading dialog
         Navigator.of(context).pop();
 
         if (orderId != null) {
-          // Use go instead of pushReplacement for better reliability with GoRouter
           context.pushReplacement('/order-detail/$orderId');
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -88,7 +84,6 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
       }
     } catch (e) {
       if (mounted) {
-        // Dismiss loading dialog
         Navigator.of(context).pop();
 
         ScaffoldMessenger.of(
@@ -133,39 +128,35 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      // User Info Section
                       UserInfoSection(user: checkout.user),
-                      const SizedBox(height: 16),
+                      AppSpacing.vertical(AppGaps.md),
 
-                      // Product Details Section
                       Card(
                         elevation: 0,
                         color: Theme.of(
                           context,
-                        ).colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                        ).colorScheme.surfaceContainerHighest.withAlpha(76),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                           side: BorderSide(
                             color: Theme.of(
                               context,
-                            ).colorScheme.outlineVariant.withOpacity(0.5),
+                            ).colorScheme.outlineVariant.withAlpha(128),
                           ),
                         ),
                         child: DetailProductSection(items: checkout.items),
                       ),
-                      const SizedBox(height: 16),
+                      AppSpacing.vertical(AppGaps.md),
 
-                      // Summary Section
                       SummarySection(
                         total: ref.read(checkoutProvider.notifier).getTotal(),
                       ),
-                      const SizedBox(height: 24),
+                      AppSpacing.vertical(AppGaps.lg),
                     ],
                   ),
                 ),
               ),
 
-              // Bottom Action Bar
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
@@ -173,7 +164,7 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
                   color: Theme.of(context).colorScheme.surface,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
+                      color: Colors.black.withAlpha(13),
                       blurRadius: 10,
                       offset: const Offset(0, -5),
                     ),
@@ -195,3 +186,6 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
     );
   }
 }
+
+
+

@@ -17,3 +17,4 @@ class AppFonts {
     'sans-serif',
   ];
 }
+

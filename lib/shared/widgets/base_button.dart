@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../core/utils/spacing.dart';
+import 'package:toko_online_sederhana/core/utils/spacing.dart';
 
 class BaseButton extends StatelessWidget {
   final String text;
@@ -10,7 +10,7 @@ class BaseButton extends StatelessWidget {
   final Widget? icon;
   final double? width;
   final double? height;
-  
+
   const BaseButton({
     super.key,
     required this.text,
@@ -26,27 +26,24 @@ class BaseButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final child = _buildChild();
-    
+
     if (isTextButton) {
-      return TextButton(
-        onPressed: isLoading ? null : onPressed,
-        child: child,
-      );
+      return TextButton(onPressed: isLoading ? null : onPressed, child: child);
     }
-    
+
     if (isOutlined) {
       return OutlinedButton(
         onPressed: isLoading ? null : onPressed,
         child: child,
       );
     }
-    
+
     return ElevatedButton(
       onPressed: isLoading ? null : onPressed,
       child: child,
     );
   }
-  
+
   Widget _buildChild() {
     if (isLoading) {
       return const SizedBox(
@@ -58,18 +55,15 @@ class BaseButton extends StatelessWidget {
         ),
       );
     }
-    
+
     if (icon != null) {
       return Row(
         mainAxisSize: MainAxisSize.min,
-        children: [
-          icon!,
-          AppSpacing.sm,
-          Text(text),
-        ],
+        children: [icon!, AppSpacing.sm, Text(text)],
       );
     }
-    
+
     return Text(text);
   }
 }
+

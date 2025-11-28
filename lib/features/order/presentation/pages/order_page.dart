@@ -31,7 +31,6 @@ class _OrderPageState extends ConsumerState<OrderPage> {
     final ordersState = ref.watch(orderProvider);
 
     final userState = ref.watch(userDetailProvider);
-    final isCustomer = userState.value?.role == 'customer';
     final isCs1 = userState.value?.role == 'cs1';
     final isCs2 = userState.value?.role == 'cs2';
 

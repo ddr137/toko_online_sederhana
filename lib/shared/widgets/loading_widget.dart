@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
-import '../extensions/context_ext.dart';
-import '../../core/utils/spacing.dart';
+import 'package:toko_online_sederhana/core/utils/spacing.dart';
+import 'package:toko_online_sederhana/shared/extensions/context_ext.dart';
 
 class LoadingWidget extends StatelessWidget {
   final String? message;
   final double? size;
 
-  const LoadingWidget({
-    super.key,
-    this.message,
-    this.size,
-  });
+  const LoadingWidget({super.key, this.message, this.size});
 
   @override
   Widget build(BuildContext context) {
@@ -25,13 +21,11 @@ class LoadingWidget extends StatelessWidget {
           ),
           if (message != null) ...[
             AppSpacing.md,
-            Text(
-              message!,
-              style: context.textTheme.bodyMedium,
-            ),
+            Text(message!, style: context.textTheme.bodyMedium),
           ],
         ],
       ),
     );
   }
 }
+

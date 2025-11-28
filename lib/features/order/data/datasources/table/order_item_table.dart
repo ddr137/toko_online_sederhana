@@ -7,6 +7,7 @@ class OrderItemTable extends Table {
   IntColumn get orderId => integer().references(OrderTable, #id)();
   IntColumn get productId => integer().references(ProductTable, #id)();
   IntColumn get quantity => integer()();
-  IntColumn get price => integer()(); // Price per item at the time of order
+  IntColumn get price => integer()();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
 }
+

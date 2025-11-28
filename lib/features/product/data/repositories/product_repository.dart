@@ -44,3 +44,4 @@ class ProductRepositoryImpl implements ProductRepository {
     return _local.deleteProduct(id);
   }
 }
+

@@ -51,3 +51,4 @@ class CartDao extends DatabaseAccessor<AppDatabase> with _$CartDaoMixin {
     return result;
   }
 }
+

@@ -79,3 +79,4 @@ class SharedPreferencesClient {
     await p.reload();
   }
 }
+

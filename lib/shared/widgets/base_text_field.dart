@@ -20,7 +20,7 @@ class BaseTextField extends StatelessWidget {
   final FocusNode? focusNode;
   final void Function(String)? onSubmitted;
   final void Function()? onEditingComplete;
-  
+
   const BaseTextField({
     super.key,
     this.labelText,

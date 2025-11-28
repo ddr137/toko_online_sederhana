@@ -97,13 +97,13 @@ class OrderItem extends StatelessWidget {
                       color: _getStatusColor(
                         context,
                         order.status,
-                      ).withOpacity(0.1),
+                      ).withAlpha(25),
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
                         color: _getStatusColor(
                           context,
                           order.status,
-                        ).withOpacity(0.2),
+                        ).withAlpha(51),
                       ),
                     ),
                     child: Text(
@@ -180,3 +180,7 @@ class OrderItem extends StatelessWidget {
     );
   }
 }
+
+
+
+

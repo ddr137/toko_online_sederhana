@@ -107,3 +107,4 @@ class OrderModel extends Equatable {
     items,
   ];
 }
+

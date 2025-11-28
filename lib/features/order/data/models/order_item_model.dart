@@ -30,3 +30,4 @@ class OrderItemModel extends Equatable {
     productImage,
   ];
 }
+

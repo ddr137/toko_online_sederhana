@@ -8,3 +8,4 @@ extension StringExtensions on String {
     return split(' ').map((word) => word.capitalize).join(' ');
   }
 }
+

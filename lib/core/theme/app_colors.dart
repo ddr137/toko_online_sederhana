@@ -27,3 +27,4 @@ class AppColors {
   static Color divider(BuildContext context) => Theme.of(context).dividerColor;
   static Color border(BuildContext context) => Theme.of(context).colorScheme.outline;
 }
+

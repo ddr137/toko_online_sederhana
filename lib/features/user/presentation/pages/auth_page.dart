@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:toko_online_sederhana/core/utils/spacing.dart';
 import 'package:toko_online_sederhana/features/user/presentation/providers/user_provider.dart';
 import 'package:toko_online_sederhana/shared/extensions/context_ext.dart';
 import 'package:toko_online_sederhana/shared/widgets/empty_state_widget.dart';
@@ -78,7 +79,7 @@ class _AuthPageState extends ConsumerState<AuthPage> {
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 20),
+                    AppSpacing.vertical(20),
 
                     Expanded(
                       child: ListView.builder(
@@ -136,3 +137,6 @@ class _AuthPageState extends ConsumerState<AuthPage> {
     );
   }
 }
+
+
+

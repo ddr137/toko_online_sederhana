@@ -14,3 +14,4 @@ AppDatabase appDatabase(Ref ref) {
 @Riverpod(keepAlive: true)
 SharedPreferencesClient sharedPreferencesClient(Ref ref) =>
     SharedPreferencesClient();
+

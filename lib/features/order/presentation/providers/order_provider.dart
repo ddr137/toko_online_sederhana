@@ -39,7 +39,6 @@ class OrderNotifier extends _$OrderNotifier {
     try {
       final orders = await _repo.getOrders();
 
-      // Auto-cancel logic
       final now = DateTime.now();
       bool hasChanges = false;
 
@@ -69,8 +68,6 @@ class OrderNotifier extends _$OrderNotifier {
 
   Future<void> _cancelOrder(OrderModel order) async {
     try {
-      // Only restore stock if the order has reached MENUNGGU_VERIFIKASI_CS2 or later
-      // (meaning stock has already been reduced by CS1)
       final stockReducedStatuses = [
         'MENUNGGU_VERIFIKASI_CS2',
         'SEDANG_DIPROSES',
@@ -78,8 +75,6 @@ class OrderNotifier extends _$OrderNotifier {
       ];
 
       if (stockReducedStatuses.contains(order.status)) {
-        // 1. Restore stock
-        // Need to fetch full order details including items
         final fullOrder = await _repo.getOrder(order.id!);
         if (fullOrder != null &&
             fullOrder.items != null &&
@@ -99,7 +94,6 @@ class OrderNotifier extends _$OrderNotifier {
         }
       }
 
-      // 2. Update status to DIBATALKAN
       await _repo.saveOrder(
         order.copyWith(status: 'DIBATALKAN', updatedAt: DateTime.now()),
       );
@@ -116,14 +110,12 @@ class OrderNotifier extends _$OrderNotifier {
     try {
       await _repo.deleteOrder(id);
 
-      // Check if ref is still mounted before updating state
       if (!ref.mounted) return;
 
       state.whenData((orders) {
         state = AsyncValue.data(orders.where((o) => o.id != id).toList());
       });
     } catch (e, st) {
-      // Only update state if still mounted
       if (ref.mounted) {
         state = AsyncValue.error(e, st);
       }
@@ -133,11 +125,9 @@ class OrderNotifier extends _$OrderNotifier {
   Future<int?> addOrder(OrderModel order, List<CheckoutItem> items) async {
     int? orderId;
     try {
-      // Create the order
       orderId = await _repo.createOrder(order, items);
       print('Order created with ID: $orderId');
 
-      // Update order list state
       if (ref.mounted) {
         try {
           final updated = await _repo.getOrders();
@@ -156,21 +146,18 @@ class OrderNotifier extends _$OrderNotifier {
       if (ref.mounted) {
         state = AsyncValue.error(e, st);
       }
-      return orderId; // Return orderId if it was created before error
+      return orderId;
     }
   }
 
   Future<void> updateOrderStatus(int orderId, String newStatus) async {
     try {
-      // Get the current order
       final orders = state.value ?? [];
       final order = orders.firstWhere((o) => o.id == orderId);
 
-      // If cancelling manually, also restore stock
       if (newStatus == 'DIBATALKAN' && order.status != 'DIBATALKAN') {
         await _cancelOrder(order);
       } else {
-        // Update the order status
         final updatedOrder = order.copyWith(
           status: newStatus,
           updatedAt: DateTime.now(),
@@ -179,12 +166,10 @@ class OrderNotifier extends _$OrderNotifier {
         await _repo.saveOrder(updatedOrder);
       }
 
-      // Check if ref is still mounted before updating state
       if (!ref.mounted) return;
 
       await loadOrders();
     } catch (e, st) {
-      // Only update state if still mounted
       if (ref.mounted) {
         state = AsyncValue.error(e, st);
       }
@@ -227,12 +212,10 @@ class OrderNotifier extends _$OrderNotifier {
         await _repo.createOrder(order, []);
       }
 
-      // Check if ref is still mounted before updating state
       if (!ref.mounted) return;
 
       await loadOrders();
     } catch (e, st) {
-      // Only update state if still mounted
       if (ref.mounted) {
         state = AsyncValue.error(e, st);
       }
@@ -254,12 +237,10 @@ class OrderDetailNotifier extends _$OrderDetailNotifier {
     try {
       final item = await _repo.getOrder(int.parse(orderId));
 
-      // Check if ref is still mounted before updating state
       if (!ref.mounted) return;
 
       state = AsyncValue.data(item);
     } catch (e, st) {
-      // Only update state if still mounted
       if (ref.mounted) {
         state = AsyncValue.error(e, st);
       }
@@ -270,7 +251,6 @@ class OrderDetailNotifier extends _$OrderDetailNotifier {
     final order = state.asData?.value;
     if (order != null) {
       try {
-        // If CS1 confirms payment (status changes to MENUNGGU_VERIFIKASI_CS2), reduce stock
         if (newStatus == 'MENUNGGU_VERIFIKASI_CS2' &&
             order.items != null &&
             order.items!.isNotEmpty) {
@@ -292,14 +272,11 @@ class OrderDetailNotifier extends _$OrderDetailNotifier {
           order.copyWith(status: newStatus, updatedAt: DateTime.now()),
         );
 
-        // Check if ref is still mounted before updating state
         if (!ref.mounted) return;
 
         await loadOrderDetail();
-        // Refresh the order list to reflect changes
         await ref.read(orderProvider.notifier).loadOrders();
       } catch (e, st) {
-        // Only update state if still mounted
         if (ref.mounted) {
           state = AsyncValue.error(e, st);
         }
@@ -312,7 +289,6 @@ class OrderDetailNotifier extends _$OrderDetailNotifier {
     if (order == null) return false;
 
     try {
-      // Determine next verification status based on current customer role
       String nextStatus = order.customerRole == 'customer'
           ? 'MENUNGGU_VERIFIKASI_CS1'
           : 'MENUNGGU_VERIFIKASI_CS2';
@@ -325,15 +301,12 @@ class OrderDetailNotifier extends _$OrderDetailNotifier {
         ),
       );
 
-      // Check if ref is still mounted before updating state
       if (!ref.mounted) return true;
 
       await loadOrderDetail();
-      // Refresh the order list to reflect changes
       await ref.read(orderProvider.notifier).loadOrders();
       return true;
     } catch (e, st) {
-      // Only update state if still mounted
       if (ref.mounted) {
         state = AsyncValue.error(e, st);
       }
@@ -367,12 +340,10 @@ class CheckoutNotifier extends _$CheckoutNotifier {
         return CheckoutItem(product: product, cart: cart);
       }).toList();
 
-      // Check if ref is still mounted before updating state
       if (!ref.mounted) return;
 
       state = AsyncValue.data(CheckoutData(user: user, items: combined));
     } catch (e, st) {
-      // Only update state if still mounted
       if (ref.mounted) {
         state = AsyncValue.error(e, st);
       }
@@ -389,3 +360,4 @@ class CheckoutNotifier extends _$CheckoutNotifier {
     );
   }
 }
+

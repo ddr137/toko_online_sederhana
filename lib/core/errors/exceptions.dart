@@ -27,3 +27,4 @@ class ValidationException extends AppException {
 class CacheException extends AppException {
   const CacheException(super.message, {super.code});
 }
+

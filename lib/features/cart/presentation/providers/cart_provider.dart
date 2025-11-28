@@ -44,7 +44,6 @@ class CartNotifier extends _$CartNotifier {
 
   Future<void> addCartItem(CartModel cartItem) async {
     try {
-      // Ensure items are loaded so we can check for duplicates
       if (!state.hasValue) {
         final items = await _repo.getCartItems();
         state = AsyncValue.data(items);
@@ -61,12 +60,10 @@ class CartNotifier extends _$CartNotifier {
       );
 
       if (existingItem != null && existingItem.id != null) {
-        // Update quantity if item already exists
         final newQuantity = existingItem.quantity + cartItem.quantity;
         await _repo.updateCartItemQuantity(existingItem.id!, newQuantity);
         await loadCartItems(showLoading: false);
       } else {
-        // Add new item to cart
         await _repo.addCartItem(cartItem);
         await loadCartItems();
       }
@@ -97,12 +94,12 @@ class CartNotifier extends _$CartNotifier {
     try {
       if (quantity <= 0) {
         await _repo.removeCartItem(id);
-        await loadCartItems(); // Show loading when deleting
+        await loadCartItems();
       } else {
         await _repo.updateCartItemQuantity(id, quantity);
         await loadCartItems(
           showLoading: false,
-        ); // No loading when updating quantity
+        );
       }
     } catch (e, st) {
       state = AsyncValue.error(e, st);
@@ -148,3 +145,4 @@ class CartNotifier extends _$CartNotifier {
     return totalPrice;
   }
 }
+

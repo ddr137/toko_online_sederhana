@@ -14,10 +14,10 @@ class SummarySection extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
         side: BorderSide(
-          color: context.colorScheme.outlineVariant.withOpacity(0.5),
+          color: context.colorScheme.outlineVariant.withAlpha(128),
         ),
       ),
-      color: context.colorScheme.surfaceContainerHighest.withOpacity(0.3),
+      color: context.colorScheme.surfaceContainerHighest.withAlpha(76),
       child: Padding(
         padding: const EdgeInsets.all(18),
         child: Column(
@@ -61,3 +61,7 @@ class SummarySection extends StatelessWidget {
     );
   }
 }
+
+
+
+

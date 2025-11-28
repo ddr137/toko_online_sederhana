@@ -114,3 +114,4 @@ class SecureStorageClient {
 
   Future<Map<String, String>> readAll() => _ss.readAll();
 }
+

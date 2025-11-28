@@ -66,14 +66,13 @@ class ProductNotifier extends _$ProductNotifier {
 
   Future<void> addSampleProducts() async {
     try {
-
       final sampleProducts = [
         ProductModel(
           name: 'Laptop ASUS ROG STRIX i7 Gen 10',
           price: 23865000,
           stock: 1,
           thumbnail:
-              'https://parto.id/asset/foto_produk/510b05ac019b623a8b989f4a9a491c8a.jpeg',
+              'https://id.store.asus.com/media/catalog/product/0/2/02_g_new_16_l_1_1.jpg?width=800&height=800&store=id_ID&image-type=image',
           createdAt: DateTime.now(),
         ),
         ProductModel(
@@ -81,7 +80,7 @@ class ProductNotifier extends _$ProductNotifier {
           price: 750000,
           stock: 0,
           thumbnail:
-              'https://els.id/wp-content/uploads/2023/09/Logitech-G402.png',
+              'https://els.id/wp-content/uploads/2023/09/Logitech-G402-6.png',
           createdAt: DateTime.now(),
         ),
         ProductModel(

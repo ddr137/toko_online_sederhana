@@ -22,3 +22,4 @@ extension LogExtension on Object {
   void logFatalError([StackTrace? stackTrace]) =>
       _logger.f(this, stackTrace: stackTrace);
 }
+

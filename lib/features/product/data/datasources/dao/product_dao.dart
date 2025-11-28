@@ -35,3 +35,4 @@ class ProductDao extends DatabaseAccessor<AppDatabase> with _$ProductDaoMixin {
     return delete(productTable).go();
   }
 }
+

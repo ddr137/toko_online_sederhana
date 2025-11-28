@@ -40,7 +40,6 @@ class DetailProductSection extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    // Thumbnail
                     ClipRRect(
                       borderRadius: BorderRadius.circular(8),
                       child: Image.network(
@@ -62,7 +61,6 @@ class DetailProductSection extends StatelessWidget {
                     ),
                     const SizedBox(width: AppGaps.md - 4),
 
-                    // INFO
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,7 +74,6 @@ class DetailProductSection extends StatelessWidget {
                           ),
                           AppSpacing.xs,
 
-                          // qty + harga satuan
                           Text(
                             "${item.product.price.currencyFormatRp} × ${item.cart.quantity}",
                             style: context.textTheme.bodySmall?.copyWith(
@@ -87,7 +84,6 @@ class DetailProductSection extends StatelessWidget {
                       ),
                     ),
 
-                    // TOTAL PER ITEM
                     Text(
                       subtotal.currencyFormatRp,
                       style: context.textTheme.bodyMedium?.copyWith(
@@ -105,3 +101,6 @@ class DetailProductSection extends StatelessWidget {
     );
   }
 }
+
+
+

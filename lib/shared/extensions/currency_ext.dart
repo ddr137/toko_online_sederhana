@@ -7,3 +7,4 @@ extension IntegerExt on int {
     decimalDigits: 0,
   ).format(this);
 }
+

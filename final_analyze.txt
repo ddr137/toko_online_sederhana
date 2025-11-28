@@ -1,0 +1,76 @@
+﻿Analyzing toko_online_sederhana...                              
+
+   info - Unnecessary use of multiple underscores - lib\core\router\bottom_navigation_page.dart:59:18 - unnecessary_underscores
+   info - Don't invoke 'print' in production code - lib\features\cart\data\datasources\dao\cart_dao.dart:48:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\features\cart\data\datasources\dao\cart_dao.dart:50:5 - avoid_print
+  error - The getter 'onsurfaceContainerHighest' isn't defined for the type 'ColorScheme' - lib\features\cart\presentation\pages\cart_page.dart:63:46 - undefined_getter
+   info - Don't invoke 'print' in production code - lib\features\cart\presentation\providers\cart_provider.dart:111:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\features\cart\presentation\providers\cart_provider.dart:113:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\features\cart\presentation\providers\cart_provider.dart:115:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\features\cart\presentation\providers\cart_provider.dart:119:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\features\cart\presentation\providers\cart_provider.dart:120:7 - avoid_print
+  error - The getter 'onsurfaceContainerHighest' isn't defined for the type 'ColorScheme' - lib\features\cart\presentation\widgets\cart_item.dart:72:63 - undefined_getter
+  error - The getter 'onsurfaceContainerHighest' isn't defined for the type 'ColorScheme' - lib\features\cart\presentation\widgets\cart_item.dart:78:60 - undefined_getter
+  error - The getter 'onsurfaceContainerHighest' isn't defined for the type 'ColorScheme' - lib\features\cart\presentation\widgets\cart_item.dart:140:58 - undefined_getter
+   info - Don't invoke 'print' in production code - lib\features\order\presentation\pages\checkout_page.dart:64:11 - avoid_print
+   info - Don't invoke 'print' in production code - lib\features\order\presentation\pages\checkout_page.dart:66:11 - avoid_print
+   info - Don't invoke 'print' in production code - lib\features\order\presentation\pages\checkout_page.dart:68:11 - avoid_print
+   info - Don't use 'BuildContext's across async gaps - lib\features\order\presentation\pages\checkout_page.dart:71:22 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps - lib\features\order\presentation\pages\checkout_page.dart:74:11 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps - lib\features\order\presentation\pages\checkout_page.dart:76:32 - use_build_context_synchronously
+  error - The argument type 'double' can't be assigned to the parameter type 'int'.  - lib\features\order\presentation\pages\checkout_page.dart:138:73 - argument_type_not_assignable
+  error - The argument type 'double' can't be assigned to the parameter type 'int'.  - lib\features\order\presentation\pages\checkout_page.dart:144:68 - argument_type_not_assignable
+  error - The argument type 'double' can't be assigned to the parameter type 'int'.  - lib\features\order\presentation\pages\checkout_page.dart:167:53 - argument_type_not_assignable
+  error - The argument type 'double' can't be assigned to the parameter type 'int'.  - lib\features\order\presentation\pages\order_detail_page.dart:254:43 - argument_type_not_assignable
+  error - The argument type 'double' can't be assigned to the parameter type 'int'.  - lib\features\order\presentation\pages\order_detail_page.dart:260:45 - argument_type_not_assignable
+  error - The getter 'onsurfaceContainerHighest' isn't defined for the type 'ColorScheme' - lib\features\order\presentation\pages\order_detail_page.dart:387:52 - undefined_getter
+  error - The getter 'onsurfaceContainerHighest' isn't defined for the type 'ColorScheme' - lib\features\order\presentation\pages\order_detail_page.dart:447:48 - undefined_getter
+  error - The argument type 'double' can't be assigned to the parameter type 'int'.  - lib\features\order\presentation\pages\order_detail_page.dart:478:36 - argument_type_not_assignable
+  error - The argument type 'double' can't be assigned to the parameter type 'int'.  - lib\features\order\presentation\pages\order_detail_page.dart:483:27 - argument_type_not_assignable
+  error - The getter 'onsurfaceContainerHighest' isn't defined for the type 'ColorScheme' - lib\features\order\presentation\pages\order_detail_page.dart:532:54 - undefined_getter
+  error - The argument type 'double' can't be assigned to the parameter type 'int'.  - lib\features\order\presentation\pages\order_detail_page.dart:561:34 - argument_type_not_assignable
+  error - The argument type 'double' can't be assigned to the parameter type 'int'.  - lib\features\order\presentation\pages\order_detail_page.dart:566:25 - argument_type_not_assignable
+  error - The argument type 'double' can't be assigned to the parameter type 'int'.  - lib\features\order\presentation\pages\order_detail_page.dart:600:34 - argument_type_not_assignable
+  error - The argument type 'double' can't be assigned to the parameter type 'int'.  - lib\features\order\presentation\pages\order_detail_page.dart:605:25 - argument_type_not_assignable
+  error - The getter 'onsurfaceContainerHighest' isn't defined for the type 'ColorScheme' - lib\features\order\presentation\pages\order_detail_page.dart:628:60 - undefined_getter
+  error - The argument type 'double' can't be assigned to the parameter type 'int'.  - lib\features\order\presentation\pages\order_detail_page.dart:716:43 - argument_type_not_assignable
+  error - The argument type 'double' can't be assigned to the parameter type 'int'.  - lib\features\order\presentation\pages\order_detail_page.dart:763:43 - argument_type_not_assignable
+  error - The getter 'onsurfaceContainerHighest' isn't defined for the type 'ColorScheme' - lib\features\order\presentation\pages\order_detail_page.dart:918:42 - undefined_getter
+  error - The getter 'onsurfaceContainerHighest' isn't defined for the type 'ColorScheme' - lib\features\order\presentation\pages\order_detail_page.dart:947:48 - undefined_getter
+   info - Don't invoke 'print' in production code - lib\features\order\presentation\providers\order_provider.dart:101:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\features\order\presentation\providers\order_provider.dart:129:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\features\order\presentation\providers\order_provider.dart:138:11 - avoid_print
+   info - Don't invoke 'print' in production code - lib\features\order\presentation\providers\order_provider.dart:144:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\features\order\presentation\providers\order_provider.dart:145:7 - avoid_print
+   info - Unnecessary use of 'toList' in a spread - lib\features\order\presentation\services\invoice_service.dart:236:24 - unnecessary_to_list_in_spreads
+   info - Unnecessary use of multiple underscores - lib\features\order\presentation\widgets\detail_product_section.dart:50:43 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\features\order\presentation\widgets\detail_product_section.dart:50:47 - unnecessary_underscores
+  error - The getter 'onsurfaceContainerHighest' isn't defined for the type 'ColorScheme' - lib\features\order\presentation\widgets\detail_product_section.dart:57:56 - undefined_getter
+  error - The getter 'onsurfaceContainerHighest' isn't defined for the type 'ColorScheme' - lib\features\order\presentation\widgets\detail_product_section.dart:80:58 - undefined_getter
+  error - The getter 'onsurfaceContainerHighest' isn't defined for the type 'ColorScheme' - lib\features\order\presentation\widgets\order_item.dart:85:56 - undefined_getter
+  error - The argument type 'double' can't be assigned to the parameter type 'int'.  - lib\features\order\presentation\widgets\order_item.dart:100:35 - argument_type_not_assignable
+  error - The argument type 'double' can't be assigned to the parameter type 'int'.  - lib\features\order\presentation\widgets\order_item.dart:106:37 - argument_type_not_assignable
+  error - The getter 'onsurfaceContainerHighest' isn't defined for the type 'ColorScheme' - lib\features\order\presentation\widgets\order_item.dart:125:48 - undefined_getter
+  error - The getter 'onsurfaceContainerHighest' isn't defined for the type 'ColorScheme' - lib\features\order\presentation\widgets\order_item.dart:131:50 - undefined_getter
+  error - The getter 'onsurfaceContainerHighest' isn't defined for the type 'ColorScheme' - lib\features\order\presentation\widgets\order_item.dart:142:48 - undefined_getter
+  error - The getter 'onsurfaceContainerHighest' isn't defined for the type 'ColorScheme' - lib\features\order\presentation\widgets\order_item.dart:149:52 - undefined_getter
+  error - The getter 'onsurfaceContainerHighest' isn't defined for the type 'ColorScheme' - lib\features\order\presentation\widgets\order_item.dart:171:50 - undefined_getter
+  error - The getter 'onsurfaceContainerHighest' isn't defined for the type 'ColorScheme' - lib\features\order\presentation\widgets\payment_method_section.dart:122:41 - undefined_getter
+  error - The getter 'onsurfaceContainerHighest' isn't defined for the type 'ColorScheme' - lib\features\order\presentation\widgets\payment_method_section.dart:142:50 - undefined_getter
+   info - 'groupValue' is deprecated and shouldn't be used. Use a RadioGroup ancestor to manage group value instead. This feature was deprecated after v3.32.0-0.0.pre - lib\features\order\presentation\widgets\payment_method_section.dart:150:15 - deprecated_member_use
+   info - 'onChanged' is deprecated and shouldn't be used. Use RadioGroup to handle value change instead. This feature was deprecated after v3.32.0-0.0.pre - lib\features\order\presentation\widgets\payment_method_section.dart:151:15 - deprecated_member_use
+  error - The argument type 'double' can't be assigned to the parameter type 'int'.  - lib\features\order\presentation\widgets\summary_section.dart:17:63 - argument_type_not_assignable
+  error - The argument type 'double' can't be assigned to the parameter type 'int'.  - lib\features\order\presentation\widgets\summary_section.dart:20:68 - argument_type_not_assignable
+  error - The getter 'onsurfaceContainerHighest' isn't defined for the type 'ColorScheme' - lib\features\order\presentation\widgets\summary_section.dart:49:40 - undefined_getter
+  error - The getter 'onsurfaceContainerHighest' isn't defined for the type 'ColorScheme' - lib\features\order\presentation\widgets\user_info_section.dart:74:44 - undefined_getter
+  error - The argument type 'double' can't be assigned to the parameter type 'int'.  - lib\features\product\presentation\pages\product_detail_page.dart:219:66 - argument_type_not_assignable
+  error - The getter 'onsurfaceContainerHighest' isn't defined for the type 'ColorScheme' - lib\features\product\presentation\pages\product_page.dart:64:46 - undefined_getter
+  error - The getter 'onsurfaceContainerHighest' isn't defined for the type 'ColorScheme' - lib\features\product\presentation\widgets\product_item.dart:49:56 - undefined_getter
+  error - The getter 'onsurfaceContainerHighest' isn't defined for the type 'ColorScheme' - lib\features\product\presentation\widgets\product_item.dart:55:54 - undefined_getter
+  error - The getter 'onsurfaceContainerHighest' isn't defined for the type 'ColorScheme' - lib\features\user\presentation\pages\auth_page.dart:53:46 - undefined_getter
+  error - The getter 'onsurfaceContainerHighest' isn't defined for the type 'ColorScheme' - lib\features\user\presentation\pages\auth_page.dart:78:52 - undefined_getter
+  error - The getter 'onsurfaceContainerHighest' isn't defined for the type 'ColorScheme' - lib\features\user\presentation\pages\user_page.dart:57:48 - undefined_getter
+  error - The getter 'onsurfaceContainerHighest' isn't defined for the type 'ColorScheme' - lib\features\user\presentation\pages\user_page.dart:63:50 - undefined_getter
+  error - The argument type 'double' can't be assigned to the parameter type 'int'.  - lib\features\user\presentation\pages\user_page.dart:86:68 - argument_type_not_assignable
+  error - The getter 'onsurfaceContainerHighest' isn't defined for the type 'ColorScheme' - lib\features\user\presentation\pages\user_page.dart:212:44 - undefined_getter
+
