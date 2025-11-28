@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:toko_online_sederhana/features/user/presentation/providers/user_provider.dart';
 import 'package:toko_online_sederhana/shared/extensions/context_ext.dart';
 import 'package:toko_online_sederhana/shared/widgets/empty_state_widget.dart';
@@ -14,13 +15,27 @@ class AuthPage extends ConsumerStatefulWidget {
 }
 
 class _AuthPageState extends ConsumerState<AuthPage> {
+
+  Future<void> _checkLogin() async {
+    final userState = ref.read(userProvider.notifier);
+
+    final loggedIn = await userState.isLoggedIn();
+
+    if (!mounted) return;
+
+    if (loggedIn) {
+      context.go('/products');
+    } else {
+      await userState.addSampleUsers();
+      await userState.loadUsers();
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final userState = ref.read(userProvider.notifier);
-      await userState.addSampleUsers();
-      await userState.loadUsers();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkLogin();
     });
   }
 
@@ -29,10 +44,7 @@ class _AuthPageState extends ConsumerState<AuthPage> {
     final userState = ref.watch(userProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Login'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('Login'), centerTitle: true),
       body: Center(
         child: userState.when(
           loading: () => const LoadingWidget(message: 'Memuat data...'),
@@ -95,7 +107,31 @@ class _AuthPageState extends ConsumerState<AuthPage> {
                           return Padding(
                             padding: const EdgeInsets.symmetric(vertical: 6),
                             child: ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () async {
+                                final notifier = ref.read(
+                                  userProvider.notifier,
+                                );
+
+                                final ok = await notifier.login(user);
+                                if (!ok) return;
+
+                                if (!context.mounted) return;
+
+                                switch (user.role.toLowerCase()) {
+                                  case 'customer':
+                                    context.go('/products');
+                                    break;
+                                  case 'cs1':
+                                    context.go('/cs1');
+                                    break;
+                                  case 'cs2':
+                                    context.go('/cs2');
+                                    break;
+                                  default:
+                                    context.go('/products');
+                                    break;
+                                }
+                              },
                               child: Text(
                                 '${user.name} (${user.role.toUpperCase()})',
                               ),

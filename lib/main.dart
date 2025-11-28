@@ -22,9 +22,7 @@ class MyApp extends ConsumerWidget {
           darkTheme: AppTheme.darkTheme(context, darkDynamic),
           themeMode: ThemeMode.system,
 
-          routeInformationParser: goRouter.routeInformationParser,
-          routerDelegate: goRouter.routerDelegate,
-          routeInformationProvider: goRouter.routeInformationProvider,
+          routerConfig: goRouter,
         );
       },
     );

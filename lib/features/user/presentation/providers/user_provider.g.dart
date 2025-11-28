@@ -26,7 +26,7 @@ final class UserLocalDataSourceProvider
         argument: null,
         retry: null,
         name: r'userLocalDataSourceProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -55,7 +55,7 @@ final class UserLocalDataSourceProvider
 }
 
 String _$userLocalDataSourceHash() =>
-    r'db4e3f2af1a0733fd028f24957ba50daaa982551';
+    r'1b1a71c17773ecf507e039e4214475c29e1195ae';
 
 @ProviderFor(userRepository)
 const userRepositoryProvider = UserRepositoryProvider._();
@@ -69,7 +69,7 @@ final class UserRepositoryProvider
         argument: null,
         retry: null,
         name: r'userRepositoryProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -96,7 +96,7 @@ final class UserRepositoryProvider
   }
 }
 
-String _$userRepositoryHash() => r'5e5ec4caff2c66c4ce00794702dd2785a6325a6e';
+String _$userRepositoryHash() => r'9b2d38158b6a3163ae1fafab6cdc10d13c96bec7';
 
 @ProviderFor(UserNotifier)
 const userProvider = UserNotifierProvider._();
@@ -130,7 +130,7 @@ final class UserNotifierProvider
   }
 }
 
-String _$userNotifierHash() => r'1ad820524673d2ad71aaf660a3bbc9b56b5fcb22';
+String _$userNotifierHash() => r'3f0948562572bf0e9a3904911c8c48119ff0ab6d';
 
 abstract class _$UserNotifier extends $Notifier<AsyncValue<List<UserModel>>> {
   AsyncValue<List<UserModel>> build();
@@ -206,7 +206,7 @@ final class UserDetailNotifierProvider
 }
 
 String _$userDetailNotifierHash() =>
-    r'826ea7c4b04c3e5a17b76e59dea99df7910e3a26';
+    r'549e05ff3aa65c3025e9c35bcdc8d7fe30e081eb';
 
 final class UserDetailNotifierFamily extends $Family
     with

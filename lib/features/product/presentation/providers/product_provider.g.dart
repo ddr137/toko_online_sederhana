@@ -26,7 +26,7 @@ final class ProductLocalDataSourceProvider
         argument: null,
         retry: null,
         name: r'productLocalDataSourceProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -55,7 +55,7 @@ final class ProductLocalDataSourceProvider
 }
 
 String _$productLocalDataSourceHash() =>
-    r'2e629270fcb3f40e97126a8b70811a9ea1f4e485';
+    r'4d330a8df61ce0f30402cef89b56a42f5725e537';
 
 @ProviderFor(productRepository)
 const productRepositoryProvider = ProductRepositoryProvider._();
@@ -74,7 +74,7 @@ final class ProductRepositoryProvider
         argument: null,
         retry: null,
         name: r'productRepositoryProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -102,7 +102,7 @@ final class ProductRepositoryProvider
   }
 }
 
-String _$productRepositoryHash() => r'8001919b778d2353320eeab6418c8f44e7691e06';
+String _$productRepositoryHash() => r'67f583c29bc1400b9982b39510ed11c99c4583d2';
 
 @ProviderFor(ProductNotifier)
 const productProvider = ProductNotifierProvider._();
@@ -138,7 +138,7 @@ final class ProductNotifierProvider
   }
 }
 
-String _$productNotifierHash() => r'b12172960cd522314d038ea6d7dd4862507c67c5';
+String _$productNotifierHash() => r'ff5a155443a6916388025d67a4bd561f09ad3634';
 
 abstract class _$ProductNotifier
     extends $Notifier<AsyncValue<List<ProductModel>>> {
@@ -219,7 +219,7 @@ final class ProductDetailNotifierProvider
 }
 
 String _$productDetailNotifierHash() =>
-    r'c76df4151e43692d9c7716c03c9db19a07e1230f';
+    r'233d9f6964aa9d476fc2c1470254177d0657c8ef';
 
 final class ProductDetailNotifierFamily extends $Family
     with

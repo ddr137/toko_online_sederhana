@@ -7,7 +7,10 @@ abstract class UserRepository {
   Future<UserModel?> getUser(int id);
   Future<List<UserModel>> getUsers();
   Future<int> createUser(UserModel user);
-  Future<bool> deleteUser(int id);
+
+  Future<bool> isLoggedIn();
+  Future<bool> login(UserModel user);
+  Future<bool> logout();
 }
 
 class UserRepositoryImpl implements UserRepository {
@@ -31,7 +34,17 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<bool> deleteUser(int id) {
-    return _local.deleteUser(id);
+  Future<bool> isLoggedIn() {
+    return _local.isLoggedIn();
+  }
+
+  @override
+  Future<bool> login(UserModel user) {
+    return _local.login(user);
+  }
+
+  @override
+  Future<bool> logout() {
+    return _local.logout();
   }
 }
