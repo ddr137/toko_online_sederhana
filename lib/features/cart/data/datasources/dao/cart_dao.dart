@@ -14,9 +14,7 @@ class CartDao extends DatabaseAccessor<AppDatabase> with _$CartDaoMixin {
   }
 
   Future<CartTableData?> findById(int id) {
-    return (select(
-      cartTable,
-    )..where((t) => t.id.equals(id))).getSingleOrNull();
+    return (select(cartTable)..where((t) => t.id.equals(id))).getSingleOrNull();
   }
 
   Future<int> insert(CartTableCompanion entry) {
@@ -41,10 +39,15 @@ class CartDao extends DatabaseAccessor<AppDatabase> with _$CartDaoMixin {
   }
 
   Future<int> deleteByProductId(int productId) {
-    return (delete(cartTable)..where((t) => t.productId.equals(productId))).go();
+    return (delete(
+      cartTable,
+    )..where((t) => t.productId.equals(productId))).go();
   }
 
-  Future<int> deleteAll() {
-    return delete(cartTable).go();
+  Future<int> deleteAll() async {
+    print('CartDao: Deleting all cart items...');
+    final result = await delete(cartTable).go();
+    print('CartDao: Deleted $result cart items');
+    return result;
   }
 }

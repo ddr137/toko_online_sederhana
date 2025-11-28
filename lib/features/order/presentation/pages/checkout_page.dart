@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:toko_online_sederhana/features/cart/presentation/providers/cart_provider.dart';
 import 'package:toko_online_sederhana/features/order/data/models/checkout_model.dart';
 import 'package:toko_online_sederhana/features/order/data/models/order_model.dart';
 import 'package:toko_online_sederhana/features/order/presentation/providers/order_provider.dart';
@@ -59,6 +60,16 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
           .addOrder(order, checkout.items);
 
       if (mounted) {
+        // Clear cart before navigation to avoid disposed Ref issue
+        try {
+          print('CheckoutPage: Clearing cart before navigation...');
+          await ref.read(cartProvider.notifier).clearCart();
+          print('CheckoutPage: Cart cleared successfully');
+        } catch (e) {
+          print('CheckoutPage: Error clearing cart: $e');
+          // Continue anyway, order is already created
+        }
+
         // Dismiss loading dialog
         Navigator.of(context).pop();
 

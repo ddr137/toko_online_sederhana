@@ -111,9 +111,16 @@ class CartNotifier extends _$CartNotifier {
 
   Future<void> clearCart() async {
     try {
+      print('CartProvider: Clearing cart...');
       await _repo.clearCart();
+      print('CartProvider: Cart cleared from database');
       await loadCartItems(showLoading: false);
+      print(
+        'CartProvider: Cart items reloaded, count: ${state.value?.length ?? 0}',
+      );
     } catch (e, st) {
+      print('CartProvider: Error clearing cart: $e');
+      print('Stack trace: $st');
       state = AsyncValue.error(e, st);
     }
   }

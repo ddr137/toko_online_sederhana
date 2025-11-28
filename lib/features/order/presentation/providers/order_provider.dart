@@ -69,22 +69,32 @@ class OrderNotifier extends _$OrderNotifier {
 
   Future<void> _cancelOrder(OrderModel order) async {
     try {
-      // 1. Restore stock
-      // Need to fetch full order details including items
-      final fullOrder = await _repo.getOrder(order.id!);
-      if (fullOrder != null &&
-          fullOrder.items != null &&
-          fullOrder.items!.isNotEmpty) {
-        final productRepo = ref.read(productRepositoryProvider);
-        for (final item in fullOrder.items!) {
-          final product = await productRepo.getProduct(item.productId);
-          if (product != null) {
-            await productRepo.saveProduct(
-              product.copyWith(
-                stock: product.stock + item.quantity,
-                updatedAt: DateTime.now(),
-              ),
-            );
+      // Only restore stock if the order has reached MENUNGGU_VERIFIKASI_CS2 or later
+      // (meaning stock has already been reduced by CS1)
+      final stockReducedStatuses = [
+        'MENUNGGU_VERIFIKASI_CS2',
+        'SEDANG_DIPROSES',
+        'DIKIRIM',
+      ];
+
+      if (stockReducedStatuses.contains(order.status)) {
+        // 1. Restore stock
+        // Need to fetch full order details including items
+        final fullOrder = await _repo.getOrder(order.id!);
+        if (fullOrder != null &&
+            fullOrder.items != null &&
+            fullOrder.items!.isNotEmpty) {
+          final productRepo = ref.read(productRepositoryProvider);
+          for (final item in fullOrder.items!) {
+            final product = await productRepo.getProduct(item.productId);
+            if (product != null) {
+              await productRepo.saveProduct(
+                product.copyWith(
+                  stock: product.stock + item.quantity,
+                  updatedAt: DateTime.now(),
+                ),
+              );
+            }
           }
         }
       }
@@ -123,25 +133,26 @@ class OrderNotifier extends _$OrderNotifier {
   Future<int?> addOrder(OrderModel order, List<CheckoutItem> items) async {
     int? orderId;
     try {
+      // Create the order
       orderId = await _repo.createOrder(order, items);
+      print('Order created with ID: $orderId');
 
-      // Try to clear cart and update state, but don't fail the operation if these fail
-      try {
-        await ref.read(cartProvider.notifier).clearCart();
-
-        if (ref.mounted) {
+      // Update order list state
+      if (ref.mounted) {
+        try {
           final updated = await _repo.getOrders();
           if (ref.mounted) {
             state = AsyncValue.data(updated);
           }
+        } catch (e) {
+          print('Error updating order list after order creation: $e');
         }
-      } catch (e) {
-        // Log error but don't rethrow, as order is already created
-        print('Error updating state after order creation: $e');
       }
 
       return orderId;
     } catch (e, st) {
+      print('Error creating order: $e');
+      print('Stack trace: $st');
       if (ref.mounted) {
         state = AsyncValue.error(e, st);
       }
@@ -259,6 +270,24 @@ class OrderDetailNotifier extends _$OrderDetailNotifier {
     final order = state.asData?.value;
     if (order != null) {
       try {
+        // If CS1 confirms payment (status changes to MENUNGGU_VERIFIKASI_CS2), reduce stock
+        if (newStatus == 'MENUNGGU_VERIFIKASI_CS2' &&
+            order.items != null &&
+            order.items!.isNotEmpty) {
+          final productRepo = ref.read(productRepositoryProvider);
+          for (final item in order.items!) {
+            final product = await productRepo.getProduct(item.productId);
+            if (product != null) {
+              await productRepo.saveProduct(
+                product.copyWith(
+                  stock: product.stock - item.quantity,
+                  updatedAt: DateTime.now(),
+                ),
+              );
+            }
+          }
+        }
+
         await _repo.saveOrder(
           order.copyWith(status: newStatus, updatedAt: DateTime.now()),
         );

@@ -20,7 +20,7 @@ final GoRouter _goRouter = GoRouter(
   navigatorKey: rootNavigatorKey,
   observers: [CustomRouteObserver()],
   debugLogDiagnostics: true,
-  initialLocation: '/products',
+  initialLocation: '/auth',
   redirect: (context, state) async {
     final container = ProviderScope.containerOf(context);
     final user = await container.read(userRepositoryProvider).isLoggedIn();
