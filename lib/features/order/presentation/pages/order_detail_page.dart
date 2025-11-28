@@ -373,7 +373,9 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
                                   errorBuilder: (context, error, stackTrace) {
                                     return Container(
                                       height: 200,
-                                      color: context.colorScheme.surfaceContainerHighest,
+                                      color: context
+                                          .colorScheme
+                                          .surfaceContainerHighest,
                                       child: Center(
                                         child: Column(
                                           mainAxisAlignment:
@@ -479,9 +481,7 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                       side: BorderSide(
-                        color: context.colorScheme.outlineVariant.withAlpha(
-                          64,
-                        ),
+                        color: context.colorScheme.outlineVariant.withAlpha(64),
                       ),
                     ),
                     child: Padding(
@@ -557,14 +557,13 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
 
                 Card(
                   elevation: 0,
-                  color: context.colorScheme.surfaceContainerHighest
-                      .withAlpha(76),
+                  color: context.colorScheme.surfaceContainerHighest.withAlpha(
+                    76,
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                     side: BorderSide(
-                      color: context.colorScheme.outlineVariant.withAlpha(
-                        64,
-                      ),
+                      color: context.colorScheme.outlineVariant.withAlpha(64),
                     ),
                   ),
                   child: Padding(
@@ -596,14 +595,13 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
 
                 Card(
                   elevation: 0,
-                  color: context.colorScheme.surfaceContainerHighest
-                      .withAlpha(76),
+                  color: context.colorScheme.surfaceContainerHighest.withAlpha(
+                    76,
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                     side: BorderSide(
-                      color: context.colorScheme.outlineVariant.withAlpha(
-                        64,
-                      ),
+                      color: context.colorScheme.outlineVariant.withAlpha(64),
                     ),
                   ),
                   child: Padding(
@@ -679,6 +677,9 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
   ) {
     if (order == null) return null;
 
+    final userState = ref.watch(userDetailProvider);
+    final isCustomer = userState.value?.role == 'customer';
+
     if (isCs1 && order.status == 'MENUNGGU_VERIFIKASI_CS1') {
       return _buildCs1BottomBar(context, order);
     }
@@ -701,6 +702,10 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
           'Selesaikan Pesanan',
         );
       }
+    }
+
+    if (isCustomer && order.status == 'DIKIRIM') {
+      return _buildCustomerBottomBar(context, order);
     }
 
     return null;
@@ -775,6 +780,34 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
               backgroundColor: context.colorScheme.primary,
             ),
             child: Text(buttonText),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCustomerBottomBar(BuildContext context, OrderModel order) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: context.colorScheme.surface,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withAlpha(13),
+            blurRadius: 10,
+            offset: const Offset(0, -5),
+          ),
+        ],
+      ),
+      child: SafeArea(
+        child: SizedBox(
+          width: double.infinity,
+          child: FilledButton(
+            onPressed: () => _handleStatusUpdate(context, order, 'SELESAI'),
+            style: FilledButton.styleFrom(
+              backgroundColor: context.colorScheme.primary,
+            ),
+            child: const Text('Pesanan Diterima'),
           ),
         ),
       ),
@@ -977,7 +1010,3 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
     );
   }
 }
-
-
-
-
