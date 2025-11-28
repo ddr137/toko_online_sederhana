@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:toko_online_sederhana/core/theme/app_colors.dart';
+import 'package:toko_online_sederhana/core/enums/snack_bar_status_enum.dart';
 import 'package:toko_online_sederhana/core/utils/spacing.dart';
 import 'package:toko_online_sederhana/features/product/data/models/product_model.dart';
 import 'package:toko_online_sederhana/features/product/presentation/providers/product_provider.dart';
 import 'package:toko_online_sederhana/shared/extensions/context_ext.dart';
 import 'package:toko_online_sederhana/shared/extensions/currency_ext.dart';
+import 'package:toko_online_sederhana/shared/extensions/custom_snack_bar_ext.dart';
 import 'package:toko_online_sederhana/shared/widgets/base_button.dart';
 import 'package:toko_online_sederhana/shared/widgets/error_state_widget.dart';
 import 'package:toko_online_sederhana/shared/widgets/loading_widget.dart';
@@ -20,6 +21,8 @@ class ProductDetailPage extends ConsumerStatefulWidget {
 }
 
 class _ProductDetailPageState extends ConsumerState<ProductDetailPage> {
+  bool _isAddingToCart = false;
+
   @override
   void initState() {
     super.initState();
@@ -28,6 +31,50 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> {
           .read(productDetailProvider(widget.productId).notifier)
           .loadProductDetail();
     });
+  }
+
+  Future<void> _handleAddToCart() async {
+    final productState = ref.read(productDetailProvider(widget.productId));
+    final product = productState.asData?.value;
+
+    if (product == null) return;
+
+    if (product.stock <= 0) {
+      if (mounted) {
+        context.showSnackBar('Stok produk habis', status: SnackBarStatus.error);
+      }
+      return;
+    }
+
+    setState(() {
+      _isAddingToCart = true;
+    });
+
+    try {
+      await ref
+          .read(productDetailProvider(widget.productId).notifier)
+          .onAddToCartPressed();
+
+      if (mounted) {
+        context.showSnackBar(
+          'Berhasil ditambahkan ke keranjang',
+          status: SnackBarStatus.success,
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        context.showSnackBar(
+          'Gagal menambahkan ke keranjang: $e',
+          status: SnackBarStatus.error,
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isAddingToCart = false;
+        });
+      }
+    }
   }
 
   @override
@@ -54,8 +101,8 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> {
           }
           return _ProductDetailContent(
             product: product,
-            onBuyPressed: productDetailNotifier.onBuyPressed,
-            onAddToCartPressed: productDetailNotifier.onAddToCartPressed,
+            onAddToCartPressed: _handleAddToCart,
+            isAddingToCart: _isAddingToCart,
           );
         },
       ),
@@ -66,13 +113,13 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> {
 class _ProductDetailContent extends StatelessWidget {
   const _ProductDetailContent({
     required this.product,
-    required this.onBuyPressed,
     required this.onAddToCartPressed,
+    this.isAddingToCart = false,
   });
 
   final ProductModel product;
-  final VoidCallback onBuyPressed;
   final VoidCallback onAddToCartPressed;
+  final bool isAddingToCart;
 
   @override
   Widget build(BuildContext context) {
@@ -120,7 +167,7 @@ class _ProductDetailContent extends StatelessWidget {
               Text(
                 product.price.currencyFormatRp,
                 style: context.textTheme.headlineMedium?.copyWith(
-                  color: AppColors.primary(context),
+                  color: context.colorScheme.primary,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -132,18 +179,16 @@ class _ProductDetailContent extends StatelessWidget {
                     Icons.inventory_2_outlined,
                     size: 16,
                     color: product.stock > 0
-                        ? AppColors.success(context)
-                        : AppColors.error(context),
+                        ? Colors.green
+                        : context.colorScheme.error,
                   ),
                   AppSpacing.xs,
                   Text(
-                    product.stock > 0
-                        ? 'Stok: ${product.stock}'
-                        : 'Stok Habis',
+                    product.stock > 0 ? 'Stok: ${product.stock}' : 'Stok Habis',
                     style: context.textTheme.bodyMedium?.copyWith(
                       color: product.stock > 0
-                          ? AppColors.success(context)
-                          : AppColors.error(context),
+                          ? Colors.green
+                          : context.colorScheme.error,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -153,10 +198,9 @@ class _ProductDetailContent extends StatelessWidget {
 
               Text(
                 'Deskripsi Produk',
-                style: Theme.of(context)
-                    .textTheme
-                    .titleMedium
-                    ?.copyWith(fontWeight: FontWeight.bold),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
               ),
               AppSpacing.sm,
               Text(
@@ -164,7 +208,7 @@ class _ProductDetailContent extends StatelessWidget {
                 'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. '
                 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.',
                 style: context.textTheme.bodyMedium?.copyWith(
-                  color: AppColors.textSecondary(context),
+                  color: context.colorScheme.onSurface.withOpacity(0.6),
                 ),
               ),
             ],
@@ -192,16 +236,8 @@ class _ProductDetailContent extends StatelessWidget {
                   Expanded(
                     child: BaseButton(
                       text: 'Tambah ke Keranjang',
-                      onPressed:
-                          product.stock > 0 ? onAddToCartPressed : null,
-                      isOutlined: true,
-                    ),
-                  ),
-                  AppSpacing.md,
-                  Expanded(
-                    child: BaseButton(
-                      text: 'Beli Langsung',
-                      onPressed: product.stock > 0 ? onBuyPressed : null,
+                      onPressed: onAddToCartPressed,
+                      isLoading: isAddingToCart,
                     ),
                   ),
                 ],

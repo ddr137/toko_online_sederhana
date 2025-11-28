@@ -40,9 +40,8 @@ class ProductItem extends StatelessWidget {
                       ? CachedNetworkImage(
                           imageUrl: product.thumbnail!,
                           fit: BoxFit.cover,
-                          placeholder: (context, url) => const Center(
-                            child: CircularProgressIndicator(),
-                          ),
+                          placeholder: (context, url) =>
+                              const Center(child: CircularProgressIndicator()),
                           errorWidget: (context, url, error) => Icon(
                             Icons.image,
                             size: 32,
@@ -75,7 +74,7 @@ class ProductItem extends StatelessWidget {
                       product.price.currencyFormatRp,
                       style: context.textTheme.titleSmall?.copyWith(
                         color: context.colorScheme.primary,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w900,
                       ),
                     ),
                     AppSpacing.sm,
@@ -84,13 +83,19 @@ class ProductItem extends StatelessWidget {
                         Icon(
                           Icons.inventory_2_outlined,
                           size: 16,
-                          color: context.colorScheme.onSurfaceVariant,
+                          color: product.stock > 0
+                              ? Colors.green
+                              : context.colorScheme.error,
                         ),
                         AppSpacing.xs,
                         Text(
-                          'Stok: ${product.stock}',
+                          product.stock > 0
+                              ? 'Stok: ${product.stock}'
+                              : 'Stok Habis',
                           style: context.textTheme.bodySmall?.copyWith(
-                            color: context.colorScheme.onSurfaceVariant,
+                            color: product.stock > 0
+                                ? Colors.green
+                                : context.colorScheme.error,
                           ),
                         ),
                       ],
@@ -98,33 +103,6 @@ class ProductItem extends StatelessWidget {
                   ],
                 ),
               ),
-
-              if (onDelete != null) ...[
-                AppSpacing.sm,
-                PopupMenuButton<String>(
-                  onSelected: (value) {
-                    if (value == 'delete') {
-                      onDelete!();
-                    }
-                  },
-                  itemBuilder: (context) => [
-                    PopupMenuItem(
-                      value: 'delete',
-                      child: Row(
-                        children: [
-                          Icon(Icons.delete, color: context.colorScheme.error),
-                          AppSpacing.sm,
-                          const Text('Hapus'),
-                        ],
-                      ),
-                    ),
-                  ],
-                  child: Icon(
-                    Icons.more_vert,
-                    color: context.colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ],
             ],
           ),
         ),

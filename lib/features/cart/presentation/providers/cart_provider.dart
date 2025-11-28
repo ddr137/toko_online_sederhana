@@ -19,7 +19,7 @@ CartRepository cartRepository(Ref ref) {
   return CartRepositoryImpl(local);
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class CartNotifier extends _$CartNotifier {
   CartRepository get _repo => ref.read(cartRepositoryProvider);
 
@@ -44,6 +44,12 @@ class CartNotifier extends _$CartNotifier {
 
   Future<void> addCartItem(CartModel cartItem) async {
     try {
+      // Ensure items are loaded so we can check for duplicates
+      if (!state.hasValue) {
+        final items = await _repo.getCartItems();
+        state = AsyncValue.data(items);
+      }
+
       final existingItem = state.asData?.value.firstWhere(
         (item) => item.productId == cartItem.productId,
         orElse: () => CartModel(

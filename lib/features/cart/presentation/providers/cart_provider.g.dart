@@ -109,7 +109,7 @@ final class CartNotifierProvider
         argument: null,
         retry: null,
         name: r'cartProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -130,7 +130,7 @@ final class CartNotifierProvider
   }
 }
 
-String _$cartNotifierHash() => r'0c0836d1208948d25dd016a1ade99823ab47579a';
+String _$cartNotifierHash() => r'ee06210677720a012c7d5ff90d9f10e8bcedfeac';
 
 abstract class _$CartNotifier extends $Notifier<AsyncValue<List<CartModel>>> {
   AsyncValue<List<CartModel>> build();

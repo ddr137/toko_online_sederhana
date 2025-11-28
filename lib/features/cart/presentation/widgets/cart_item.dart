@@ -11,10 +11,7 @@ import 'package:toko_online_sederhana/shared/extensions/currency_ext.dart';
 class CartItemWidget extends ConsumerStatefulWidget {
   final CartModel cartItem;
 
-  const CartItemWidget({
-    super.key,
-    required this.cartItem,
-  });
+  const CartItemWidget({super.key, required this.cartItem});
 
   @override
   ConsumerState<CartItemWidget> createState() => _CartItemWidgetState();
@@ -26,7 +23,9 @@ class _CartItemWidgetState extends ConsumerState<CartItemWidget> {
   @override
   void initState() {
     super.initState();
-    _productFuture = ref.read(productRepositoryProvider).getProduct(widget.cartItem.productId);
+    _productFuture = ref
+        .read(productRepositoryProvider)
+        .getProduct(widget.cartItem.productId);
   }
 
   @override
@@ -46,11 +45,11 @@ class _CartItemWidgetState extends ConsumerState<CartItemWidget> {
         return Card(
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(12),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(8),
@@ -64,11 +63,13 @@ class _CartItemWidgetState extends ConsumerState<CartItemWidget> {
                             ? Image.network(
                                 product.thumbnail!,
                                 fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) => Icon(
-                                  Icons.image,
-                                  size: 32,
-                                  color: context.colorScheme.onSurfaceVariant,
-                                ),
+                                errorBuilder: (context, error, stackTrace) =>
+                                    Icon(
+                                      Icons.image,
+                                      size: 32,
+                                      color:
+                                          context.colorScheme.onSurfaceVariant,
+                                    ),
                               )
                             : Icon(
                                 Icons.image,
@@ -82,13 +83,34 @@ class _CartItemWidgetState extends ConsumerState<CartItemWidget> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            product.name,
-                            style: context.textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.w600,
-                            ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  product.name,
+                                  style: context.textTheme.titleMedium
+                                      ?.copyWith(fontWeight: FontWeight.w600),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  ref
+                                      .read(cartProvider.notifier)
+                                      .removeCartItem(widget.cartItem.id!);
+                                },
+                                icon: Icon(
+                                  Icons.delete_outline,
+                                  size: 20,
+                                  color: context.colorScheme.error,
+                                ),
+                                padding: EdgeInsets.zero,
+                                constraints: const BoxConstraints(),
+                                visualDensity: VisualDensity.compact,
+                              ),
+                            ],
                           ),
                           AppSpacing.xs,
                           Text(
@@ -103,66 +125,84 @@ class _CartItemWidgetState extends ConsumerState<CartItemWidget> {
                     ),
                   ],
                 ),
-                AppSpacing.md,
+                const Divider(height: 24),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      'Total: ${(product.price * widget.cartItem.quantity).currencyFormatRp}',
-                      style: context.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
+                    Flexible(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Total',
+                            style: context.textTheme.bodySmall?.copyWith(
+                              color: context.colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                          Text(
+                            (product.price * widget.cartItem.quantity)
+                                .currencyFormatRp,
+                            style: context.textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
                       ),
                     ),
-                    Row(
-                      children: [
-                        IconButton(
-                          onPressed: () {
-                            if (widget.cartItem.quantity > 1) {
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: context.colorScheme.outlineVariant,
+                        ),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        children: [
+                          IconButton(
+                            onPressed: widget.cartItem.quantity > 1
+                                ? () {
+                                    ref
+                                        .read(cartProvider.notifier)
+                                        .updateCartItemQuantity(
+                                          widget.cartItem.id!,
+                                          widget.cartItem.quantity - 1,
+                                        );
+                                  }
+                                : null,
+                            icon: const Icon(Icons.remove),
+                            iconSize: 16,
+                            padding: const EdgeInsets.all(8),
+                            constraints: const BoxConstraints(),
+                            color: context.colorScheme.onSurface,
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: Text(
+                              '${widget.cartItem.quantity}',
+                              style: context.textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {
                               ref
                                   .read(cartProvider.notifier)
-                                  .updateCartItemQuantity(widget.cartItem.id!, widget.cartItem.quantity - 1);
-                            }
-                          },
-                          icon: Icon(
-                            Icons.remove,
-                            size: 18,
-                            color: context.colorScheme.onSurface,
+                                  .updateCartItemQuantity(
+                                    widget.cartItem.id!,
+                                    widget.cartItem.quantity + 1,
+                                  );
+                            },
+                            icon: const Icon(Icons.add),
+                            iconSize: 16,
+                            padding: const EdgeInsets.all(8),
+                            constraints: const BoxConstraints(),
+                            color: context.colorScheme.primary,
                           ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: context.colorScheme.surfaceContainerHighest,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Text(
-                            '${widget.cartItem.quantity}',
-                            style: context.textTheme.titleMedium,
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            ref
-                                .read(cartProvider.notifier)
-                                .updateCartItemQuantity(widget.cartItem.id!, widget.cartItem.quantity + 1);
-                          },
-                          icon: Icon(
-                            Icons.add,
-                            size: 18,
-                            color: context.colorScheme.onSurface,
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            ref.read(cartProvider.notifier).removeCartItem(widget.cartItem.id!);
-                          },
-                          icon: Icon(
-                            Icons.delete,
-                            size: 18,
-                            color: context.colorScheme.error,
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ],
                 ),

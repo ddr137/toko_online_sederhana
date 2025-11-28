@@ -79,7 +79,7 @@ class ProductNotifier extends _$ProductNotifier {
         ProductModel(
           name: 'Mouse Gaming Logitech G402 Hyperion Fury',
           price: 750000,
-          stock: 2,
+          stock: 0,
           thumbnail:
               'https://els.id/wp-content/uploads/2023/09/Logitech-G402.png',
           createdAt: DateTime.now(),
@@ -123,10 +123,6 @@ class ProductDetailNotifier extends _$ProductDetailNotifier {
     } catch (e, st) {
       state = AsyncValue.error(e, st);
     }
-  }
-
-  void onBuyPressed() {
-    print("Buy pressed for $productId");
   }
 
   Future<void> onAddToCartPressed() async {
