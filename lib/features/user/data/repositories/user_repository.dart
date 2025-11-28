@@ -4,7 +4,7 @@ import 'package:toko_online_sederhana/features/user/data/datasources/user_local_
 import '../models/user_model.dart';
 
 abstract class UserRepository {
-  Future<UserModel?> getUser(int id);
+  Future<UserModel> getUser();
   Future<List<UserModel>> getUsers();
   Future<int> createUser(UserModel user);
 
@@ -19,8 +19,8 @@ class UserRepositoryImpl implements UserRepository {
   UserRepositoryImpl(this._local);
 
   @override
-  Future<UserModel?> getUser(int id) {
-    return _local.getUserById(id);
+  Future<UserModel> getUser() {
+    return _local.getUserById();
   }
 
   @override

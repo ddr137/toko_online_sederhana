@@ -1,10 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:toko_online_sederhana/core/clients/storage/local_storage_helper.dart';
 import 'package:toko_online_sederhana/core/clients/storage/shared_preferences_client.dart';
 import 'package:toko_online_sederhana/features/user/data/datasources/dao/user_dao.dart';
 import 'package:toko_online_sederhana/features/user/data/models/user_model.dart';
 
 abstract class UserLocalDataSource {
-  Future<UserModel?> getUserById(int id);
+  Future<UserModel> getUserById();
   Future<List<UserModel>> getAllUsers();
   Future<int> insertUser(UserModel user);
 
@@ -24,9 +25,11 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
        _sharedPreferencesClient = sharedPreferencesClient;
 
   @override
-  Future<UserModel?> getUserById(int id) async {
+  Future<UserModel> getUserById() async {
+    final id = await _sharedPreferencesClient.getInt('user_id');
+    if (id == null) throw Exception('User not logged in');
     final row = await _dao.findById(id);
-    return row == null ? null : UserModel.fromDrift(row);
+    return UserModel.fromDrift(row!);
   }
 
   @override
@@ -59,7 +62,6 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
   @override
   Future<bool> isLoggedIn() {
     return LocalStorageHelper.safeStorage<bool>(() async {
-      "masuk sini cojk";
       final id = await _sharedPreferencesClient.getInt('user_id');
       return id != null;
     });

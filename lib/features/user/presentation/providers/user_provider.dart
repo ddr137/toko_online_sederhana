@@ -24,12 +24,18 @@ UserRepository userRepository(Ref ref) {
 }
 
 @riverpod
-class UserNotifier extends _$UserNotifier {
+class UserListNotifier extends _$UserListNotifier {
   UserRepository get _repo => ref.read(userRepositoryProvider);
 
   @override
   AsyncValue<List<UserModel>> build() {
     return const AsyncValue.loading();
+  }
+
+  Future<bool> login(UserModel user) async {
+    final ok = await _repo.login(user);
+    if (ok) await loadUsers();
+    return ok;
   }
 
   Future<void> loadUsers() async {
@@ -42,24 +48,10 @@ class UserNotifier extends _$UserNotifier {
     }
   }
 
-  Future<void> refreshUsers() async {
-    await loadUsers();
-  }
-
-  Future<void> addUser(UserModel user) async {
-    try {
-      await _repo.createUser(user);
-      await loadUsers();
-    } catch (e, st) {
-      state = AsyncValue.error(e, st);
-    }
-  }
-
   Future<void> addSampleUsers() async {
     try {
       final existing = await _repo.getUsers();
       if (existing.isNotEmpty) return;
-
       final sampleUsers = [
         UserModel(
           name: 'Alice Smith',
@@ -80,12 +72,30 @@ class UserNotifier extends _$UserNotifier {
           role: 'cs2',
         ),
       ];
-
       for (final user in sampleUsers) {
         await _repo.createUser(user);
       }
-
       await loadUsers();
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
+  }
+}
+
+@riverpod
+class UserDetailNotifier extends _$UserDetailNotifier {
+  UserRepository get _repo => ref.read(userRepositoryProvider);
+
+  @override
+  AsyncValue<UserModel?> build() {
+    return const AsyncValue.loading();
+  }
+
+  Future<void> loadUserDetail() async {
+    state = const AsyncValue.loading();
+    try {
+      final user = await _repo.getUser();
+      state = AsyncValue.data(user);
     } catch (e, st) {
       state = AsyncValue.error(e, st);
     }
@@ -95,37 +105,11 @@ class UserNotifier extends _$UserNotifier {
     return _repo.isLoggedIn();
   }
 
-  Future<bool> login(UserModel user) async {
-    final ok = await _repo.login(user);
-    if (ok) await loadUsers();
-    return ok;
-  }
-
   Future<bool> logout() async {
     final ok = await _repo.logout();
     if (ok) {
-      state = const AsyncValue.data([]);
+      state = const AsyncValue.data(null);
     }
     return ok;
-  }
-}
-
-@riverpod
-class UserDetailNotifier extends _$UserDetailNotifier {
-  UserRepository get _repo => ref.read(userRepositoryProvider);
-
-  @override
-  AsyncValue<UserModel?> build(String userId) {
-    return const AsyncValue.loading();
-  }
-
-  Future<void> loadUserDetail() async {
-    state = const AsyncValue.loading();
-    try {
-      final user = await _repo.getUser(int.parse(userId));
-      state = AsyncValue.data(user);
-    } catch (e, st) {
-      state = AsyncValue.error(e, st);
-    }
   }
 }

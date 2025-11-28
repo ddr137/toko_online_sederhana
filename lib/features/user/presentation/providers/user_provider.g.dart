@@ -98,28 +98,28 @@ final class UserRepositoryProvider
 
 String _$userRepositoryHash() => r'9b2d38158b6a3163ae1fafab6cdc10d13c96bec7';
 
-@ProviderFor(UserNotifier)
-const userProvider = UserNotifierProvider._();
+@ProviderFor(UserListNotifier)
+const userListProvider = UserListNotifierProvider._();
 
-final class UserNotifierProvider
-    extends $NotifierProvider<UserNotifier, AsyncValue<List<UserModel>>> {
-  const UserNotifierProvider._()
+final class UserListNotifierProvider
+    extends $NotifierProvider<UserListNotifier, AsyncValue<List<UserModel>>> {
+  const UserListNotifierProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'userProvider',
+        name: r'userListProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$userNotifierHash();
+  String debugGetCreateSourceHash() => _$userListNotifierHash();
 
   @$internal
   @override
-  UserNotifier create() => UserNotifier();
+  UserListNotifier create() => UserListNotifier();
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(AsyncValue<List<UserModel>> value) {
@@ -130,9 +130,10 @@ final class UserNotifierProvider
   }
 }
 
-String _$userNotifierHash() => r'5e55cd7733d449cf9d8d33545893664cd5c2d2d5';
+String _$userListNotifierHash() => r'e416d431ed10ad6ea40496b73637f70bf2e65955';
 
-abstract class _$UserNotifier extends $Notifier<AsyncValue<List<UserModel>>> {
+abstract class _$UserListNotifier
+    extends $Notifier<AsyncValue<List<UserModel>>> {
   AsyncValue<List<UserModel>> build();
   @$mustCallSuper
   @override
@@ -157,30 +158,23 @@ abstract class _$UserNotifier extends $Notifier<AsyncValue<List<UserModel>>> {
 }
 
 @ProviderFor(UserDetailNotifier)
-const userDetailProvider = UserDetailNotifierFamily._();
+const userDetailProvider = UserDetailNotifierProvider._();
 
 final class UserDetailNotifierProvider
     extends $NotifierProvider<UserDetailNotifier, AsyncValue<UserModel?>> {
-  const UserDetailNotifierProvider._({
-    required UserDetailNotifierFamily super.from,
-    required String super.argument,
-  }) : super(
-         retry: null,
-         name: r'userDetailProvider',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+  const UserDetailNotifierProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'userDetailProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$userDetailNotifierHash();
-
-  @override
-  String toString() {
-    return r'userDetailProvider'
-        ''
-        '($argument)';
-  }
 
   @$internal
   @override
@@ -193,55 +187,17 @@ final class UserDetailNotifierProvider
       providerOverride: $SyncValueProvider<AsyncValue<UserModel?>>(value),
     );
   }
-
-  @override
-  bool operator ==(Object other) {
-    return other is UserDetailNotifierProvider && other.argument == argument;
-  }
-
-  @override
-  int get hashCode {
-    return argument.hashCode;
-  }
 }
 
 String _$userDetailNotifierHash() =>
-    r'549e05ff3aa65c3025e9c35bcdc8d7fe30e081eb';
-
-final class UserDetailNotifierFamily extends $Family
-    with
-        $ClassFamilyOverride<
-          UserDetailNotifier,
-          AsyncValue<UserModel?>,
-          AsyncValue<UserModel?>,
-          AsyncValue<UserModel?>,
-          String
-        > {
-  const UserDetailNotifierFamily._()
-    : super(
-        retry: null,
-        name: r'userDetailProvider',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: true,
-      );
-
-  UserDetailNotifierProvider call(String userId) =>
-      UserDetailNotifierProvider._(argument: userId, from: this);
-
-  @override
-  String toString() => r'userDetailProvider';
-}
+    r'f9cfd5041c403d4983cff649450e1d8b4b148c64';
 
 abstract class _$UserDetailNotifier extends $Notifier<AsyncValue<UserModel?>> {
-  late final _$args = ref.$arg as String;
-  String get userId => _$args;
-
-  AsyncValue<UserModel?> build(String userId);
+  AsyncValue<UserModel?> build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(_$args);
+    final created = build();
     final ref =
         this.ref as $Ref<AsyncValue<UserModel?>, AsyncValue<UserModel?>>;
     final element =

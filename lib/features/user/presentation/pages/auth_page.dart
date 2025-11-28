@@ -19,7 +19,7 @@ class _AuthPageState extends ConsumerState<AuthPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final userState = ref.read(userProvider.notifier);
+      final userState = ref.read(userListProvider.notifier);
       await userState.addSampleUsers();
       await userState.loadUsers();
     });
@@ -27,7 +27,7 @@ class _AuthPageState extends ConsumerState<AuthPage> {
 
   @override
   Widget build(BuildContext context) {
-    final userState = ref.watch(userProvider);
+    final userState = ref.watch(userListProvider);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Login'), centerTitle: true),
@@ -38,7 +38,7 @@ class _AuthPageState extends ConsumerState<AuthPage> {
             title: 'Terjadi kesalahan',
             message: error.toString(),
             onRetry: () {
-              ref.read(userProvider.notifier).loadUsers();
+              ref.read(userListProvider.notifier).loadUsers();
             },
           ),
           data: (users) {
@@ -95,12 +95,11 @@ class _AuthPageState extends ConsumerState<AuthPage> {
                             child: ElevatedButton(
                               onPressed: () async {
                                 final notifier = ref.read(
-                                  userProvider.notifier,
+                                  userListProvider.notifier,
                                 );
 
                                 final ok = await notifier.login(user);
                                 if (!ok) return;
-
 
                                 if (!context.mounted) return;
 
@@ -109,15 +108,13 @@ class _AuthPageState extends ConsumerState<AuthPage> {
                                     context.go('/products');
                                     break;
                                   case 'cs1':
-                                    context.go('/cs1');
+                                    context.go('/user');
                                     break;
                                   case 'cs2':
-                                    context.go('/cs2');
+                                    context.go('/user');
                                     break;
                                   default:
-                                    context.go(
-                                      '/products',
-                                    );
+                                    context.go('/products');
                                     break;
                                 }
                               },
