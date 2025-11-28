@@ -102,14 +102,6 @@ class _OrderPageState extends ConsumerState<OrderPage> {
           },
         ),
       ),
-      floatingActionButton: isCustomer
-          ? FloatingActionButton(
-              onPressed: () async {
-                await ref.read(orderProvider.notifier).addSampleOrders();
-              },
-              child: const Icon(Icons.add),
-            )
-          : null,
     );
   }
 
