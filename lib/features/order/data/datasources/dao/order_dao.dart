@@ -8,7 +8,12 @@ part 'order_dao.g.dart';
 class OrderDao extends DatabaseAccessor<AppDatabase> with _$OrderDaoMixin {
   OrderDao(super.db);
 
-  Future<List<OrderTableData>> getAll() => select(orderTable).get();
+  Future<List<OrderTableData>> getAll() =>
+      (select(orderTable)..orderBy([
+            (t) =>
+                OrderingTerm(expression: t.createdAt, mode: OrderingMode.desc),
+          ]))
+          .get();
 
   Future<OrderTableData?> findById(int id) =>
       (select(orderTable)..where((tbl) => tbl.id.equals(id))).getSingleOrNull();
