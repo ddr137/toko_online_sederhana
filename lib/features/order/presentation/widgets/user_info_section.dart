@@ -10,11 +10,9 @@ class UserInfoSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-
     return Card(
       elevation: 0,
-      color: cs.surface,
+      color: context.colorScheme.surface,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Padding(
         padding: const EdgeInsets.all(18),
@@ -25,7 +23,7 @@ class UserInfoSection extends StatelessWidget {
               'Informasi Pengiriman',
               style: context.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w700,
-                color: cs.onSurface,
+                color: context.colorScheme.onSurface,
               ),
             ),
             AppSpacing.md,
@@ -55,10 +53,8 @@ class UserInfoRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
+      padding: const EdgeInsets.symmetric(vertical: AppGaps.sm - 2),
       child: Row(
         crossAxisAlignment: isWrap
             ? CrossAxisAlignment.start
@@ -70,7 +66,7 @@ class UserInfoRow extends StatelessWidget {
               label,
               style: context.textTheme.bodyMedium?.copyWith(
                 fontWeight: FontWeight.w600,
-                color: cs.onSurfaceVariant,
+                color: context.colorScheme.onSurfaceVariant,
               ),
             ),
           ),
@@ -78,7 +74,7 @@ class UserInfoRow extends StatelessWidget {
             child: Text(
               value,
               style: context.textTheme.bodyMedium?.copyWith(
-                color: cs.onSurface,
+                color: context.colorScheme.onSurface,
               ),
             ),
           ),
