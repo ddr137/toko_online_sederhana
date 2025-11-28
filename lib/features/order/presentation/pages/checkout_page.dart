@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toko_online_sederhana/features/order/presentation/providers/order_provider.dart';
+import 'package:toko_online_sederhana/features/order/presentation/widgets/detail_product_section.dart';
+import 'package:toko_online_sederhana/features/order/presentation/widgets/summary_section.dart';
 import 'package:toko_online_sederhana/features/order/presentation/widgets/user_info_section.dart';
-import 'package:toko_online_sederhana/features/order/presentation/widgets/cart_section.dart';
-import 'package:toko_online_sederhana/features/order/presentation/widgets/checkout_summary.dart';
-import 'package:toko_online_sederhana/shared/extensions/context_ext.dart';
 import 'package:toko_online_sederhana/shared/widgets/error_state_widget.dart';
 import 'package:toko_online_sederhana/shared/widgets/loading_widget.dart';
 
@@ -27,16 +26,10 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
   @override
   Widget build(BuildContext context) {
     final checkoutState = ref.watch(checkoutProvider);
-
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Checkout'),
-        elevation: 0,
-        backgroundColor: context.colorScheme.surface,
-        foregroundColor: context.colorScheme.onSurface,
-      ),
+      appBar: AppBar(title: const Text("Checkout")),
       body: checkoutState.when(
-        loading: () => const LoadingWidget(message: 'Memuat data...'),
+        loading: () => const LoadingWidget(message: 'Memuat checkout...'),
         error: (error, stackTrace) => ErrorStateWidget(
           title: 'Terjadi kesalahan',
           message: error.toString(),
@@ -47,16 +40,12 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
         data: (checkout) {
           return Column(
             children: [
-              Expanded(
-                child: ListView(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  children: [
-                    UserInfoSection(user: checkout.user),
-                    CartSection(items: checkout.items),
-                  ],
-                ),
+              UserInfoSection(user: checkout.user),
+              const Divider(),
+              DetailProductSection(items: checkout.items),
+              SummarySection(
+                total: ref.read(checkoutProvider.notifier).getTotal(),
               ),
-              CheckoutSummary(items: checkout.items),
             ],
           );
         },
@@ -64,5 +53,3 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
     );
   }
 }
-
-

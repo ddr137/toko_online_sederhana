@@ -1,35 +1,39 @@
 import 'package:flutter/material.dart';
-import 'package:toko_online_sederhana/shared/extensions/context_ext.dart';
 import 'package:toko_online_sederhana/core/utils/spacing.dart';
+import 'package:toko_online_sederhana/features/user/data/models/user_model.dart';
+import 'package:toko_online_sederhana/shared/extensions/context_ext.dart';
 
 class UserInfoSection extends StatelessWidget {
-  final dynamic user;
+  final UserModel user;
 
-  const UserInfoSection({
-    super.key,
-    required this.user,
-  });
+  const UserInfoSection({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      elevation: 0,
+      color: cs.surface,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(18),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               'Informasi Pengiriman',
               style: context.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w700,
+                color: cs.onSurface,
               ),
             ),
             AppSpacing.md,
-            UserInfoLine(label: 'Nama', value: user.name, context: context),
-            UserInfoLine(label: 'Role', value: user.role, context: context),
-            UserInfoLine(label: 'Telepon', value: user.phone, context: context),
-            UserInfoLine(label: 'Alamat', value: user.address, context: context),
+
+            UserInfoRow(label: 'Nama', value: user.name),
+            UserInfoRow(label: 'Role', value: user.role),
+            UserInfoRow(label: 'Telepon', value: user.phone),
+            UserInfoRow(label: 'Alamat', value: user.address, isWrap: true),
           ],
         ),
       ),
@@ -37,25 +41,48 @@ class UserInfoSection extends StatelessWidget {
   }
 }
 
-class UserInfoLine extends StatelessWidget {
+class UserInfoRow extends StatelessWidget {
   final String label;
   final String value;
-  final BuildContext context;
+  final bool isWrap;
 
-  const UserInfoLine({
+  const UserInfoRow({
     super.key,
     required this.label,
     required this.value,
-    required this.context,
+    this.isWrap = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+
     return Padding(
-      padding: const EdgeInsets.only(bottom: 4),
-      child: Text(
-        '$label: $value',
-        style: context.textTheme.bodyMedium,
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        crossAxisAlignment: isWrap
+            ? CrossAxisAlignment.start
+            : CrossAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: 90,
+            child: Text(
+              label,
+              style: context.textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+                color: cs.onSurfaceVariant,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: context.textTheme.bodyMedium?.copyWith(
+                color: cs.onSurface,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

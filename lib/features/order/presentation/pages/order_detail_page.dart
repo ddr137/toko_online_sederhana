@@ -159,8 +159,8 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
                         ),
                         _buildInfoRow(
                           context,
-                          'Email',
-                          order.customerEmail,
+                          'Role',
+                          order.customerRole,
                         ),
                         _buildInfoRow(
                           context,

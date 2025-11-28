@@ -1267,12 +1267,12 @@ class $OrderTableTable extends OrderTable
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _customerEmailMeta = const VerificationMeta(
-    'customerEmail',
+  static const VerificationMeta _customerRoleMeta = const VerificationMeta(
+    'customerRole',
   );
   @override
-  late final GeneratedColumn<String> customerEmail = GeneratedColumn<String>(
-    'customer_email',
+  late final GeneratedColumn<String> customerRole = GeneratedColumn<String>(
+    'customer_role',
     aliasedName,
     false,
     type: DriftSqlType.string,
@@ -1346,7 +1346,7 @@ class $OrderTableTable extends OrderTable
   List<GeneratedColumn> get $columns => [
     id,
     customerName,
-    customerEmail,
+    customerRole,
     customerPhone,
     shippingAddress,
     totalPrice,
@@ -1380,16 +1380,16 @@ class $OrderTableTable extends OrderTable
     } else if (isInserting) {
       context.missing(_customerNameMeta);
     }
-    if (data.containsKey('customer_email')) {
+    if (data.containsKey('customer_role')) {
       context.handle(
-        _customerEmailMeta,
-        customerEmail.isAcceptableOrUnknown(
-          data['customer_email']!,
-          _customerEmailMeta,
+        _customerRoleMeta,
+        customerRole.isAcceptableOrUnknown(
+          data['customer_role']!,
+          _customerRoleMeta,
         ),
       );
     } else if (isInserting) {
-      context.missing(_customerEmailMeta);
+      context.missing(_customerRoleMeta);
     }
     if (data.containsKey('customer_phone')) {
       context.handle(
@@ -1460,9 +1460,9 @@ class $OrderTableTable extends OrderTable
         DriftSqlType.string,
         data['${effectivePrefix}customer_name'],
       )!,
-      customerEmail: attachedDatabase.typeMapping.read(
+      customerRole: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
-        data['${effectivePrefix}customer_email'],
+        data['${effectivePrefix}customer_role'],
       )!,
       customerPhone: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
@@ -1500,7 +1500,7 @@ class $OrderTableTable extends OrderTable
 class OrderTableData extends DataClass implements Insertable<OrderTableData> {
   final int id;
   final String customerName;
-  final String customerEmail;
+  final String customerRole;
   final String customerPhone;
   final String shippingAddress;
   final int totalPrice;
@@ -1510,7 +1510,7 @@ class OrderTableData extends DataClass implements Insertable<OrderTableData> {
   const OrderTableData({
     required this.id,
     required this.customerName,
-    required this.customerEmail,
+    required this.customerRole,
     required this.customerPhone,
     required this.shippingAddress,
     required this.totalPrice,
@@ -1523,7 +1523,7 @@ class OrderTableData extends DataClass implements Insertable<OrderTableData> {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['customer_name'] = Variable<String>(customerName);
-    map['customer_email'] = Variable<String>(customerEmail);
+    map['customer_role'] = Variable<String>(customerRole);
     map['customer_phone'] = Variable<String>(customerPhone);
     map['shipping_address'] = Variable<String>(shippingAddress);
     map['total_price'] = Variable<int>(totalPrice);
@@ -1539,7 +1539,7 @@ class OrderTableData extends DataClass implements Insertable<OrderTableData> {
     return OrderTableCompanion(
       id: Value(id),
       customerName: Value(customerName),
-      customerEmail: Value(customerEmail),
+      customerRole: Value(customerRole),
       customerPhone: Value(customerPhone),
       shippingAddress: Value(shippingAddress),
       totalPrice: Value(totalPrice),
@@ -1559,7 +1559,7 @@ class OrderTableData extends DataClass implements Insertable<OrderTableData> {
     return OrderTableData(
       id: serializer.fromJson<int>(json['id']),
       customerName: serializer.fromJson<String>(json['customerName']),
-      customerEmail: serializer.fromJson<String>(json['customerEmail']),
+      customerRole: serializer.fromJson<String>(json['customerRole']),
       customerPhone: serializer.fromJson<String>(json['customerPhone']),
       shippingAddress: serializer.fromJson<String>(json['shippingAddress']),
       totalPrice: serializer.fromJson<int>(json['totalPrice']),
@@ -1574,7 +1574,7 @@ class OrderTableData extends DataClass implements Insertable<OrderTableData> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'customerName': serializer.toJson<String>(customerName),
-      'customerEmail': serializer.toJson<String>(customerEmail),
+      'customerRole': serializer.toJson<String>(customerRole),
       'customerPhone': serializer.toJson<String>(customerPhone),
       'shippingAddress': serializer.toJson<String>(shippingAddress),
       'totalPrice': serializer.toJson<int>(totalPrice),
@@ -1587,7 +1587,7 @@ class OrderTableData extends DataClass implements Insertable<OrderTableData> {
   OrderTableData copyWith({
     int? id,
     String? customerName,
-    String? customerEmail,
+    String? customerRole,
     String? customerPhone,
     String? shippingAddress,
     int? totalPrice,
@@ -1597,7 +1597,7 @@ class OrderTableData extends DataClass implements Insertable<OrderTableData> {
   }) => OrderTableData(
     id: id ?? this.id,
     customerName: customerName ?? this.customerName,
-    customerEmail: customerEmail ?? this.customerEmail,
+    customerRole: customerRole ?? this.customerRole,
     customerPhone: customerPhone ?? this.customerPhone,
     shippingAddress: shippingAddress ?? this.shippingAddress,
     totalPrice: totalPrice ?? this.totalPrice,
@@ -1611,9 +1611,9 @@ class OrderTableData extends DataClass implements Insertable<OrderTableData> {
       customerName: data.customerName.present
           ? data.customerName.value
           : this.customerName,
-      customerEmail: data.customerEmail.present
-          ? data.customerEmail.value
-          : this.customerEmail,
+      customerRole: data.customerRole.present
+          ? data.customerRole.value
+          : this.customerRole,
       customerPhone: data.customerPhone.present
           ? data.customerPhone.value
           : this.customerPhone,
@@ -1634,7 +1634,7 @@ class OrderTableData extends DataClass implements Insertable<OrderTableData> {
     return (StringBuffer('OrderTableData(')
           ..write('id: $id, ')
           ..write('customerName: $customerName, ')
-          ..write('customerEmail: $customerEmail, ')
+          ..write('customerRole: $customerRole, ')
           ..write('customerPhone: $customerPhone, ')
           ..write('shippingAddress: $shippingAddress, ')
           ..write('totalPrice: $totalPrice, ')
@@ -1649,7 +1649,7 @@ class OrderTableData extends DataClass implements Insertable<OrderTableData> {
   int get hashCode => Object.hash(
     id,
     customerName,
-    customerEmail,
+    customerRole,
     customerPhone,
     shippingAddress,
     totalPrice,
@@ -1663,7 +1663,7 @@ class OrderTableData extends DataClass implements Insertable<OrderTableData> {
       (other is OrderTableData &&
           other.id == this.id &&
           other.customerName == this.customerName &&
-          other.customerEmail == this.customerEmail &&
+          other.customerRole == this.customerRole &&
           other.customerPhone == this.customerPhone &&
           other.shippingAddress == this.shippingAddress &&
           other.totalPrice == this.totalPrice &&
@@ -1675,7 +1675,7 @@ class OrderTableData extends DataClass implements Insertable<OrderTableData> {
 class OrderTableCompanion extends UpdateCompanion<OrderTableData> {
   final Value<int> id;
   final Value<String> customerName;
-  final Value<String> customerEmail;
+  final Value<String> customerRole;
   final Value<String> customerPhone;
   final Value<String> shippingAddress;
   final Value<int> totalPrice;
@@ -1685,7 +1685,7 @@ class OrderTableCompanion extends UpdateCompanion<OrderTableData> {
   const OrderTableCompanion({
     this.id = const Value.absent(),
     this.customerName = const Value.absent(),
-    this.customerEmail = const Value.absent(),
+    this.customerRole = const Value.absent(),
     this.customerPhone = const Value.absent(),
     this.shippingAddress = const Value.absent(),
     this.totalPrice = const Value.absent(),
@@ -1696,7 +1696,7 @@ class OrderTableCompanion extends UpdateCompanion<OrderTableData> {
   OrderTableCompanion.insert({
     this.id = const Value.absent(),
     required String customerName,
-    required String customerEmail,
+    required String customerRole,
     required String customerPhone,
     required String shippingAddress,
     required int totalPrice,
@@ -1704,7 +1704,7 @@ class OrderTableCompanion extends UpdateCompanion<OrderTableData> {
     required DateTime createdAt,
     this.updatedAt = const Value.absent(),
   }) : customerName = Value(customerName),
-       customerEmail = Value(customerEmail),
+       customerRole = Value(customerRole),
        customerPhone = Value(customerPhone),
        shippingAddress = Value(shippingAddress),
        totalPrice = Value(totalPrice),
@@ -1713,7 +1713,7 @@ class OrderTableCompanion extends UpdateCompanion<OrderTableData> {
   static Insertable<OrderTableData> custom({
     Expression<int>? id,
     Expression<String>? customerName,
-    Expression<String>? customerEmail,
+    Expression<String>? customerRole,
     Expression<String>? customerPhone,
     Expression<String>? shippingAddress,
     Expression<int>? totalPrice,
@@ -1724,7 +1724,7 @@ class OrderTableCompanion extends UpdateCompanion<OrderTableData> {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (customerName != null) 'customer_name': customerName,
-      if (customerEmail != null) 'customer_email': customerEmail,
+      if (customerRole != null) 'customer_role': customerRole,
       if (customerPhone != null) 'customer_phone': customerPhone,
       if (shippingAddress != null) 'shipping_address': shippingAddress,
       if (totalPrice != null) 'total_price': totalPrice,
@@ -1737,7 +1737,7 @@ class OrderTableCompanion extends UpdateCompanion<OrderTableData> {
   OrderTableCompanion copyWith({
     Value<int>? id,
     Value<String>? customerName,
-    Value<String>? customerEmail,
+    Value<String>? customerRole,
     Value<String>? customerPhone,
     Value<String>? shippingAddress,
     Value<int>? totalPrice,
@@ -1748,7 +1748,7 @@ class OrderTableCompanion extends UpdateCompanion<OrderTableData> {
     return OrderTableCompanion(
       id: id ?? this.id,
       customerName: customerName ?? this.customerName,
-      customerEmail: customerEmail ?? this.customerEmail,
+      customerRole: customerRole ?? this.customerRole,
       customerPhone: customerPhone ?? this.customerPhone,
       shippingAddress: shippingAddress ?? this.shippingAddress,
       totalPrice: totalPrice ?? this.totalPrice,
@@ -1767,8 +1767,8 @@ class OrderTableCompanion extends UpdateCompanion<OrderTableData> {
     if (customerName.present) {
       map['customer_name'] = Variable<String>(customerName.value);
     }
-    if (customerEmail.present) {
-      map['customer_email'] = Variable<String>(customerEmail.value);
+    if (customerRole.present) {
+      map['customer_role'] = Variable<String>(customerRole.value);
     }
     if (customerPhone.present) {
       map['customer_phone'] = Variable<String>(customerPhone.value);
@@ -1796,7 +1796,7 @@ class OrderTableCompanion extends UpdateCompanion<OrderTableData> {
     return (StringBuffer('OrderTableCompanion(')
           ..write('id: $id, ')
           ..write('customerName: $customerName, ')
-          ..write('customerEmail: $customerEmail, ')
+          ..write('customerRole: $customerRole, ')
           ..write('customerPhone: $customerPhone, ')
           ..write('shippingAddress: $shippingAddress, ')
           ..write('totalPrice: $totalPrice, ')
@@ -2493,7 +2493,7 @@ typedef $$OrderTableTableCreateCompanionBuilder =
     OrderTableCompanion Function({
       Value<int> id,
       required String customerName,
-      required String customerEmail,
+      required String customerRole,
       required String customerPhone,
       required String shippingAddress,
       required int totalPrice,
@@ -2505,7 +2505,7 @@ typedef $$OrderTableTableUpdateCompanionBuilder =
     OrderTableCompanion Function({
       Value<int> id,
       Value<String> customerName,
-      Value<String> customerEmail,
+      Value<String> customerRole,
       Value<String> customerPhone,
       Value<String> shippingAddress,
       Value<int> totalPrice,
@@ -2533,8 +2533,8 @@ class $$OrderTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get customerEmail => $composableBuilder(
-    column: $table.customerEmail,
+  ColumnFilters<String> get customerRole => $composableBuilder(
+    column: $table.customerRole,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -2588,8 +2588,8 @@ class $$OrderTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get customerEmail => $composableBuilder(
-    column: $table.customerEmail,
+  ColumnOrderings<String> get customerRole => $composableBuilder(
+    column: $table.customerRole,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -2641,8 +2641,8 @@ class $$OrderTableTableAnnotationComposer
     builder: (column) => column,
   );
 
-  GeneratedColumn<String> get customerEmail => $composableBuilder(
-    column: $table.customerEmail,
+  GeneratedColumn<String> get customerRole => $composableBuilder(
+    column: $table.customerRole,
     builder: (column) => column,
   );
 
@@ -2704,7 +2704,7 @@ class $$OrderTableTableTableManager
               ({
                 Value<int> id = const Value.absent(),
                 Value<String> customerName = const Value.absent(),
-                Value<String> customerEmail = const Value.absent(),
+                Value<String> customerRole = const Value.absent(),
                 Value<String> customerPhone = const Value.absent(),
                 Value<String> shippingAddress = const Value.absent(),
                 Value<int> totalPrice = const Value.absent(),
@@ -2714,7 +2714,7 @@ class $$OrderTableTableTableManager
               }) => OrderTableCompanion(
                 id: id,
                 customerName: customerName,
-                customerEmail: customerEmail,
+                customerRole: customerRole,
                 customerPhone: customerPhone,
                 shippingAddress: shippingAddress,
                 totalPrice: totalPrice,
@@ -2726,7 +2726,7 @@ class $$OrderTableTableTableManager
               ({
                 Value<int> id = const Value.absent(),
                 required String customerName,
-                required String customerEmail,
+                required String customerRole,
                 required String customerPhone,
                 required String shippingAddress,
                 required int totalPrice,
@@ -2736,7 +2736,7 @@ class $$OrderTableTableTableManager
               }) => OrderTableCompanion.insert(
                 id: id,
                 customerName: customerName,
-                customerEmail: customerEmail,
+                customerRole: customerRole,
                 customerPhone: customerPhone,
                 shippingAddress: shippingAddress,
                 totalPrice: totalPrice,

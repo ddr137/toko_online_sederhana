@@ -9,23 +9,18 @@ class OrderItem extends StatelessWidget {
   final VoidCallback? onTap;
   final VoidCallback? onDelete;
 
-  const OrderItem({
-    super.key,
-    required this.order,
-    this.onTap,
-    this.onDelete,
-  });
+  const OrderItem({super.key, required this.order, this.onTap, this.onDelete});
 
   Color _getStatusColor(BuildContext context, String status) {
     switch (status.toLowerCase()) {
-      case 'pending':
-        return context.colorScheme.error;
-      case 'processing':
+      case 'SEDANG_DIPROSES':
+        return context.colorScheme.tertiary.withValues(alpha: 0.5);
+      case 'DIKIRIM':
         return context.colorScheme.tertiary;
-      case 'completed':
+      case 'SELESAI':
         return context.colorScheme.primary;
-      case 'cancelled':
-        return context.colorScheme.outline;
+      case 'DIBATALKAN':
+        return context.colorScheme.error;
       default:
         return context.colorScheme.outline;
     }
@@ -72,7 +67,7 @@ class OrderItem extends StatelessWidget {
                         ),
                         AppSpacing.xs,
                         Text(
-                          order.customerEmail,
+                          order.customerRole,
                           style: context.textTheme.bodySmall?.copyWith(
                             color: context.colorScheme.onSurfaceVariant,
                           ),
@@ -86,7 +81,10 @@ class OrderItem extends StatelessWidget {
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: _getStatusColor(context, order.status).withOpacity(0.1),
+                      color: _getStatusColor(
+                        context,
+                        order.status,
+                      ).withOpacity(0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
@@ -156,32 +154,6 @@ class OrderItem extends StatelessWidget {
                   ),
                 ],
               ),
-              if (onDelete != null) ...[
-                AppSpacing.sm,
-                PopupMenuButton<String>(
-                  onSelected: (value) {
-                    if (value == 'delete') {
-                      onDelete!();
-                    }
-                  },
-                  itemBuilder: (context) => [
-                    PopupMenuItem(
-                      value: 'delete',
-                      child: Row(
-                        children: [
-                          Icon(Icons.delete, color: context.colorScheme.error),
-                          AppSpacing.sm,
-                          const Text('Hapus'),
-                        ],
-                      ),
-                    ),
-                  ],
-                  child: Icon(
-                    Icons.more_vert,
-                    color: context.colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ],
             ],
           ),
         ),

@@ -3,7 +3,7 @@ import 'package:drift/drift.dart';
 class OrderTable extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get customerName => text()();
-  TextColumn get customerEmail => text()();
+  TextColumn get customerRole => text()();
   TextColumn get customerPhone => text()();
   TextColumn get shippingAddress => text()();
   IntColumn get totalPrice => integer()();

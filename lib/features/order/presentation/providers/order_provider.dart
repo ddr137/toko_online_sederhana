@@ -69,34 +69,53 @@ class OrderNotifier extends _$OrderNotifier {
     }
   }
 
+  Future<void> updateOrderStatus(int orderId, String newStatus) async {
+    try {
+      // Get the current order
+      final orders = state.value ?? [];
+      final order = orders.firstWhere((o) => o.id == orderId);
+
+      // Update the order status
+      final updatedOrder = order.copyWith(
+        status: newStatus,
+        updatedAt: DateTime.now(),
+      );
+
+      await _repo.saveOrder(updatedOrder);
+      await loadOrders();
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
+  }
+
   Future<void> addSampleOrders() async {
     try {
       final sampleOrders = [
         OrderModel(
           customerName: 'John Doe',
-          customerEmail: 'john@example.com',
+          customerRole: 'customer',
           customerPhone: '+62812345678',
           shippingAddress: 'Jl. Sudirman No. 123, Jakarta',
           totalPrice: 25000000,
-          status: 'pending',
+          status: 'SEDANG_DIPROSES',
           createdAt: DateTime.now(),
         ),
         OrderModel(
           customerName: 'Jane Smith',
-          customerEmail: 'jane@example.com',
+          customerRole: 'customer',
           customerPhone: '+62887654321',
           shippingAddress: 'Jl. Thamrin No. 456, Jakarta',
           totalPrice: 1200000,
-          status: 'completed',
+          status: 'DIKIRIM',
           createdAt: DateTime.now().subtract(const Duration(days: 1)),
         ),
         OrderModel(
           customerName: 'Bob Johnson',
-          customerEmail: 'bob@example.com',
+          customerRole: 'customer',
           customerPhone: '+62811223344',
           shippingAddress: 'Jl. Gatot Subroto No. 789, Jakarta',
           totalPrice: 750000,
-          status: 'processing',
+          status: 'SELESAI',
           createdAt: DateTime.now().subtract(const Duration(days: 2)),
         ),
       ];
@@ -157,20 +176,33 @@ class CheckoutNotifier extends _$CheckoutNotifier {
     return const AsyncValue.loading();
   }
 
-  Future<Object> loadCheckout() async {
+  Future<void> loadCheckout() async {
     state = const AsyncValue.loading();
+
     try {
       final user = await _userRepo.getUser();
       final cartItems = await _cartRepo.getCartItems();
       final products = await _productRepo.getProducts();
 
-      final data = CheckoutData(user: user, items: cartItems);
+      final combined = cartItems.map((cart) {
+        final product = products.firstWhere((p) => p.id == cart.productId);
 
-      state = AsyncValue.data(data);
-      return data;
+        return CheckoutItem(product: product, cart: cart);
+      }).toList();
+
+      state = AsyncValue.data(CheckoutData(user: user, items: combined));
     } catch (e, st) {
       state = AsyncValue.error(e, st);
-      return AsyncValue.error(e, st);
     }
+  }
+
+  int getTotal() {
+    final data = state.value;
+    if (data == null) return 0;
+
+    return data.items.fold(
+      0,
+      (sum, item) => sum + (item.product.price * item.cart.quantity),
+    );
   }
 }

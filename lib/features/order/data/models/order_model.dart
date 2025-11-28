@@ -5,7 +5,7 @@ import 'package:toko_online_sederhana/core/db/app_database.dart';
 class OrderModel extends Equatable {
   final int? id;
   final String customerName;
-  final String customerEmail;
+  final String customerRole;
   final String customerPhone;
   final String shippingAddress;
   final int totalPrice;
@@ -16,7 +16,7 @@ class OrderModel extends Equatable {
   const OrderModel({
     this.id,
     required this.customerName,
-    required this.customerEmail,
+    required this.customerRole,
     required this.customerPhone,
     required this.shippingAddress,
     required this.totalPrice,
@@ -29,7 +29,7 @@ class OrderModel extends Equatable {
     return OrderModel(
       id: row.id,
       customerName: row.customerName,
-      customerEmail: row.customerEmail,
+      customerRole: row.customerRole,
       customerPhone: row.customerPhone,
       shippingAddress: row.shippingAddress,
       totalPrice: row.totalPrice,
@@ -43,7 +43,7 @@ class OrderModel extends Equatable {
     return OrderTableCompanion(
       id: id == null ? const Value.absent() : Value(id!),
       customerName: Value(customerName),
-      customerEmail: Value(customerEmail),
+      customerRole: Value(customerRole),
       customerPhone: Value(customerPhone),
       shippingAddress: Value(shippingAddress),
       totalPrice: Value(totalPrice),
@@ -56,7 +56,7 @@ class OrderModel extends Equatable {
   OrderModel copyWith({
     int? id,
     String? customerName,
-    String? customerEmail,
+    String? customerRole,
     String? customerPhone,
     String? shippingAddress,
     int? totalPrice,
@@ -67,7 +67,7 @@ class OrderModel extends Equatable {
     return OrderModel(
       id: id ?? this.id,
       customerName: customerName ?? this.customerName,
-      customerEmail: customerEmail ?? this.customerEmail,
+      customerRole: customerRole ?? this.customerRole,
       customerPhone: customerPhone ?? this.customerPhone,
       shippingAddress: shippingAddress ?? this.shippingAddress,
       totalPrice: totalPrice ?? this.totalPrice,
@@ -81,7 +81,7 @@ class OrderModel extends Equatable {
   List<Object?> get props => [
         id,
         customerName,
-        customerEmail,
+        customerRole,
         customerPhone,
         shippingAddress,
         totalPrice,
