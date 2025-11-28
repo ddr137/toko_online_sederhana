@@ -60,12 +60,15 @@ class OrderNotifier extends _$OrderNotifier {
     }
   }
 
-  Future<void> addOrder(OrderModel order) async {
+  Future<bool> addOrder(OrderModel order) async {
     try {
       await _repo.createOrder(order);
-      await loadOrders();
+      final updated = await _repo.getOrders();
+      state = AsyncValue.data(updated);
+      return true;
     } catch (e, st) {
       state = AsyncValue.error(e, st);
+      return false;
     }
   }
 

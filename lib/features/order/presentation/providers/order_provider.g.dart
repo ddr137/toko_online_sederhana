@@ -131,7 +131,7 @@ final class OrderNotifierProvider
   }
 }
 
-String _$orderNotifierHash() => r'f37f13fadce869f9179c66da6e5844c92298ce58';
+String _$orderNotifierHash() => r'629d49c529084a3e438859d46fff2141e8ba1632';
 
 abstract class _$OrderNotifier extends $Notifier<AsyncValue<List<OrderModel>>> {
   AsyncValue<List<OrderModel>> build();
@@ -290,7 +290,7 @@ final class CheckoutNotifierProvider
   }
 }
 
-String _$checkoutNotifierHash() => r'bc3990f7ed22165fca3db93b95a750f1cfc97901';
+String _$checkoutNotifierHash() => r'92e99af87e29a166826ec23056244ce67f9fce87';
 
 abstract class _$CheckoutNotifier extends $Notifier<AsyncValue<CheckoutData>> {
   AsyncValue<CheckoutData> build();
