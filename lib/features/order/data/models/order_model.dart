@@ -10,6 +10,7 @@ class OrderModel extends Equatable {
   final String shippingAddress;
   final int totalPrice;
   final String status;
+  final String? paymentProofPath;
   final DateTime createdAt;
   final DateTime? updatedAt;
 
@@ -21,6 +22,7 @@ class OrderModel extends Equatable {
     required this.shippingAddress,
     required this.totalPrice,
     required this.status,
+    this.paymentProofPath,
     required this.createdAt,
     this.updatedAt,
   });
@@ -34,6 +36,7 @@ class OrderModel extends Equatable {
       shippingAddress: row.shippingAddress,
       totalPrice: row.totalPrice,
       status: row.status,
+      paymentProofPath: row.paymentProofPath,
       createdAt: row.createdAt,
       updatedAt: row.updatedAt,
     );
@@ -48,6 +51,7 @@ class OrderModel extends Equatable {
       shippingAddress: Value(shippingAddress),
       totalPrice: Value(totalPrice),
       status: Value(status),
+      paymentProofPath: Value(paymentProofPath),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
     );
@@ -61,6 +65,7 @@ class OrderModel extends Equatable {
     String? shippingAddress,
     int? totalPrice,
     String? status,
+    String? paymentProofPath,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -72,6 +77,7 @@ class OrderModel extends Equatable {
       shippingAddress: shippingAddress ?? this.shippingAddress,
       totalPrice: totalPrice ?? this.totalPrice,
       status: status ?? this.status,
+      paymentProofPath: paymentProofPath ?? this.paymentProofPath,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -79,14 +85,15 @@ class OrderModel extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        customerName,
-        customerRole,
-        customerPhone,
-        shippingAddress,
-        totalPrice,
-        status,
-        createdAt,
-        updatedAt,
-      ];
+    id,
+    customerName,
+    customerRole,
+    customerPhone,
+    shippingAddress,
+    totalPrice,
+    status,
+    paymentProofPath,
+    createdAt,
+    updatedAt,
+  ];
 }

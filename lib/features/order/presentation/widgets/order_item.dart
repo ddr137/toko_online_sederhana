@@ -14,13 +14,17 @@ class OrderItem extends StatelessWidget {
   Color _getStatusColor(BuildContext context, String status) {
     switch (status.toLowerCase()) {
       case 'SEDANG_DIPROSES':
-        return context.colorScheme.tertiary.withValues(alpha: 0.5);
-      case 'DIKIRIM':
         return context.colorScheme.tertiary;
+      case 'DIKIRIM':
+        return context.colorScheme.secondary;
       case 'SELESAI':
         return context.colorScheme.primary;
       case 'DIBATALKAN':
         return context.colorScheme.error;
+      case 'MENUNGGU_UPLOAD_BUKTI':
+      case 'MENUNGGU_VERIFIKASI_CS1':
+      case 'MENUNGGU_VERIFIKASI_CS2':
+        return context.colorScheme.onSurface.withValues(alpha: 0.6);
       default:
         return context.colorScheme.outline;
     }
@@ -84,7 +88,7 @@ class OrderItem extends StatelessWidget {
                       color: _getStatusColor(
                         context,
                         order.status,
-                      ).withOpacity(0.1),
+                      ).withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(

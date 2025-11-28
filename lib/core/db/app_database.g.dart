@@ -1320,6 +1320,17 @@ class $OrderTableTable extends OrderTable
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _paymentProofPathMeta = const VerificationMeta(
+    'paymentProofPath',
+  );
+  @override
+  late final GeneratedColumn<String> paymentProofPath = GeneratedColumn<String>(
+    'payment_proof_path',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -1351,6 +1362,7 @@ class $OrderTableTable extends OrderTable
     shippingAddress,
     totalPrice,
     status,
+    paymentProofPath,
     createdAt,
     updatedAt,
   ];
@@ -1429,6 +1441,15 @@ class $OrderTableTable extends OrderTable
     } else if (isInserting) {
       context.missing(_statusMeta);
     }
+    if (data.containsKey('payment_proof_path')) {
+      context.handle(
+        _paymentProofPathMeta,
+        paymentProofPath.isAcceptableOrUnknown(
+          data['payment_proof_path']!,
+          _paymentProofPathMeta,
+        ),
+      );
+    }
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
@@ -1480,6 +1501,10 @@ class $OrderTableTable extends OrderTable
         DriftSqlType.string,
         data['${effectivePrefix}status'],
       )!,
+      paymentProofPath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}payment_proof_path'],
+      ),
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -1505,6 +1530,7 @@ class OrderTableData extends DataClass implements Insertable<OrderTableData> {
   final String shippingAddress;
   final int totalPrice;
   final String status;
+  final String? paymentProofPath;
   final DateTime createdAt;
   final DateTime? updatedAt;
   const OrderTableData({
@@ -1515,6 +1541,7 @@ class OrderTableData extends DataClass implements Insertable<OrderTableData> {
     required this.shippingAddress,
     required this.totalPrice,
     required this.status,
+    this.paymentProofPath,
     required this.createdAt,
     this.updatedAt,
   });
@@ -1528,6 +1555,9 @@ class OrderTableData extends DataClass implements Insertable<OrderTableData> {
     map['shipping_address'] = Variable<String>(shippingAddress);
     map['total_price'] = Variable<int>(totalPrice);
     map['status'] = Variable<String>(status);
+    if (!nullToAbsent || paymentProofPath != null) {
+      map['payment_proof_path'] = Variable<String>(paymentProofPath);
+    }
     map['created_at'] = Variable<DateTime>(createdAt);
     if (!nullToAbsent || updatedAt != null) {
       map['updated_at'] = Variable<DateTime>(updatedAt);
@@ -1544,6 +1574,9 @@ class OrderTableData extends DataClass implements Insertable<OrderTableData> {
       shippingAddress: Value(shippingAddress),
       totalPrice: Value(totalPrice),
       status: Value(status),
+      paymentProofPath: paymentProofPath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(paymentProofPath),
       createdAt: Value(createdAt),
       updatedAt: updatedAt == null && nullToAbsent
           ? const Value.absent()
@@ -1564,6 +1597,7 @@ class OrderTableData extends DataClass implements Insertable<OrderTableData> {
       shippingAddress: serializer.fromJson<String>(json['shippingAddress']),
       totalPrice: serializer.fromJson<int>(json['totalPrice']),
       status: serializer.fromJson<String>(json['status']),
+      paymentProofPath: serializer.fromJson<String?>(json['paymentProofPath']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime?>(json['updatedAt']),
     );
@@ -1579,6 +1613,7 @@ class OrderTableData extends DataClass implements Insertable<OrderTableData> {
       'shippingAddress': serializer.toJson<String>(shippingAddress),
       'totalPrice': serializer.toJson<int>(totalPrice),
       'status': serializer.toJson<String>(status),
+      'paymentProofPath': serializer.toJson<String?>(paymentProofPath),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime?>(updatedAt),
     };
@@ -1592,6 +1627,7 @@ class OrderTableData extends DataClass implements Insertable<OrderTableData> {
     String? shippingAddress,
     int? totalPrice,
     String? status,
+    Value<String?> paymentProofPath = const Value.absent(),
     DateTime? createdAt,
     Value<DateTime?> updatedAt = const Value.absent(),
   }) => OrderTableData(
@@ -1602,6 +1638,9 @@ class OrderTableData extends DataClass implements Insertable<OrderTableData> {
     shippingAddress: shippingAddress ?? this.shippingAddress,
     totalPrice: totalPrice ?? this.totalPrice,
     status: status ?? this.status,
+    paymentProofPath: paymentProofPath.present
+        ? paymentProofPath.value
+        : this.paymentProofPath,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
   );
@@ -1624,6 +1663,9 @@ class OrderTableData extends DataClass implements Insertable<OrderTableData> {
           ? data.totalPrice.value
           : this.totalPrice,
       status: data.status.present ? data.status.value : this.status,
+      paymentProofPath: data.paymentProofPath.present
+          ? data.paymentProofPath.value
+          : this.paymentProofPath,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
@@ -1639,6 +1681,7 @@ class OrderTableData extends DataClass implements Insertable<OrderTableData> {
           ..write('shippingAddress: $shippingAddress, ')
           ..write('totalPrice: $totalPrice, ')
           ..write('status: $status, ')
+          ..write('paymentProofPath: $paymentProofPath, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -1654,6 +1697,7 @@ class OrderTableData extends DataClass implements Insertable<OrderTableData> {
     shippingAddress,
     totalPrice,
     status,
+    paymentProofPath,
     createdAt,
     updatedAt,
   );
@@ -1668,6 +1712,7 @@ class OrderTableData extends DataClass implements Insertable<OrderTableData> {
           other.shippingAddress == this.shippingAddress &&
           other.totalPrice == this.totalPrice &&
           other.status == this.status &&
+          other.paymentProofPath == this.paymentProofPath &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
 }
@@ -1680,6 +1725,7 @@ class OrderTableCompanion extends UpdateCompanion<OrderTableData> {
   final Value<String> shippingAddress;
   final Value<int> totalPrice;
   final Value<String> status;
+  final Value<String?> paymentProofPath;
   final Value<DateTime> createdAt;
   final Value<DateTime?> updatedAt;
   const OrderTableCompanion({
@@ -1690,6 +1736,7 @@ class OrderTableCompanion extends UpdateCompanion<OrderTableData> {
     this.shippingAddress = const Value.absent(),
     this.totalPrice = const Value.absent(),
     this.status = const Value.absent(),
+    this.paymentProofPath = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
   });
@@ -1701,6 +1748,7 @@ class OrderTableCompanion extends UpdateCompanion<OrderTableData> {
     required String shippingAddress,
     required int totalPrice,
     required String status,
+    this.paymentProofPath = const Value.absent(),
     required DateTime createdAt,
     this.updatedAt = const Value.absent(),
   }) : customerName = Value(customerName),
@@ -1718,6 +1766,7 @@ class OrderTableCompanion extends UpdateCompanion<OrderTableData> {
     Expression<String>? shippingAddress,
     Expression<int>? totalPrice,
     Expression<String>? status,
+    Expression<String>? paymentProofPath,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
   }) {
@@ -1729,6 +1778,7 @@ class OrderTableCompanion extends UpdateCompanion<OrderTableData> {
       if (shippingAddress != null) 'shipping_address': shippingAddress,
       if (totalPrice != null) 'total_price': totalPrice,
       if (status != null) 'status': status,
+      if (paymentProofPath != null) 'payment_proof_path': paymentProofPath,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
     });
@@ -1742,6 +1792,7 @@ class OrderTableCompanion extends UpdateCompanion<OrderTableData> {
     Value<String>? shippingAddress,
     Value<int>? totalPrice,
     Value<String>? status,
+    Value<String?>? paymentProofPath,
     Value<DateTime>? createdAt,
     Value<DateTime?>? updatedAt,
   }) {
@@ -1753,6 +1804,7 @@ class OrderTableCompanion extends UpdateCompanion<OrderTableData> {
       shippingAddress: shippingAddress ?? this.shippingAddress,
       totalPrice: totalPrice ?? this.totalPrice,
       status: status ?? this.status,
+      paymentProofPath: paymentProofPath ?? this.paymentProofPath,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -1782,6 +1834,9 @@ class OrderTableCompanion extends UpdateCompanion<OrderTableData> {
     if (status.present) {
       map['status'] = Variable<String>(status.value);
     }
+    if (paymentProofPath.present) {
+      map['payment_proof_path'] = Variable<String>(paymentProofPath.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -1801,6 +1856,7 @@ class OrderTableCompanion extends UpdateCompanion<OrderTableData> {
           ..write('shippingAddress: $shippingAddress, ')
           ..write('totalPrice: $totalPrice, ')
           ..write('status: $status, ')
+          ..write('paymentProofPath: $paymentProofPath, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -2498,6 +2554,7 @@ typedef $$OrderTableTableCreateCompanionBuilder =
       required String shippingAddress,
       required int totalPrice,
       required String status,
+      Value<String?> paymentProofPath,
       required DateTime createdAt,
       Value<DateTime?> updatedAt,
     });
@@ -2510,6 +2567,7 @@ typedef $$OrderTableTableUpdateCompanionBuilder =
       Value<String> shippingAddress,
       Value<int> totalPrice,
       Value<String> status,
+      Value<String?> paymentProofPath,
       Value<DateTime> createdAt,
       Value<DateTime?> updatedAt,
     });
@@ -2555,6 +2613,11 @@ class $$OrderTableTableFilterComposer
 
   ColumnFilters<String> get status => $composableBuilder(
     column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get paymentProofPath => $composableBuilder(
+    column: $table.paymentProofPath,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -2613,6 +2676,11 @@ class $$OrderTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get paymentProofPath => $composableBuilder(
+    column: $table.paymentProofPath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -2664,6 +2732,11 @@ class $$OrderTableTableAnnotationComposer
   GeneratedColumn<String> get status =>
       $composableBuilder(column: $table.status, builder: (column) => column);
 
+  GeneratedColumn<String> get paymentProofPath => $composableBuilder(
+    column: $table.paymentProofPath,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
 
@@ -2709,6 +2782,7 @@ class $$OrderTableTableTableManager
                 Value<String> shippingAddress = const Value.absent(),
                 Value<int> totalPrice = const Value.absent(),
                 Value<String> status = const Value.absent(),
+                Value<String?> paymentProofPath = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime?> updatedAt = const Value.absent(),
               }) => OrderTableCompanion(
@@ -2719,6 +2793,7 @@ class $$OrderTableTableTableManager
                 shippingAddress: shippingAddress,
                 totalPrice: totalPrice,
                 status: status,
+                paymentProofPath: paymentProofPath,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
               ),
@@ -2731,6 +2806,7 @@ class $$OrderTableTableTableManager
                 required String shippingAddress,
                 required int totalPrice,
                 required String status,
+                Value<String?> paymentProofPath = const Value.absent(),
                 required DateTime createdAt,
                 Value<DateTime?> updatedAt = const Value.absent(),
               }) => OrderTableCompanion.insert(
@@ -2741,6 +2817,7 @@ class $$OrderTableTableTableManager
                 shippingAddress: shippingAddress,
                 totalPrice: totalPrice,
                 status: status,
+                paymentProofPath: paymentProofPath,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
               ),

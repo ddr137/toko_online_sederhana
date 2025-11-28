@@ -70,11 +70,7 @@ class _OrderPageState extends ConsumerState<OrderPage> {
                 return OrderItem(
                   order: order,
                   onTap: () {
-                    if (order.status == 'MENUNGGU_UPLOAD_BUKTI') {
-                      context.push('/proof/${order.id}');
-                    } else {
-                      context.push('/order-detail/${order.id}');
-                    }
+                    context.push('/order-detail/${order.id}');
                   },
                   onDelete: () {
                     _showDeleteConfirmation(context, order);

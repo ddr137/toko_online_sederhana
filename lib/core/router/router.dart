@@ -6,7 +6,6 @@ import 'package:toko_online_sederhana/features/cart/presentation/pages/cart_page
 import 'package:toko_online_sederhana/features/order/presentation/pages/checkout_page.dart';
 import 'package:toko_online_sederhana/features/order/presentation/pages/order_detail_page.dart';
 import 'package:toko_online_sederhana/features/order/presentation/pages/order_page.dart';
-import 'package:toko_online_sederhana/features/order/presentation/pages/proof_page.dart';
 import 'package:toko_online_sederhana/features/product/presentation/pages/product_detail_page.dart';
 import 'package:toko_online_sederhana/features/product/presentation/pages/product_page.dart';
 import 'package:toko_online_sederhana/features/user/presentation/pages/auth_page.dart';

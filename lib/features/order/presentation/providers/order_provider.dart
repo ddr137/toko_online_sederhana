@@ -73,26 +73,26 @@ class OrderNotifier extends _$OrderNotifier {
     }
   }
 
-  Future<bool> addOrder(OrderModel order) async {
+  Future<int?> addOrder(OrderModel order) async {
     try {
-      await _repo.createOrder(order);
+      final orderId = await _repo.createOrder(order);
 
       // Check if ref is still mounted before updating state
-      if (!ref.mounted) return true;
+      if (!ref.mounted) return orderId;
 
       final updated = await _repo.getOrders();
 
       // Check again after async operation
-      if (!ref.mounted) return true;
+      if (!ref.mounted) return orderId;
 
       state = AsyncValue.data(updated);
-      return true;
+      return orderId;
     } catch (e, st) {
       // Only update state if still mounted
       if (ref.mounted) {
         state = AsyncValue.error(e, st);
       }
-      return false;
+      return null;
     }
   }
 
@@ -215,6 +215,38 @@ class OrderDetailNotifier extends _$OrderDetailNotifier {
           state = AsyncValue.error(e, st);
         }
       }
+    }
+  }
+
+  Future<bool> uploadPaymentProof(String imagePath) async {
+    final order = state.asData?.value;
+    if (order == null) return false;
+
+    try {
+      // Determine next verification status based on current customer role
+      String nextStatus = order.customerRole == 'customer'
+          ? 'MENUNGGU_VERIFIKASI_CS1'
+          : 'MENUNGGU_VERIFIKASI_CS2';
+
+      await _repo.saveOrder(
+        order.copyWith(
+          paymentProofPath: imagePath,
+          status: nextStatus,
+          updatedAt: DateTime.now(),
+        ),
+      );
+
+      // Check if ref is still mounted before updating state
+      if (!ref.mounted) return true;
+
+      await loadOrderDetail();
+      return true;
+    } catch (e, st) {
+      // Only update state if still mounted
+      if (ref.mounted) {
+        state = AsyncValue.error(e, st);
+      }
+      return false;
     }
   }
 }

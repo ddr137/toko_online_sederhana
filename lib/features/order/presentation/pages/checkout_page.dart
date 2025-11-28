@@ -47,10 +47,10 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
         createdAt: DateTime.now(),
       );
 
-      final success = await ref.read(orderProvider.notifier).addOrder(order);
+      final orderId = await ref.read(orderProvider.notifier).addOrder(order);
 
-      if (success && mounted) {
-        context.push('/order-detail/${order.id}');
+      if (orderId != null && mounted) {
+        context.push('/order-detail/$orderId');
       }
     } finally {
       if (mounted) {

@@ -8,6 +8,7 @@ class OrderTable extends Table {
   TextColumn get shippingAddress => text()();
   IntColumn get totalPrice => integer()();
   TextColumn get status => text()();
+  TextColumn get paymentProofPath => text().nullable()();
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime().nullable()();
 }
