@@ -31,7 +31,7 @@ class _OrderPageState extends ConsumerState<OrderPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Pesanan'),
+        title: const Text('Riwayat Pesanan'),
         elevation: 0,
         backgroundColor: context.colorScheme.surface,
         foregroundColor: context.colorScheme.onSurface,

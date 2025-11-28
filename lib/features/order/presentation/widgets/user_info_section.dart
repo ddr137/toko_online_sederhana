@@ -12,8 +12,13 @@ class UserInfoSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 0,
-      color: context.colorScheme.surface,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      color: context.colorScheme.surfaceContainerHighest.withAlpha(64),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(
+          color: context.colorScheme.outlineVariant.withAlpha(64),
+        ),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(18),
         child: Column(
@@ -21,7 +26,7 @@ class UserInfoSection extends StatelessWidget {
           children: [
             Text(
               'Informasi Pengiriman',
-              style: context.textTheme.titleLarge?.copyWith(
+              style: context.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w700,
                 color: context.colorScheme.onSurface,
               ),

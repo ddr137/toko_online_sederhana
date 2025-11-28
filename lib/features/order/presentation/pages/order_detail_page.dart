@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:toko_online_sederhana/core/enums/snack_bar_status_enum.dart';
+import 'package:toko_online_sederhana/core/utils/spacing.dart';
 import 'package:toko_online_sederhana/features/order/data/models/order_model.dart';
 import 'package:toko_online_sederhana/features/order/presentation/providers/order_provider.dart';
 import 'package:toko_online_sederhana/features/order/presentation/services/invoice_service.dart';
@@ -171,7 +172,9 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Detail Pesanan'),
+        centerTitle: true,
         elevation: 0,
+        scrolledUnderElevation: 0,
         backgroundColor: context.colorScheme.surface,
         foregroundColor: context.colorScheme.onSurface,
       ),
@@ -209,57 +212,84 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
               children: [
                 // Status Card
                 Card(
+                  elevation: 0,
+                  color: context.colorScheme.surfaceContainerHighest.withAlpha(
+                    64,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    side: BorderSide(
+                      color: context.colorScheme.outlineVariant.withAlpha(64),
+                    ),
+                  ),
                   child: Padding(
                     padding: const EdgeInsets.all(16),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Status Pesanan',
-                              style: context.textTheme.titleMedium,
+                        Text(
+                          'Status Pesanan',
+                          style: context.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w700,
+                            color: context.colorScheme.onSurface,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+
+                        // BADGE PINDAH KE SINI
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 6,
                             ),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 4,
-                              ),
-                              decoration: BoxDecoration(
+                            decoration: BoxDecoration(
+                              color: _getStatusColor(
+                                context,
+                                order.status,
+                              ).withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
                                 color: _getStatusColor(
                                   context,
                                   order.status,
-                                ).withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Text(
-                                _getStatusText(order.status),
-                                style: context.textTheme.bodySmall?.copyWith(
-                                  color: _getStatusColor(context, order.status),
-                                  fontWeight: FontWeight.w600,
-                                ),
+                                ).withOpacity(0.2),
                               ),
                             ),
-                          ],
+                            child: Text(
+                              _getStatusText(order.status),
+                              style: context.textTheme.bodySmall?.copyWith(
+                                color: _getStatusColor(context, order.status),
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
                         ),
+
                         const SizedBox(height: 16),
+
                         _buildInfoRow(context, 'ID Pesanan', '#${order.id}'),
                         _buildInfoRow(
                           context,
                           'Tanggal',
-                          '${order.createdAt.day}/${order.createdAt.month}/${order.createdAt.year} ${order.createdAt.hour}:${order.createdAt.minute.toString().padLeft(2, '0')}',
+                          '${order.createdAt.day}/${order.createdAt.month}/${order.createdAt.year} '
+                              '${order.createdAt.hour}:${order.createdAt.minute.toString().padLeft(2, '0')}',
                         ),
                       ],
                     ),
                   ),
                 ),
-                const SizedBox(height: 16),
+
+                AppSpacing.md,
 
                 // Bank Transfer Information (only show if waiting for upload)
                 if (canUpload) ...[
                   Card(
-                    color: context.colorScheme.primaryContainer,
+                    elevation: 0,
+                    color: context.colorScheme.primaryContainer.withOpacity(
+                      0.4,
+                    ),
                     child: Padding(
                       padding: const EdgeInsets.all(16),
                       child: Column(
@@ -275,7 +305,7 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
                               Text(
                                 'Informasi Transfer',
                                 style: context.textTheme.titleMedium?.copyWith(
-                                  color: context.colorScheme.onPrimaryContainer,
+                                  color: context.colorScheme.onSurface,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -307,6 +337,16 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
                 // Payment Proof Section
                 if (canUpload || hasUploadedProof) ...[
                   Card(
+                    color: context.colorScheme.surfaceContainerHighest
+                        .withAlpha(64),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      side: BorderSide(
+                        color: context.colorScheme.outlineVariant.withAlpha(
+                          64,
+                        ),
+                      ),
+                    ),
                     child: Padding(
                       padding: const EdgeInsets.all(16),
                       child: Column(
@@ -314,12 +354,15 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
                         children: [
                           Text(
                             'Bukti Transfer',
-                            style: context.textTheme.titleMedium,
+                            style: context.textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.w700,
+                              color: context.colorScheme.onSurface,
+                            ),
                           ),
                           const SizedBox(height: 16),
                           if (hasUploadedProof) ...[
                             ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.circular(12),
                               child: Image.file(
                                 File(order.paymentProofPath!),
                                 width: double.infinity,
@@ -353,12 +396,23 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
                                 },
                               ),
                             ),
-                            const SizedBox(height: 8),
-                            Text(
-                              'Bukti transfer telah diupload',
-                              style: context.textTheme.bodySmall?.copyWith(
-                                color: context.colorScheme.primary,
-                              ),
+                            const SizedBox(height: 12),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.check_circle,
+                                  size: 16,
+                                  color: context.colorScheme.primary,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  'Bukti transfer telah diupload',
+                                  style: context.textTheme.bodySmall?.copyWith(
+                                    color: context.colorScheme.primary,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
                             ),
                           ] else ...[
                             Container(
@@ -366,23 +420,28 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
                               padding: const EdgeInsets.all(24),
                               decoration: BoxDecoration(
                                 border: Border.all(
-                                  color: context.colorScheme.outline,
+                                  color: context.colorScheme.outlineVariant,
                                   style: BorderStyle.solid,
-                                  width: 2,
+                                  width: 1.5,
                                 ),
-                                borderRadius: BorderRadius.circular(8),
+                                borderRadius: BorderRadius.circular(12),
                               ),
                               child: Column(
                                 children: [
                                   Icon(
-                                    Icons.upload_file,
+                                    Icons.upload_file_outlined,
                                     size: 48,
                                     color: context.colorScheme.primary,
                                   ),
                                   const SizedBox(height: 8),
                                   Text(
                                     'Belum ada bukti transfer',
-                                    style: context.textTheme.bodyMedium,
+                                    style: context.textTheme.bodyMedium
+                                        ?.copyWith(
+                                          color: context
+                                              .colorScheme
+                                              .onSurfaceVariant,
+                                        ),
                                   ),
                                 ],
                               ),
@@ -410,14 +469,28 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
 
                 // Customer Information
                 Card(
+                  elevation: 0,
+                  color: context.colorScheme.surfaceContainerHighest
+                      .withOpacity(0.3),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    side: BorderSide(
+                      color: context.colorScheme.outlineVariant.withOpacity(
+                        0.5,
+                      ),
+                    ),
+                  ),
                   child: Padding(
                     padding: const EdgeInsets.all(16),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Text(
                           'Informasi Pelanggan',
-                          style: context.textTheme.titleMedium,
+                          style: context.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w700,
+                            color: context.colorScheme.onSurface,
+                          ),
                         ),
                         const SizedBox(height: 16),
                         _buildInfoRow(context, 'Nama', order.customerName),
@@ -436,6 +509,17 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
 
                 // Payment Summary
                 Card(
+                  elevation: 0,
+                  color: context.colorScheme.surfaceContainerHighest
+                      .withOpacity(0.3),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    side: BorderSide(
+                      color: context.colorScheme.outlineVariant.withOpacity(
+                        0.5,
+                      ),
+                    ),
+                  ),
                   child: Padding(
                     padding: const EdgeInsets.all(16),
                     child: Column(
@@ -443,7 +527,10 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
                       children: [
                         Text(
                           'Ringkasan Pembayaran',
-                          style: context.textTheme.titleMedium,
+                          style: context.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w700,
+                            color: context.colorScheme.onSurface,
+                          ),
                         ),
                         const SizedBox(height: 16),
                         Row(
@@ -451,7 +538,9 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
                           children: [
                             Text(
                               'Total Harga',
-                              style: context.textTheme.bodyLarge,
+                              style: context.textTheme.bodyLarge?.copyWith(
+                                color: context.colorScheme.onSurfaceVariant,
+                              ),
                             ),
                             Text(
                               order.totalPrice.currencyFormatRp,
@@ -536,16 +625,14 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
                 Text(
                   label,
                   style: context.textTheme.bodySmall?.copyWith(
-                    color: context.colorScheme.onPrimaryContainer.withOpacity(
-                      0.7,
-                    ),
+                    color: context.colorScheme.onSurfaceVariant,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   displayValue,
                   style: context.textTheme.bodyMedium?.copyWith(
-                    color: context.colorScheme.onPrimaryContainer,
+                    color: context.colorScheme.onSurface,
                     fontWeight: FontWeight.w600,
                   ),
                 ),

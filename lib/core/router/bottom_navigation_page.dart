@@ -25,9 +25,9 @@ class BottomNav extends ConsumerWidget {
             destinations: const [
               NavigationDestination(
                 icon: Icon(Icons.receipt_long),
-                label: 'Orders',
+                label: 'Pesanan',
               ),
-              NavigationDestination(icon: Icon(Icons.person), label: 'Profile'),
+              NavigationDestination(icon: Icon(Icons.person), label: 'Profil'),
             ],
             selectedIndex: navigationShell.currentIndex >= 2
                 ? navigationShell.currentIndex - 2
@@ -56,11 +56,11 @@ class BottomNav extends ConsumerWidget {
       destinations: const [
         NavigationDestination(
           icon: Icon(Icons.restaurant_menu),
-          label: 'Product',
+          label: 'Produk',
         ),
-        NavigationDestination(icon: Icon(Icons.shopping_cart), label: 'Cart'),
-        NavigationDestination(icon: Icon(Icons.receipt_long), label: 'Orders'),
-        NavigationDestination(icon: Icon(Icons.person), label: 'Profile'),
+        NavigationDestination(icon: Icon(Icons.shopping_cart), label: 'Keranjang'),
+        NavigationDestination(icon: Icon(Icons.receipt_long), label: 'Pesanan'),
+        NavigationDestination(icon: Icon(Icons.person), label: 'Profil'),
       ],
       selectedIndex: navigationShell.currentIndex,
       onDestinationSelected: (int index) {

@@ -50,7 +50,7 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
       final orderId = await ref.read(orderProvider.notifier).addOrder(order);
 
       if (orderId != null && mounted) {
-        context.push('/order-detail/$orderId');
+        context.pushReplacement('/order-detail/$orderId');
       }
     } finally {
       if (mounted) {
@@ -66,7 +66,12 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
     final checkoutState = ref.watch(checkoutProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Checkout")),
+      appBar: AppBar(
+        title: const Text("Checkout"),
+        centerTitle: true,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+      ),
       body: checkoutState.when(
         loading: () => const LoadingWidget(message: 'Memuat checkout...'),
         error: (error, stackTrace) => ErrorStateWidget(
@@ -78,21 +83,66 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
         ),
         data: (checkout) {
           return Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              UserInfoSection(user: checkout.user),
-              const Divider(),
-              DetailProductSection(items: checkout.items),
-              SummarySection(
-                total: ref.read(checkoutProvider.notifier).getTotal(),
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // User Info Section
+                      UserInfoSection(user: checkout.user),
+                      const SizedBox(height: 16),
+
+                      // Product Details Section
+                      Card(
+                        elevation: 0,
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          side: BorderSide(
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.outlineVariant.withOpacity(0.5),
+                          ),
+                        ),
+                        child: DetailProductSection(items: checkout.items),
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Summary Section
+                      SummarySection(
+                        total: ref.read(checkoutProvider.notifier).getTotal(),
+                      ),
+                      const SizedBox(height: 24),
+                    ],
+                  ),
+                ),
               ),
-              Padding(
+
+              // Bottom Action Bar
+              Container(
+                width: double.infinity,
                 padding: const EdgeInsets.all(16),
-                child: BaseButton(
-                  width: double.infinity,
-                  isLoading: _isProcessingOrder,
-                  onPressed: () => _handlePayment(checkout),
-                  text: 'Bayar Sekarang',
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surface,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, -5),
+                    ),
+                  ],
+                ),
+                child: SafeArea(
+                  child: BaseButton(
+                    width: double.infinity,
+                    isLoading: _isProcessingOrder,
+                    onPressed: () => _handlePayment(checkout),
+                    text: 'Bayar Sekarang',
+                  ),
                 ),
               ),
             ],
