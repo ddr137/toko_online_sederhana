@@ -65,9 +65,8 @@ class _OrderPageState extends ConsumerState<OrderPage> {
               displayedOrders = orders
                   .where(
                     (o) =>
-                        o.status == 'MENUNGGU_VERIFIKASI_CS2' ||
-                        o.status == 'SEDANG_DIPROSES' ||
-                        o.status == 'DIKIRIM',
+                        o.status != 'MENUNGGU_UPLOAD_BUKTI' &&
+                        o.status != 'MENUNGGU_VERIFIKASI_CS1',
                   )
                   .toList();
             }
