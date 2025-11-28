@@ -7,6 +7,7 @@ extension ShowSnackBar on BuildContext {
     String message, {
     Duration duration = const Duration(seconds: 3),
     SnackBarStatus status = SnackBarStatus.info,
+    SnackBarAction? action,
   }) {
     late Color bg;
     late Color fg;
@@ -36,6 +37,7 @@ extension ShowSnackBar on BuildContext {
         showCloseIcon: true,
         behavior: SnackBarBehavior.floating,
         backgroundColor: bg,
+        action: action,
         content: Text(
           message,
           style: textTheme.bodyMedium?.copyWith(color: fg),

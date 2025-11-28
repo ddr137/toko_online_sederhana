@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:toko_online_sederhana/core/enums/snack_bar_status_enum.dart';
 import 'package:toko_online_sederhana/core/utils/spacing.dart';
 import 'package:toko_online_sederhana/features/product/data/models/product_model.dart';
@@ -59,6 +60,13 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> {
         context.showSnackBar(
           'Berhasil ditambahkan ke keranjang',
           status: SnackBarStatus.success,
+          action: SnackBarAction(
+            label: 'Lihat Keranjang',
+            textColor: Colors.white,
+            onPressed: () {
+              context.goNamed('cart');
+            },
+          ),
         );
       }
     } catch (e) {
