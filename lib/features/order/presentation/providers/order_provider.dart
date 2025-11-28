@@ -218,6 +218,8 @@ class OrderDetailNotifier extends _$OrderDetailNotifier {
         if (!ref.mounted) return;
 
         await loadOrderDetail();
+        // Refresh the order list to reflect changes
+        await ref.read(orderProvider.notifier).loadOrders();
       } catch (e, st) {
         // Only update state if still mounted
         if (ref.mounted) {
@@ -249,6 +251,8 @@ class OrderDetailNotifier extends _$OrderDetailNotifier {
       if (!ref.mounted) return true;
 
       await loadOrderDetail();
+      // Refresh the order list to reflect changes
+      await ref.read(orderProvider.notifier).loadOrders();
       return true;
     } catch (e, st) {
       // Only update state if still mounted
