@@ -124,12 +124,10 @@ class ProductDetailNotifier extends _$ProductDetailNotifier {
   }
 
   void onBuyPressed() {
-    // implement your buy logic
     print("Buy pressed for $productId");
   }
 
   void onAddToCartPressed() {
-    // implement your cart logic
     print("Add to cart pressed for $productId");
   }
 }

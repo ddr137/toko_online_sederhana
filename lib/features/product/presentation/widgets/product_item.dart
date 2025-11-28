@@ -28,7 +28,6 @@ class ProductItem extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(
             children: [
-              // Product Image
               ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: Container(
@@ -59,7 +58,6 @@ class ProductItem extends StatelessWidget {
               ),
               AppSpacing.md,
 
-              // Product Info
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,7 +99,6 @@ class ProductItem extends StatelessWidget {
                 ),
               ),
 
-              // Actions
               if (onDelete != null) ...[
                 AppSpacing.sm,
                 PopupMenuButton<String>(

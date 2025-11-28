@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:toko_online_sederhana/core/router/bottom_navigation_page.dart';
 import 'package:toko_online_sederhana/features/cart/presentation/pages/cart_page.dart';
@@ -7,6 +8,7 @@ import 'package:toko_online_sederhana/features/product/presentation/pages/produc
 import 'package:toko_online_sederhana/features/product/presentation/pages/product_page.dart';
 import 'package:toko_online_sederhana/features/user/presentation/pages/auth_page.dart';
 import 'package:toko_online_sederhana/features/user/presentation/pages/user_page.dart';
+import 'package:toko_online_sederhana/features/user/presentation/providers/user_provider.dart';
 
 import 'custom_route_observer.dart';
 
@@ -16,7 +18,18 @@ final GoRouter _goRouter = GoRouter(
   navigatorKey: rootNavigatorKey,
   observers: [CustomRouteObserver()],
   debugLogDiagnostics: true,
-  initialLocation: '/auth',
+  initialLocation: '/products',
+  redirect: (context, state) async {
+    final container = ProviderScope.containerOf(context);
+    final user = await container.read(userRepositoryProvider).isLoggedIn();
+
+    final loggingIn = state.matchedLocation == '/auth';
+
+    if (!user) return loggingIn ? null : '/auth';
+    if (user && loggingIn) return '/products';
+
+    return null;
+  },
   routes: [
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {

@@ -15,27 +15,13 @@ class AuthPage extends ConsumerStatefulWidget {
 }
 
 class _AuthPageState extends ConsumerState<AuthPage> {
-
-  Future<void> _checkLogin() async {
-    final userState = ref.read(userProvider.notifier);
-
-    final loggedIn = await userState.isLoggedIn();
-
-    if (!mounted) return;
-
-    if (loggedIn) {
-      context.go('/products');
-    } else {
-      await userState.addSampleUsers();
-      await userState.loadUsers();
-    }
-  }
-
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _checkLogin();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final userState = ref.read(userProvider.notifier);
+      await userState.addSampleUsers();
+      await userState.loadUsers();
     });
   }
 
@@ -115,6 +101,7 @@ class _AuthPageState extends ConsumerState<AuthPage> {
                                 final ok = await notifier.login(user);
                                 if (!ok) return;
 
+
                                 if (!context.mounted) return;
 
                                 switch (user.role.toLowerCase()) {
@@ -128,7 +115,9 @@ class _AuthPageState extends ConsumerState<AuthPage> {
                                     context.go('/cs2');
                                     break;
                                   default:
-                                    context.go('/products');
+                                    context.go(
+                                      '/products',
+                                    );
                                     break;
                                 }
                               },
