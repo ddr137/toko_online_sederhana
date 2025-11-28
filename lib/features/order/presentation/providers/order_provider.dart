@@ -74,25 +74,34 @@ class OrderNotifier extends _$OrderNotifier {
   }
 
   Future<int?> addOrder(OrderModel order, List<CheckoutItem> items) async {
+    int? orderId;
     try {
-      final orderId = await _repo.createOrder(order, items);
+      orderId = await _repo.createOrder(order, items);
 
-      // Check if ref is still mounted before updating state
-      if (!ref.mounted) return orderId;
+      // Try to clear cart and update state, but don't fail the operation if these fail
+      try {
+        final cartRepo = ref.read(cartRepositoryProvider);
+        await cartRepo.clearCart();
+        // Explicitly reload cart to reflect empty state
+        await ref.read(cartProvider.notifier).loadCartItems(showLoading: false);
 
-      final updated = await _repo.getOrders();
+        if (ref.mounted) {
+          final updated = await _repo.getOrders();
+          if (ref.mounted) {
+            state = AsyncValue.data(updated);
+          }
+        }
+      } catch (e) {
+        // Log error but don't rethrow, as order is already created
+        print('Error updating state after order creation: $e');
+      }
 
-      // Check again after async operation
-      if (!ref.mounted) return orderId;
-
-      state = AsyncValue.data(updated);
       return orderId;
     } catch (e, st) {
-      // Only update state if still mounted
       if (ref.mounted) {
         state = AsyncValue.error(e, st);
       }
-      return null;
+      return orderId; // Return orderId if it was created before error
     }
   }
 

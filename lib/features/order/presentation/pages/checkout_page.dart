@@ -36,6 +36,13 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
       _isProcessingOrder = true;
     });
 
+    // Show loading dialog
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(child: CircularProgressIndicator()),
+    );
+
     try {
       final order = OrderModel(
         customerName: checkout.user.name,
@@ -51,8 +58,31 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
           .read(orderProvider.notifier)
           .addOrder(order, checkout.items);
 
-      if (orderId != null && mounted) {
-        context.pushReplacement('/order-detail/$orderId');
+      if (mounted) {
+        // Dismiss loading dialog
+        Navigator.of(context).pop();
+
+        if (orderId != null) {
+          // Use go instead of pushReplacement for better reliability with GoRouter
+          context.pushReplacement('/order-detail/$orderId');
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                'Gagal membuat pesanan: ID pesanan tidak ditemukan',
+              ),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        // Dismiss loading dialog
+        Navigator.of(context).pop();
+
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Gagal membuat pesanan: $e')));
       }
     } finally {
       if (mounted) {
