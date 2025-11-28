@@ -3,13 +3,26 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:toko_online_sederhana/features/user/presentation/providers/user_provider.dart';
 
-class BottomNav extends ConsumerWidget {
+class BottomNav extends ConsumerStatefulWidget {
   const BottomNav({super.key, required this.navigationShell});
 
   final StatefulNavigationShell navigationShell;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<BottomNav> createState() => _BottomNavState();
+}
+
+class _BottomNavState extends ConsumerState<BottomNav> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(userDetailProvider.notifier).loadUserDetail();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final userState = ref.watch(userDetailProvider);
 
     return userState.when(
@@ -29,15 +42,15 @@ class BottomNav extends ConsumerWidget {
               ),
               NavigationDestination(icon: Icon(Icons.person), label: 'Profil'),
             ],
-            selectedIndex: navigationShell.currentIndex >= 2
-                ? navigationShell.currentIndex - 2
+            selectedIndex: widget.navigationShell.currentIndex >= 2
+                ? widget.navigationShell.currentIndex - 2
                 : 0,
             onDestinationSelected: (int index) {
               // Map to actual branch index (Orders=2, Profile=3)
               final actualIndex = index + 2;
-              navigationShell.goBranch(
+              widget.navigationShell.goBranch(
                 actualIndex,
-                initialLocation: actualIndex == navigationShell.currentIndex,
+                initialLocation: actualIndex == widget.navigationShell.currentIndex,
               );
             },
           );
@@ -55,18 +68,18 @@ class BottomNav extends ConsumerWidget {
     return NavigationBar(
       destinations: const [
         NavigationDestination(
-          icon: Icon(Icons.restaurant_menu),
+          icon: Icon(Icons.dashboard),
           label: 'Produk',
         ),
         NavigationDestination(icon: Icon(Icons.shopping_cart), label: 'Keranjang'),
         NavigationDestination(icon: Icon(Icons.receipt_long), label: 'Pesanan'),
         NavigationDestination(icon: Icon(Icons.person), label: 'Profil'),
       ],
-      selectedIndex: navigationShell.currentIndex,
+      selectedIndex: widget.navigationShell.currentIndex,
       onDestinationSelected: (int index) {
-        navigationShell.goBranch(
+        widget.navigationShell.goBranch(
           index,
-          initialLocation: index == navigationShell.currentIndex,
+          initialLocation: index == widget.navigationShell.currentIndex,
         );
       },
     );

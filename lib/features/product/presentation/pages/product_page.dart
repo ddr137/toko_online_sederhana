@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:toko_online_sederhana/features/product/data/models/product_model.dart';
 import 'package:toko_online_sederhana/features/product/presentation/providers/product_provider.dart';
 import 'package:toko_online_sederhana/features/product/presentation/widgets/product_item.dart';
+import 'package:toko_online_sederhana/features/user/presentation/providers/user_provider.dart';
 import 'package:toko_online_sederhana/shared/extensions/context_ext.dart';
 import 'package:toko_online_sederhana/shared/widgets/empty_state_widget.dart';
 import 'package:toko_online_sederhana/shared/widgets/error_state_widget.dart';
@@ -28,6 +29,9 @@ class _ProductPageState extends ConsumerState<ProductPage> {
   @override
   Widget build(BuildContext context) {
     final productsState = ref.watch(productProvider);
+
+    final userState = ref.watch(userDetailProvider);
+    final isCustomer = userState.value?.role == 'customer';
 
     return Scaffold(
       appBar: AppBar(
@@ -81,12 +85,14 @@ class _ProductPageState extends ConsumerState<ProductPage> {
           },
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          await ref.read(productProvider.notifier).addSampleProducts();
-        },
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: isCustomer
+          ? FloatingActionButton(
+              onPressed: () async {
+                await ref.read(productProvider.notifier).addSampleProducts();
+              },
+              child: const Icon(Icons.add),
+            )
+          : null,
     );
   }
 
@@ -106,7 +112,9 @@ class _ProductPageState extends ConsumerState<ProductPage> {
               context.pop();
               ref.read(productProvider.notifier).deleteProduct(product.id!);
             },
-            style: TextButton.styleFrom(foregroundColor: context.colorScheme.error),
+            style: TextButton.styleFrom(
+              foregroundColor: context.colorScheme.error,
+            ),
             child: const Text('Hapus'),
           ),
         ],

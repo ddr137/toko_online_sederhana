@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:toko_online_sederhana/features/order/data/models/order_model.dart';
 import 'package:toko_online_sederhana/features/order/presentation/providers/order_provider.dart';
 import 'package:toko_online_sederhana/features/order/presentation/widgets/order_item.dart';
+import 'package:toko_online_sederhana/features/user/presentation/providers/user_provider.dart';
 import 'package:toko_online_sederhana/shared/extensions/context_ext.dart';
 import 'package:toko_online_sederhana/shared/widgets/empty_state_widget.dart';
 import 'package:toko_online_sederhana/shared/widgets/error_state_widget.dart';
@@ -28,6 +29,9 @@ class _OrderPageState extends ConsumerState<OrderPage> {
   @override
   Widget build(BuildContext context) {
     final ordersState = ref.watch(orderProvider);
+
+    final userState = ref.watch(userDetailProvider);
+    final isCustomer = userState.value?.role == 'customer';
 
     return Scaffold(
       appBar: AppBar(
@@ -81,12 +85,14 @@ class _OrderPageState extends ConsumerState<OrderPage> {
           },
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          await ref.read(orderProvider.notifier).addSampleOrders();
-        },
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: isCustomer
+          ? FloatingActionButton(
+              onPressed: () async {
+                await ref.read(orderProvider.notifier).addSampleOrders();
+              },
+              child: const Icon(Icons.add),
+            )
+          : null,
     );
   }
 
@@ -95,7 +101,9 @@ class _OrderPageState extends ConsumerState<OrderPage> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Hapus Pesanan'),
-        content: Text('Apakah Anda yakin ingin menghapus pesanan "${order.customerName}"?'),
+        content: Text(
+          'Apakah Anda yakin ingin menghapus pesanan "${order.customerName}"?',
+        ),
         actions: [
           TextButton(
             onPressed: () => context.pop(),
@@ -106,7 +114,9 @@ class _OrderPageState extends ConsumerState<OrderPage> {
               context.pop();
               ref.read(orderProvider.notifier).deleteOrder(order.id!);
             },
-            style: TextButton.styleFrom(foregroundColor: context.colorScheme.error),
+            style: TextButton.styleFrom(
+              foregroundColor: context.colorScheme.error,
+            ),
             child: const Text('Hapus'),
           ),
         ],
