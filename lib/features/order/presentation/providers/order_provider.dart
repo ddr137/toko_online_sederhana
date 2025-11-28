@@ -16,7 +16,7 @@ part 'order_provider.g.dart';
 @Riverpod(keepAlive: true)
 OrderLocalDataSource orderLocalDataSource(Ref ref) {
   final database = ref.read(appDatabaseProvider);
-  return OrderLocalDataSourceImpl(database.orderDao);
+  return OrderLocalDataSourceImpl(database.orderDao, database.orderItemDao);
 }
 
 @Riverpod(keepAlive: true)
@@ -73,9 +73,9 @@ class OrderNotifier extends _$OrderNotifier {
     }
   }
 
-  Future<int?> addOrder(OrderModel order) async {
+  Future<int?> addOrder(OrderModel order, List<CheckoutItem> items) async {
     try {
-      final orderId = await _repo.createOrder(order);
+      final orderId = await _repo.createOrder(order, items);
 
       // Check if ref is still mounted before updating state
       if (!ref.mounted) return orderId;
@@ -155,7 +155,7 @@ class OrderNotifier extends _$OrderNotifier {
       ];
 
       for (final order in sampleOrders) {
-        await _repo.createOrder(order);
+        await _repo.createOrder(order, []);
       }
 
       // Check if ref is still mounted before updating state

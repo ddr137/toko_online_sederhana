@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:equatable/equatable.dart';
 import 'package:toko_online_sederhana/core/db/app_database.dart';
+import 'package:toko_online_sederhana/features/order/data/models/order_item_model.dart';
 
 class OrderModel extends Equatable {
   final int? id;
@@ -13,6 +14,7 @@ class OrderModel extends Equatable {
   final String? paymentProofPath;
   final DateTime createdAt;
   final DateTime? updatedAt;
+  final List<OrderItemModel>? items;
 
   const OrderModel({
     this.id,
@@ -25,9 +27,13 @@ class OrderModel extends Equatable {
     this.paymentProofPath,
     required this.createdAt,
     this.updatedAt,
+    this.items,
   });
 
-  factory OrderModel.fromDrift(OrderTableData row) {
+  factory OrderModel.fromDrift(
+    OrderTableData row, {
+    List<OrderItemModel>? items,
+  }) {
     return OrderModel(
       id: row.id,
       customerName: row.customerName,
@@ -39,6 +45,7 @@ class OrderModel extends Equatable {
       paymentProofPath: row.paymentProofPath,
       createdAt: row.createdAt,
       updatedAt: row.updatedAt,
+      items: items,
     );
   }
 
@@ -68,6 +75,7 @@ class OrderModel extends Equatable {
     String? paymentProofPath,
     DateTime? createdAt,
     DateTime? updatedAt,
+    List<OrderItemModel>? items,
   }) {
     return OrderModel(
       id: id ?? this.id,
@@ -80,6 +88,7 @@ class OrderModel extends Equatable {
       paymentProofPath: paymentProofPath ?? this.paymentProofPath,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      items: items ?? this.items,
     );
   }
 
@@ -95,5 +104,6 @@ class OrderModel extends Equatable {
     paymentProofPath,
     createdAt,
     updatedAt,
+    items,
   ];
 }

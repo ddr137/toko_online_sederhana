@@ -55,7 +55,7 @@ final class OrderLocalDataSourceProvider
 }
 
 String _$orderLocalDataSourceHash() =>
-    r'03e39437587de4cbe8436b55602553e8b072867a';
+    r'5530fd1a359ca9192920339ff272d23b2ae2512b';
 
 @ProviderFor(orderRepository)
 const orderRepositoryProvider = OrderRepositoryProvider._();
@@ -131,7 +131,7 @@ final class OrderNotifierProvider
   }
 }
 
-String _$orderNotifierHash() => r'd97d66c5002411b198462c673c09275b02006b01';
+String _$orderNotifierHash() => r'93ae49b597231664aeeccb12213103d3ca439f80';
 
 abstract class _$OrderNotifier extends $Notifier<AsyncValue<List<OrderModel>>> {
   AsyncValue<List<OrderModel>> build();

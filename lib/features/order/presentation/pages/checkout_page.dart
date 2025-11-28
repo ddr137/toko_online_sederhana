@@ -47,7 +47,9 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
         createdAt: DateTime.now(),
       );
 
-      final orderId = await ref.read(orderProvider.notifier).addOrder(order);
+      final orderId = await ref
+          .read(orderProvider.notifier)
+          .addOrder(order, checkout.items);
 
       if (orderId != null && mounted) {
         context.pushReplacement('/order-detail/$orderId');

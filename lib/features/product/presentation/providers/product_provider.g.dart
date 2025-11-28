@@ -138,7 +138,7 @@ final class ProductNotifierProvider
   }
 }
 
-String _$productNotifierHash() => r'becfe309acd7f3c069fbf0839d6e28b1dd032c37';
+String _$productNotifierHash() => r'd109152ec39da3cf5bdace069fa2ec7dcf3d983c';
 
 abstract class _$ProductNotifier
     extends $Notifier<AsyncValue<List<ProductModel>>> {
@@ -219,7 +219,7 @@ final class ProductDetailNotifierProvider
 }
 
 String _$productDetailNotifierHash() =>
-    r'28368caea5c59bf0902d323d62d7228a406b2e5d';
+    r'4093f18fb700d683d76f4fcefcb822e327e4f452';
 
 final class ProductDetailNotifierFamily extends $Family
     with

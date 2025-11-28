@@ -340,9 +340,7 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                       side: BorderSide(
-                        color: context.colorScheme.outlineVariant.withAlpha(
-                          64,
-                        ),
+                        color: context.colorScheme.outlineVariant.withAlpha(64),
                       ),
                     ),
                     child: Padding(
@@ -465,6 +463,93 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
                   const SizedBox(height: 16),
                 ],
 
+                // Item Details Section
+                if (order.items != null && order.items!.isNotEmpty) ...[
+                  Card(
+                    elevation: 0,
+                    color: context.colorScheme.surfaceContainerHighest
+                        .withOpacity(0.3),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      side: BorderSide(
+                        color: context.colorScheme.outlineVariant.withOpacity(
+                          0.5,
+                        ),
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Text(
+                            'Detail Barang',
+                            style: context.textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.w700,
+                              color: context.colorScheme.onSurface,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          ListView.separated(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: order.items!.length,
+                            separatorBuilder: (context, index) =>
+                                const Divider(height: 24),
+                            itemBuilder: (context, index) {
+                              final item = order.items![index];
+                              return Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // Product Details
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          item.productName,
+                                          style: context.textTheme.bodyMedium
+                                              ?.copyWith(
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          '${item.quantity} x ${item.price.currencyFormatRp}',
+                                          style: context.textTheme.bodySmall
+                                              ?.copyWith(
+                                                color: context
+                                                    .colorScheme
+                                                    .onSurfaceVariant,
+                                              ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  // Total Price for Item
+                                  Text(
+                                    (item.quantity * item.price)
+                                        .currencyFormatRp,
+                                    style: context.textTheme.bodyMedium
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color: context.colorScheme.primary,
+                                        ),
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                ],
+
                 // Customer Information
                 Card(
                   elevation: 0,
@@ -484,7 +569,7 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Text(
-                          'Informasi Pelanggan',
+                          'Data pembeli',
                           style: context.textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.w700,
                             color: context.colorScheme.onSurface,
