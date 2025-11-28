@@ -1,5 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:toko_online_sederhana/core/di/providers.dart';
+import 'package:toko_online_sederhana/features/cart/data/models/cart_model.dart';
+import 'package:toko_online_sederhana/features/cart/presentation/providers/cart_provider.dart';
 import 'package:toko_online_sederhana/features/product/data/datasources/product_local_datasource.dart';
 import 'package:toko_online_sederhana/features/product/data/models/product_model.dart';
 import 'package:toko_online_sederhana/features/product/data/repositories/product_repository.dart';
@@ -127,7 +129,16 @@ class ProductDetailNotifier extends _$ProductDetailNotifier {
     print("Buy pressed for $productId");
   }
 
-  void onAddToCartPressed() {
-    print("Add to cart pressed for $productId");
+  Future<void> onAddToCartPressed() async {
+    final product = state.asData?.value;
+    if (product != null) {
+      final cartItem = CartModel(
+        productId: product.id!,
+        quantity: 1,
+        createdAt: DateTime.now(),
+      );
+
+      await ref.read(cartProvider.notifier).addCartItem(cartItem);
+    }
   }
 }

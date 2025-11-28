@@ -10,10 +10,12 @@ import '../../features/product/data/datasources/dao/product_dao.dart';
 import '../../features/product/data/datasources/table/product_table.dart';
 import '../../features/user/data/datasources/dao/user_dao.dart';
 import '../../features/user/data/datasources/table/user_table.dart';
+import '../../features/cart/data/datasources/dao/cart_dao.dart';
+import '../../features/cart/data/datasources/table/cart_table.dart';
 
 part 'app_database.g.dart';
 
-@DriftDatabase(tables: [ProductTable, UserTable], daos: [ProductDao, UserDao])
+@DriftDatabase(tables: [ProductTable, UserTable, CartTable], daos: [ProductDao, UserDao, CartDao])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
