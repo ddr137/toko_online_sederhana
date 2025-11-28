@@ -9,6 +9,7 @@ import 'package:toko_online_sederhana/core/utils/spacing.dart';
 import 'package:toko_online_sederhana/features/order/data/models/order_model.dart';
 import 'package:toko_online_sederhana/features/order/presentation/providers/order_provider.dart';
 import 'package:toko_online_sederhana/features/order/presentation/services/invoice_service.dart';
+import 'package:toko_online_sederhana/features/user/presentation/providers/user_provider.dart';
 import 'package:toko_online_sederhana/shared/extensions/context_ext.dart';
 import 'package:toko_online_sederhana/shared/extensions/copy_to_clipboard_ext.dart';
 import 'package:toko_online_sederhana/shared/extensions/currency_ext.dart';
@@ -168,8 +169,12 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
   @override
   Widget build(BuildContext context) {
     final orderDetailState = ref.watch(orderDetailProvider(widget.orderId));
+    final order = orderDetailState.asData?.value;
+    final userState = ref.watch(userDetailProvider);
+    final isCs1 = userState.value?.role == 'cs1';
 
     return Scaffold(
+      bottomNavigationBar: _buildBottomBar(context, order, isCs1),
       appBar: AppBar(
         title: const Text('Detail Pesanan'),
         centerTitle: true,
@@ -666,6 +671,109 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget? _buildBottomBar(BuildContext context, OrderModel? order, bool isCs1) {
+    if (order == null || !isCs1 || order.status != 'MENUNGGU_VERIFIKASI_CS1') {
+      return null;
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: context.colorScheme.surface,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, -5),
+          ),
+        ],
+      ),
+      child: SafeArea(
+        child: Row(
+          children: [
+            Expanded(
+              child: OutlinedButton(
+                onPressed: () => _handleCancel(context, order),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: context.colorScheme.error,
+                  side: BorderSide(color: context.colorScheme.error),
+                ),
+                child: const Text('Batalkan'),
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: FilledButton(
+                onPressed: () => _handleConfirm(context, order),
+                style: FilledButton.styleFrom(
+                  backgroundColor: context.colorScheme.primary,
+                ),
+                child: const Text('Konfirmasi'),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _handleConfirm(BuildContext context, OrderModel order) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Konfirmasi Pesanan'),
+        content: Text(
+          'Apakah Anda yakin ingin mengkonfirmasi pesanan "${order.customerName}"?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => context.pop(),
+            child: const Text('Batal'),
+          ),
+          FilledButton(
+            onPressed: () {
+              context.pop();
+              ref
+                  .read(orderDetailProvider(widget.orderId).notifier)
+                  .updateOrderStatus('MENUNGGU_VERIFIKASI_CS2');
+            },
+            child: const Text('Konfirmasi'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _handleCancel(BuildContext context, OrderModel order) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Batalkan Pesanan'),
+        content: Text(
+          'Apakah Anda yakin ingin membatalkan pesanan "${order.customerName}"?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => context.pop(),
+            child: const Text('Kembali'),
+          ),
+          TextButton(
+            onPressed: () {
+              context.pop();
+              ref
+                  .read(orderDetailProvider(widget.orderId).notifier)
+                  .updateOrderStatus('DIBATALKAN');
+            },
+            style: TextButton.styleFrom(
+              foregroundColor: context.colorScheme.error,
+            ),
+            child: const Text('Batalkan Pesanan'),
+          ),
+        ],
       ),
     );
   }

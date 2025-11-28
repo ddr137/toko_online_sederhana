@@ -34,7 +34,7 @@ class UserListNotifier extends _$UserListNotifier {
 
   Future<bool> login(UserModel user) async {
     final ok = await _repo.login(user);
-    if (ok) await loadUsers();
+    // if (ok) await loadUsers(); // Removed to prevent UI rebuild which unmounts context in AuthPage
     return ok;
   }
 

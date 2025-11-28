@@ -32,6 +32,7 @@ class _OrderPageState extends ConsumerState<OrderPage> {
 
     final userState = ref.watch(userDetailProvider);
     final isCustomer = userState.value?.role == 'customer';
+    final isCs1 = userState.value?.role == 'cs1';
 
     return Scaffold(
       appBar: AppBar(
@@ -54,7 +55,14 @@ class _OrderPageState extends ConsumerState<OrderPage> {
             },
           ),
           data: (orders) {
-            if (orders.isEmpty) {
+            var displayedOrders = orders;
+            if (isCs1) {
+              displayedOrders = orders
+                  .where((o) => o.status == 'MENUNGGU_VERIFIKASI_CS1')
+                  .toList();
+            }
+
+            if (displayedOrders.isEmpty) {
               return EmptyStateWidget(
                 title: 'Belum ada pesanan',
                 subtitle: 'Pesanan pertama akan muncul di sini',
@@ -68,9 +76,9 @@ class _OrderPageState extends ConsumerState<OrderPage> {
 
             return ListView.builder(
               padding: const EdgeInsets.symmetric(vertical: 8),
-              itemCount: orders.length,
+              itemCount: displayedOrders.length,
               itemBuilder: (context, index) {
-                final order = orders[index];
+                final order = displayedOrders[index];
                 return OrderItem(
                   order: order,
                   onTap: () {
