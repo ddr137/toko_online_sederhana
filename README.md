@@ -402,10 +402,5 @@ flutter pub run build_runner build --delete-conflicting-outputs
 - Pastikan permission storage sudah diberikan
 - Check path file image masih valid
 
-## Lisensi & Kontributor
-
-Proyek ini dibuat untuk tujuan pembelajaran dan demonstrasi.
 
 ---
-
-**Dibuat dengan ❤️ menggunakan Flutter**
