@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:toko_online_sederhana/core/utils/spacing.dart';
 import 'package:toko_online_sederhana/features/user/presentation/providers/user_provider.dart';
+import 'package:toko_online_sederhana/shared/extensions/context_ext.dart';
+import 'package:toko_online_sederhana/shared/widgets/error_state_widget.dart';
+import 'package:toko_online_sederhana/shared/widgets/loading_widget.dart';
 
 class UserPage extends ConsumerStatefulWidget {
   const UserPage({super.key});
@@ -24,150 +28,172 @@ class _UserPageState extends ConsumerState<UserPage> {
     final userState = ref.watch(userDetailProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('User Info'), centerTitle: true),
+      appBar: AppBar(
+        title: const Text('Profil Saya'),
+        centerTitle: true,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        backgroundColor: context.colorScheme.surface,
+        foregroundColor: context.colorScheme.onSurface,
+      ),
       body: userState.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, _) => Center(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Text(
-              'Gagal memuat user\n$err',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.red.shade400,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
+        loading: () => const LoadingWidget(message: 'Memuat profil...'),
+        error: (err, _) => ErrorStateWidget(
+          title: 'Gagal memuat profil',
+          message: err.toString(),
+          onRetry: () {
+            ref.read(userDetailProvider.notifier).loadUserDetail();
+          },
         ),
         data: (user) {
           if (user == null) {
-            return const Center(
-              child: Text(
-                'Tidak ada user yang login.',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.no_accounts_outlined,
+                    size: 64,
+                    color: context.colorScheme.onSurfaceVariant,
+                  ),
+                  AppSpacing.md,
+                  Text(
+                    'Tidak ada pengguna yang login',
+                    style: context.textTheme.titleMedium?.copyWith(
+                      color: context.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                  AppSpacing.lg,
+                  FilledButton(
+                    onPressed: () => context.go('/auth'),
+                    child: const Text('Login Sekarang'),
+                  ),
+                ],
               ),
             );
           }
 
-          return Padding(
+          return SingleChildScrollView(
             padding: const EdgeInsets.all(20),
-            child: Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 400),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // Avatar circle
-                    CircleAvatar(
-                      radius: 45,
-                      backgroundColor: Colors.blue.shade100,
-                      child: Text(
-                        user.name.substring(0, 1).toUpperCase(),
-                        style: const TextStyle(
-                          fontSize: 36,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black54,
-                        ),
+            child: Column(
+              children: [
+                const SizedBox(height: 20),
+                // Profile Header
+                Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: context.colorScheme.primary.withOpacity(0.2),
+                      width: 2,
+                    ),
+                  ),
+                  child: CircleAvatar(
+                    radius: 50,
+                    backgroundColor: context.colorScheme.primaryContainer,
+                    child: Text(
+                      user.name.substring(0, 1).toUpperCase(),
+                      style: context.textTheme.displayMedium?.copyWith(
+                        color: context.colorScheme.onPrimaryContainer,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
+                  ),
+                ),
+                AppSpacing.md,
+                Text(
+                  user.name,
+                  style: context.textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: context.colorScheme.onSurface,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                AppSpacing.xs,
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: context.colorScheme.secondaryContainer,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    user.role.toUpperCase(),
+                    style: context.textTheme.labelMedium?.copyWith(
+                      color: context.colorScheme.onSecondaryContainer,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
 
-                    const SizedBox(height: 20),
+                const SizedBox(height: 32),
 
-                    // Card data user
-                    Card(
-                      elevation: 2,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 20,
-                          horizontal: 24,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                // User Info Card
+                Card(
+                  elevation: 0,
+                  color: context.colorScheme.surfaceContainerHighest.withAlpha(
+                    64,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    side: BorderSide(
+                      color: context.colorScheme.outlineVariant.withAlpha(64),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
                           children: [
+                            Icon(
+                              Icons.person_outline,
+                              color: context.colorScheme.primary,
+                            ),
+                            AppSpacing.sm,
                             Text(
-                              user.name,
-                              style: const TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.w700,
+                              'Informasi Pribadi',
+                              style: context.textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                            const SizedBox(height: 8),
-                            _infoTile('Role', user.role.toUpperCase()),
-                            _infoTile('Phone', user.phone),
-                            _infoTile('Address', user.address),
                           ],
                         ),
-                      ),
+                        const Divider(height: 24),
+                        _buildInfoRow(context, 'Nama Lengkap', user.name),
+                        _buildInfoRow(context, 'Nomor Telepon', user.phone),
+                        _buildInfoRow(context, 'Alamat', user.address),
+                      ],
                     ),
-
-                    const SizedBox(height: 28),
-
-                    // Logout Button
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          final confirm = await showDialog<bool>(
-                            context: context,
-                            builder: (context) {
-                              return AlertDialog(
-                                title: const Text('Logout'),
-                                content: const Text(
-                                  'Yakin mau keluar dari akun ini?',
-                                ),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () =>
-                                        context.pop(false),
-                                    child: const Text('Batal'),
-                                  ),
-                                  TextButton(
-                                    onPressed: () =>
-                                        context.pop(true),
-                                    style: TextButton.styleFrom(
-                                      foregroundColor: Colors.red,
-                                    ),
-                                    child: const Text('Logout'),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-
-                          if (confirm == true) {
-                            final ok = await ref
-                                .read(userDetailProvider.notifier)
-                                .logout();
-                            if (ok && context.mounted) {
-                              context.go('/');
-                            }
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          backgroundColor: Colors.red.shade500,
-                        ),
-                        child: const Text(
-                          'Logout',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
+
+                const SizedBox(height: 32),
+
+                // Logout Button
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton.icon(
+                    onPressed: () => _showLogoutDialog(context),
+                    style: FilledButton.styleFrom(
+                      backgroundColor: context.colorScheme.errorContainer,
+                      foregroundColor: context.colorScheme.onErrorContainer,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    icon: const Icon(Icons.logout),
+                    label: const Text(
+                      'Keluar Akun',
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ),
+              ],
             ),
           );
         },
@@ -175,31 +201,67 @@ class _UserPageState extends ConsumerState<UserPage> {
     );
   }
 
-  Widget _infoTile(String label, String value) {
+  Widget _buildInfoRow(BuildContext context, String label, String value) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.only(bottom: 16),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            width: 70,
+          Expanded(
+            flex: 2,
             child: Text(
-              '$label:',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey.shade700,
-                fontWeight: FontWeight.w600,
+              label,
+              style: context.textTheme.bodyMedium?.copyWith(
+                color: context.colorScheme.onSurfaceVariant,
               ),
             ),
           ),
           Expanded(
+            flex: 3,
             child: Text(
               value,
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+              style: context.textTheme.bodyMedium?.copyWith(
+                color: context.colorScheme.onSurface,
+                fontWeight: FontWeight.w500,
+              ),
+              textAlign: TextAlign.right,
             ),
           ),
         ],
       ),
     );
+  }
+
+  Future<void> _showLogoutDialog(BuildContext context) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Konfirmasi Logout'),
+          content: const Text('Apakah Anda yakin ingin keluar dari akun ini?'),
+          actions: [
+            TextButton(
+              onPressed: () => context.pop(false),
+              child: const Text('Batal'),
+            ),
+            FilledButton(
+              onPressed: () => context.pop(true),
+              style: FilledButton.styleFrom(
+                backgroundColor: context.colorScheme.error,
+                foregroundColor: context.colorScheme.onError,
+              ),
+              child: const Text('Keluar'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirm == true) {
+      final ok = await ref.read(userDetailProvider.notifier).logout();
+      if (ok && context.mounted) {
+        context.go('/auth');
+      }
+    }
   }
 }

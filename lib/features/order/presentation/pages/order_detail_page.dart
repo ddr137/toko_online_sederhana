@@ -287,9 +287,7 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
                 if (canUpload) ...[
                   Card(
                     elevation: 0,
-                    color: context.colorScheme.primaryContainer.withOpacity(
-                      0.4,
-                    ),
+                    color: context.colorScheme.primaryContainer.withAlpha(64),
                     child: Padding(
                       padding: const EdgeInsets.all(16),
                       child: Column(

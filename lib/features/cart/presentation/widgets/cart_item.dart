@@ -44,6 +44,7 @@ class _CartItemWidgetState extends ConsumerState<CartItemWidget> {
 
         return Card(
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          color: context.colorScheme.primaryContainer.withAlpha(64),
           child: Padding(
             padding: const EdgeInsets.all(12),
             child: Column(

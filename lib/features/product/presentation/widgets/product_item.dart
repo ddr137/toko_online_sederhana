@@ -21,6 +21,7 @@ class ProductItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      color: context.colorScheme.primaryContainer.withAlpha(64),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
