@@ -38,9 +38,16 @@ class OrderNotifier extends _$OrderNotifier {
     state = const AsyncValue.loading();
     try {
       final orders = await _repo.getOrders();
+
+      // Check if ref is still mounted before updating state
+      if (!ref.mounted) return;
+
       state = AsyncValue.data(orders);
     } catch (e, st) {
-      state = AsyncValue.error(e, st);
+      // Only update state if still mounted
+      if (ref.mounted) {
+        state = AsyncValue.error(e, st);
+      }
     }
   }
 
@@ -52,22 +59,39 @@ class OrderNotifier extends _$OrderNotifier {
     try {
       await _repo.deleteOrder(id);
 
+      // Check if ref is still mounted before updating state
+      if (!ref.mounted) return;
+
       state.whenData((orders) {
         state = AsyncValue.data(orders.where((o) => o.id != id).toList());
       });
     } catch (e, st) {
-      state = AsyncValue.error(e, st);
+      // Only update state if still mounted
+      if (ref.mounted) {
+        state = AsyncValue.error(e, st);
+      }
     }
   }
 
   Future<bool> addOrder(OrderModel order) async {
     try {
       await _repo.createOrder(order);
+
+      // Check if ref is still mounted before updating state
+      if (!ref.mounted) return true;
+
       final updated = await _repo.getOrders();
+
+      // Check again after async operation
+      if (!ref.mounted) return true;
+
       state = AsyncValue.data(updated);
       return true;
     } catch (e, st) {
-      state = AsyncValue.error(e, st);
+      // Only update state if still mounted
+      if (ref.mounted) {
+        state = AsyncValue.error(e, st);
+      }
       return false;
     }
   }
@@ -85,9 +109,16 @@ class OrderNotifier extends _$OrderNotifier {
       );
 
       await _repo.saveOrder(updatedOrder);
+
+      // Check if ref is still mounted before updating state
+      if (!ref.mounted) return;
+
       await loadOrders();
     } catch (e, st) {
-      state = AsyncValue.error(e, st);
+      // Only update state if still mounted
+      if (ref.mounted) {
+        state = AsyncValue.error(e, st);
+      }
     }
   }
 
@@ -127,9 +158,15 @@ class OrderNotifier extends _$OrderNotifier {
         await _repo.createOrder(order);
       }
 
+      // Check if ref is still mounted before updating state
+      if (!ref.mounted) return;
+
       await loadOrders();
     } catch (e, st) {
-      state = AsyncValue.error(e, st);
+      // Only update state if still mounted
+      if (ref.mounted) {
+        state = AsyncValue.error(e, st);
+      }
     }
   }
 }
@@ -147,9 +184,16 @@ class OrderDetailNotifier extends _$OrderDetailNotifier {
     state = const AsyncValue.loading();
     try {
       final item = await _repo.getOrder(int.parse(orderId));
+
+      // Check if ref is still mounted before updating state
+      if (!ref.mounted) return;
+
       state = AsyncValue.data(item);
     } catch (e, st) {
-      state = AsyncValue.error(e, st);
+      // Only update state if still mounted
+      if (ref.mounted) {
+        state = AsyncValue.error(e, st);
+      }
     }
   }
 
@@ -160,9 +204,16 @@ class OrderDetailNotifier extends _$OrderDetailNotifier {
         await _repo.saveOrder(
           order.copyWith(status: newStatus, updatedAt: DateTime.now()),
         );
+
+        // Check if ref is still mounted before updating state
+        if (!ref.mounted) return;
+
         await loadOrderDetail();
       } catch (e, st) {
-        state = AsyncValue.error(e, st);
+        // Only update state if still mounted
+        if (ref.mounted) {
+          state = AsyncValue.error(e, st);
+        }
       }
     }
   }
@@ -193,9 +244,15 @@ class CheckoutNotifier extends _$CheckoutNotifier {
         return CheckoutItem(product: product, cart: cart);
       }).toList();
 
+      // Check if ref is still mounted before updating state
+      if (!ref.mounted) return;
+
       state = AsyncValue.data(CheckoutData(user: user, items: combined));
     } catch (e, st) {
-      state = AsyncValue.error(e, st);
+      // Only update state if still mounted
+      if (ref.mounted) {
+        state = AsyncValue.error(e, st);
+      }
     }
   }
 

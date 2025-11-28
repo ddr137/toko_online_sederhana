@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:toko_online_sederhana/features/order/data/models/checkout_model.dart';
 import 'package:toko_online_sederhana/features/order/data/models/order_model.dart';
 import 'package:toko_online_sederhana/features/order/presentation/providers/order_provider.dart';
 import 'package:toko_online_sederhana/features/order/presentation/widgets/detail_product_section.dart';
@@ -18,6 +19,8 @@ class CheckoutPage extends ConsumerStatefulWidget {
 }
 
 class _CheckoutPageState extends ConsumerState<CheckoutPage> {
+  bool _isProcessingOrder = false;
+
   @override
   void initState() {
     super.initState();
@@ -26,10 +29,42 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
     });
   }
 
+  Future<void> _handlePayment(CheckoutData checkout) async {
+    if (_isProcessingOrder) return;
+
+    setState(() {
+      _isProcessingOrder = true;
+    });
+
+    try {
+      final order = OrderModel(
+        customerName: checkout.user.name,
+        customerRole: checkout.user.role,
+        customerPhone: checkout.user.phone,
+        shippingAddress: checkout.user.address,
+        totalPrice: ref.read(checkoutProvider.notifier).getTotal(),
+        status: 'MENUNGGU_UPLOAD_BUKTI',
+        createdAt: DateTime.now(),
+      );
+
+      final success = await ref.read(orderProvider.notifier).addOrder(order);
+
+      if (success && mounted) {
+        context.push('/order-detail/${order.id}');
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isProcessingOrder = false;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final checkoutState = ref.watch(checkoutProvider);
-    final orderState = ref.watch(orderProvider);
+
     return Scaffold(
       appBar: AppBar(title: const Text("Checkout")),
       body: checkoutState.when(
@@ -55,28 +90,8 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
                 padding: const EdgeInsets.all(16),
                 child: BaseButton(
                   width: double.infinity,
-                  isLoading: orderState.isLoading,
-                  onPressed: () async {
-                    final order = OrderModel(
-                      customerName: checkout.user.name,
-                      customerRole: checkout.user.role,
-                      customerPhone: checkout.user.phone,
-                      shippingAddress: checkout.user.address,
-                      totalPrice: ref
-                          .read(checkoutProvider.notifier)
-                          .getTotal(),
-                      status: 'MENUNGGU_UPLOAD_BUKTI',
-                      createdAt: DateTime.now(),
-                    );
-
-                    final success = await ref
-                        .read(orderProvider.notifier)
-                        .addOrder(order);
-                    if (success && context.mounted) {
-                      context.push('/proof');
-                    }
-                  },
-
+                  isLoading: _isProcessingOrder,
+                  onPressed: () => _handlePayment(checkout),
                   text: 'Bayar Sekarang',
                 ),
               ),

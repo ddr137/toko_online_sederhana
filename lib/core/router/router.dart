@@ -106,14 +106,6 @@ final GoRouter _goRouter = GoRouter(
       builder: (context, state) => const CheckoutPage(),
     ),
     GoRoute(
-      path: '/proof/:id',
-      name: 'proof',
-      builder: (context, state) {
-        final id = state.pathParameters['id']!;
-        return ProofPage(orderId: id);
-      },
-    ),
-    GoRoute(
       path: '/order-detail/:id',
       name: 'order-detail',
       builder: (context, state) {
