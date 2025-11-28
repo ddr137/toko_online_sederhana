@@ -28,8 +28,8 @@ class CartNotifier extends _$CartNotifier {
     return const AsyncValue.loading();
   }
 
-  Future<void> loadCartItems() async {
-    state = const AsyncValue.loading();
+  Future<void> loadCartItems({bool showLoading = true}) async {
+    if (showLoading) state = const AsyncValue.loading();
     try {
       final cartItems = await _repo.getCartItems();
       state = AsyncValue.data(cartItems);
@@ -64,7 +64,7 @@ class CartNotifier extends _$CartNotifier {
         // Update quantity if item already exists
         final newQuantity = existingItem.quantity + cartItem.quantity;
         await _repo.updateCartItemQuantity(existingItem.id!, newQuantity);
-        await loadCartItems();
+        await loadCartItems(showLoading: false);
       } else {
         // Add new item to cart
         await _repo.addCartItem(cartItem);
@@ -97,10 +97,13 @@ class CartNotifier extends _$CartNotifier {
     try {
       if (quantity <= 0) {
         await _repo.removeCartItem(id);
+        await loadCartItems(); // Show loading when deleting
       } else {
         await _repo.updateCartItemQuantity(id, quantity);
+        await loadCartItems(
+          showLoading: false,
+        ); // No loading when updating quantity
       }
-      await loadCartItems();
     } catch (e, st) {
       state = AsyncValue.error(e, st);
     }
