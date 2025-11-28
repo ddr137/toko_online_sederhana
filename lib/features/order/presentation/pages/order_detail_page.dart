@@ -362,39 +362,46 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
                           ),
                           const SizedBox(height: 16),
                           if (hasUploadedProof) ...[
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: Image.file(
-                                File(order.paymentProofPath!),
-                                width: double.infinity,
-                                height: 200,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Container(
-                                    height: 200,
-                                    color: context.colorScheme.surfaceVariant,
-                                    child: Center(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Icon(
-                                            Icons.broken_image,
-                                            size: 48,
-                                            color: context
-                                                .colorScheme
-                                                .onSurfaceVariant,
-                                          ),
-                                          const SizedBox(height: 8),
-                                          Text(
-                                            'Gambar tidak dapat dimuat',
-                                            style: context.textTheme.bodySmall,
-                                          ),
-                                        ],
+                            GestureDetector(
+                              onTap: () => _showImagePreview(
+                                context,
+                                order.paymentProofPath!,
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: Image.file(
+                                  File(order.paymentProofPath!),
+                                  width: double.infinity,
+                                  height: 200,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Container(
+                                      height: 200,
+                                      color: context.colorScheme.surfaceVariant,
+                                      child: Center(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              Icons.broken_image,
+                                              size: 48,
+                                              color: context
+                                                  .colorScheme
+                                                  .onSurfaceVariant,
+                                            ),
+                                            const SizedBox(height: 8),
+                                            Text(
+                                              'Gambar tidak dapat dimuat',
+                                              style:
+                                                  context.textTheme.bodySmall,
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                },
+                                    );
+                                  },
+                                ),
                               ),
                             ),
                             const SizedBox(height: 12),
@@ -744,6 +751,46 @@ class _OrderDetailPageState extends ConsumerState<OrderDetailPage> {
             child: const Text('Konfirmasi'),
           ),
         ],
+      ),
+    );
+  }
+
+  void _showImagePreview(BuildContext context, String imagePath) {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: EdgeInsets.zero,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            // Background dismiss
+            Positioned.fill(
+              child: GestureDetector(
+                onTap: () => context.pop(),
+                child: Container(color: Colors.black87),
+              ),
+            ),
+            // Zoomable Image
+            InteractiveViewer(
+              panEnabled: true,
+              boundaryMargin: const EdgeInsets.all(20),
+              minScale: 0.5,
+              maxScale: 4,
+              child: Image.file(File(imagePath), fit: BoxFit.contain),
+            ),
+            // Close Button
+            Positioned(
+              top: 40,
+              right: 20,
+              child: IconButton(
+                onPressed: () => context.pop(),
+                icon: const Icon(Icons.close, color: Colors.white, size: 30),
+                style: IconButton.styleFrom(backgroundColor: Colors.black54),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
