@@ -64,16 +64,22 @@ class AlarmService {
       threshold: threshold ?? const Duration(hours: 24),
     );
 
+    print('🔍 Found ${cancelledOrders.length} expired orders to cancel');
+
     if (cancelledOrders.isNotEmpty) {
       final notificationService = NotificationService();
       await notificationService.initialize();
+      print('✅ NotificationService initialized');
 
       for (final order in cancelledOrders) {
+        print('📦 Processing order #${order.id} - ${order.customerName}');
         await notificationService.showOrderCancelledNotification(
           order.id.toString(),
           order.customerName,
         );
       }
+    } else {
+      print('ℹ️ No expired orders found');
     }
   }
 }

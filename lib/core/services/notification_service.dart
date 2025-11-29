@@ -41,6 +41,8 @@ class NotificationService {
     String orderId,
     String customerName,
   ) async {
+    print('🔔 Attempting to send notification for Order #$orderId');
+
     const androidDetails = AndroidNotificationDetails(
       'order_channel',
       'Order Notifications',
@@ -52,12 +54,44 @@ class NotificationService {
 
     const notificationDetails = NotificationDetails(android: androidDetails);
 
-    await _notifications.show(
-      orderId.hashCode,
-      '⏰ Pesanan Kadaluarsa - Order #$orderId',
-      'Pesanan atas nama $customerName telah kadaluarsa (>24 jam tanpa pembayaran) dan otomatis dibatalkan oleh sistem.',
-      notificationDetails,
+    try {
+      await _notifications.show(
+        orderId.hashCode,
+        '⏰ Pesanan Kadaluarsa - Order #$orderId',
+        'Pesanan atas nama $customerName telah kadaluarsa (>24 jam tanpa pembayaran) dan otomatis dibatalkan oleh sistem.',
+        notificationDetails,
+      );
+      print('✅ Notification sent successfully for Order #$orderId');
+    } catch (e) {
+      print('❌ Error sending notification: $e');
+    }
+  }
+
+  Future<void> showTestNotification() async {
+    print('🧪 Sending test notification...');
+
+    const androidDetails = AndroidNotificationDetails(
+      'order_channel',
+      'Order Notifications',
+      channelDescription: 'Test notification',
+      importance: Importance.high,
+      priority: Priority.high,
+      icon: '@mipmap/ic_launcher',
     );
+
+    const notificationDetails = NotificationDetails(android: androidDetails);
+
+    try {
+      await _notifications.show(
+        999,
+        'Test Notification',
+        'Ini adalah test notification dari sistem auto-cancel',
+        notificationDetails,
+      );
+      print('✅ Test notification sent');
+    } catch (e) {
+      print('❌ Test notification failed: $e');
+    }
   }
 
   void _onNotificationTap(NotificationResponse response) {}
