@@ -24,7 +24,11 @@ part 'app_database.g.dart';
   daos: [ProductDao, UserDao, CartDao, OrderDao, OrderItemDao],
 )
 class AppDatabase extends _$AppDatabase {
-  AppDatabase() : super(_openConnection());
+  static final AppDatabase _instance = AppDatabase._internal();
+
+  factory AppDatabase() => _instance;
+
+  AppDatabase._internal() : super(_openConnection());
 
   @override
   int get schemaVersion => AppConstants.databaseVersion;
@@ -37,4 +41,3 @@ LazyDatabase _openConnection() {
     return NativeDatabase.createInBackground(file);
   });
 }
-

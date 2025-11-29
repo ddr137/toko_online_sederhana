@@ -2,10 +2,17 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toko_online_sederhana/core/router/router.dart';
+import 'package:toko_online_sederhana/core/services/alarm_service.dart';
+import 'package:toko_online_sederhana/core/services/notification_service.dart';
 
 import 'core/constants/constants.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await NotificationService().initialize();
+  await AlarmService().initialize();
+
   runApp(const ProviderScope(child: MyApp()));
 }
 
@@ -28,4 +35,3 @@ class MyApp extends ConsumerWidget {
     );
   }
 }
-

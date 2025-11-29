@@ -25,8 +25,9 @@ Aplikasi toko online sederhana yang dibangun dengan Flutter, menggunakan local d
 - **go_router**: ^17.0.0 - Declarative routing dengan deep linking support
 
 ### UI & Styling
+- **Material Design 3 (M3)**: Modern Material Design dengan adaptive theming
+- **dynamic_color**: ^1.8.1 - Material You dynamic colors (mengambil warna dari wallpaper device)
 - **google_fonts**: ^6.1.0 - Integrasi Google Fonts
-- **dynamic_color**: ^1.8.1 - Material You dynamic colors
 - **cached_network_image**: ^3.4.1 - Caching gambar dari network
 
 ### Media & Files
@@ -254,24 +255,48 @@ Aplikasi memiliki 3 role pengguna dengan fungsi berbeda:
 
 **Implementasi:**
 
-Pesanan yang berada dalam status `MENUNGGU_UPLOAD_BUKTI` selama lebih dari 24 jam akan otomatis dibatalkan.
+Pesanan yang berada dalam status `MENUNGGU_UPLOAD_BUKTI` atau `MENUNGGU_VERIFIKASI_CS1` selama lebih dari 24 jam akan otomatis dibatalkan melalui 3 mekanisme:
+
+**3 Mekanisme Auto-Cancel:**
+1. **Simple Check saat Load Orders** - Triggered otomatis saat app dibuka atau order list di-refresh
+2. **Background Alarm Periodic** - Berjalan setiap 1 jam bahkan saat app ditutup
+3. **Manual Test Button** - Testing dengan custom threshold duration
+
+**Dependencies:**
+- `android_alarm_manager_plus` ^5.0.0 - Background periodic task scheduler
+- `flutter_local_notifications` ^19.5.0 - Local notification system
 
 **Lokasi kode:**
-- File: `lib/features/order/data/repositories/order_repository.dart`
-- Method: `checkAndCancelExpiredOrders()`
+- Alarm Service: `lib/core/services/alarm_service.dart`
+- Notification Service: `lib/core/services/notification_service.dart`
+- Repository Method: `lib/features/order/data/repositories/order_repository.dart`
+  - Method: `checkAndCancelExpiredOrders()`
+- Provider Check: `lib/features/order/presentation/providers/order_provider.dart`
+  - Method: `loadOrders()`
 
 **Cara kerja:**
-1. Background check berjalan setiap kali aplikasi dibuka atau order list di-load
-2. Sistem menghitung selisih waktu antara `createdAt` dengan waktu sekarang
-3. Jika selisih > 24 jam dan status masih `MENUNGGU_UPLOAD_BUKTI`:
-   - Status diubah menjadi `DIBATALKAN`
-   - Stok produk dikembalikan (jika sudah dikurangi)
-   - Timestamp `updatedAt` diperbarui
+1. **Background Scheduler**: Android Alarm Manager menjadwalkan pengecekan setiap 1 jam
+2. **Periodic Check**: Service berjalan di background bahkan saat app ditutup
+3. **Automatic Cancellation**:
+   - Sistem menghitung selisih waktu antara `createdAt` dengan waktu sekarang
+   - Jika selisih > 24 jam dan status adalah `MENUNGGU_UPLOAD_BUKTI` atau `MENUNGGU_VERIFIKASI_CS1`:
+     - Status diubah menjadi `DIBATALKAN`
+     - Stok produk dikembalikan (jika sudah dikurangi)
+     - Timestamp `updatedAt` diperbarui
+     - Notification dikirim ke user (via background alarm)
+4. **Reboot Persistence**: Alarm otomatis di-reschedule setelah device restart
 
-**Trigger otomatis:**
+**Inisialisasi:**
 ```dart
-// Di OrderProvider saat load orders
-await ref.read(orderRepositoryProvider).checkAndCancelExpiredOrders();
+// Di main.dart
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await NotificationService().initialize();
+  await AlarmService().initialize();  // Setup periodic alarm
+
+  runApp(const ProviderScope(child: MyApp()));
+}
 ```
 
 **Formula perhitungan:**
@@ -279,9 +304,24 @@ await ref.read(orderRepositoryProvider).checkAndCancelExpiredOrders();
 final now = DateTime.now();
 final diff = now.difference(order.createdAt);
 if (diff.inHours >= 24 && order.status == 'MENUNGGU_UPLOAD_BUKTI') {
-  // Cancel order
+  // Auto cancel order
+  // Send notification
 }
 ```
+
+**Testing:**
+Di halaman User Profile terdapat tombol **"Test Auto Cancel (24 Jam)"** untuk memicu pengecekan manual tanpa menunggu scheduler:
+1. Login ke aplikasi dengan role apapun
+2. Buka halaman Profile/User
+3. Klik tombol "Test Auto Cancel (24 Jam)"
+4. Konfirmasi untuk menjalankan test
+5. Sistem akan langsung mengecek dan membatalkan pesanan yang sudah >24 jam
+
+**Android Configuration:**
+Permissions sudah ditambahkan di `AndroidManifest.xml`:
+- `RECEIVE_BOOT_COMPLETED` - Restart alarm setelah reboot
+- `WAKE_LOCK` - Bangunkan device untuk eksekusi
+- `POST_NOTIFICATIONS` - Kirim notifikasi ke user
 
 ### Flow Status Pesanan
 

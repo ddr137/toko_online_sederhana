@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:toko_online_sederhana/core/enums/snack_bar_status_enum.dart';
+import 'package:toko_online_sederhana/core/services/alarm_service.dart';
 import 'package:toko_online_sederhana/core/utils/spacing.dart';
 import 'package:toko_online_sederhana/features/user/presentation/providers/user_provider.dart';
 import 'package:toko_online_sederhana/shared/extensions/context_ext.dart';
+import 'package:toko_online_sederhana/shared/extensions/custom_snack_bar_ext.dart';
 import 'package:toko_online_sederhana/shared/widgets/error_state_widget.dart';
 import 'package:toko_online_sederhana/shared/widgets/loading_widget.dart';
 
@@ -15,6 +18,8 @@ class UserPage extends ConsumerStatefulWidget {
 }
 
 class _UserPageState extends ConsumerState<UserPage> {
+  Duration? _selectedTestDuration = const Duration(hours: 24);
+
   @override
   void initState() {
     super.initState();
@@ -173,6 +178,27 @@ class _UserPageState extends ConsumerState<UserPage> {
 
                 SizedBox(
                   width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: () => _testAutoCancelMechanism(context),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: context.colorScheme.primary,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    icon: const Icon(Icons.bug_report),
+                    label: const Text(
+                      'Test Auto Cancel',
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ),
+
+                AppSpacing.vertical(AppGaps.sm),
+
+                SizedBox(
+                  width: double.infinity,
                   child: FilledButton.icon(
                     onPressed: () => _showLogoutDialog(context),
                     style: FilledButton.styleFrom(
@@ -261,8 +287,112 @@ class _UserPageState extends ConsumerState<UserPage> {
       }
     }
   }
+
+  Future<void> _testAutoCancelMechanism(BuildContext context) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (dialogContext, setState) {
+            return AlertDialog(
+              title: const Text('Test Auto Cancel'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Pilih durasi untuk membatalkan pesanan yang masih berstatus "MENUNGGU_UPLOAD_BUKTI":',
+                  ),
+                  AppSpacing.vertical(AppGaps.md),
+                  DropdownButtonFormField<Duration>(
+                    value: _selectedTestDuration,
+                    decoration: InputDecoration(
+                      labelText: 'Durasi Threshold',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    items: const [
+                      DropdownMenuItem(
+                        value: Duration(minutes: 1),
+                        child: Text('1 Menit'),
+                      ),
+                      DropdownMenuItem(
+                        value: Duration(minutes: 5),
+                        child: Text('5 Menit'),
+                      ),
+                      DropdownMenuItem(
+                        value: Duration(hours: 1),
+                        child: Text('1 Jam'),
+                      ),
+                      DropdownMenuItem(
+                        value: Duration(hours: 24),
+                        child: Text('24 Jam (Default)'),
+                      ),
+                    ],
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedTestDuration = value;
+                      });
+                    },
+                  ),
+                  AppSpacing.vertical(AppGaps.sm),
+                  Text(
+                    'Pesanan yang dibuat > ${_formatDuration(_selectedTestDuration!)} akan dibatalkan.',
+                    style: context.textTheme.bodySmall?.copyWith(
+                      color: context.colorScheme.onSurfaceVariant,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => context.pop(false),
+                  child: const Text('Batal'),
+                ),
+                FilledButton(
+                  onPressed: () => context.pop(true),
+                  child: const Text('Jalankan Test'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+
+    if (confirmed == true && context.mounted) {
+      try {
+        await AlarmService().triggerManualCheck(
+          threshold: _selectedTestDuration,
+        );
+        if (context.mounted) {
+          context.showSnackBar(
+            'Pengecekan berhasil (threshold: ${_formatDuration(_selectedTestDuration!)})',
+            status: SnackBarStatus.success,
+          );
+        }
+      } catch (e) {
+        if (context.mounted) {
+          context.showSnackBar(
+            'Error: ${e.toString()}',
+            status: SnackBarStatus.error,
+          );
+        }
+      }
+    }
+  }
+
+  String _formatDuration(Duration duration) {
+    if (duration.inDays > 0) {
+      return '${duration.inDays} hari';
+    } else if (duration.inHours > 0) {
+      return '${duration.inHours} jam';
+    } else if (duration.inMinutes > 0) {
+      return '${duration.inMinutes} menit';
+    } else {
+      return '${duration.inSeconds} detik';
+    }
+  }
 }
-
-
-
-
