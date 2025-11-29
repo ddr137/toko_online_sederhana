@@ -39,7 +39,6 @@ Aplikasi toko online sederhana yang dibangun dengan Flutter, menggunakan local d
 - **intl**: ^0.20.2 - Internationalization dan formatting
 - **logger**: ^2.6.2 - Logging utility
 - **equatable**: ^2.0.7 - Value equality untuk models
-- **freezed**: ^3.2.3 & **freezed_annotation**: ^3.1.0 - Code generation untuk immutable classes
 - **path**: ^1.9.1 - Path manipulation
 
 ### Development Tools
@@ -144,7 +143,7 @@ Menggunakan **Drift** sebagai ORM dengan local SQLite database:
    flutter pub get
    ```
 
-3. **Generate code** (Drift, Riverpod, Freezed)
+3. **Generate code** (Drift, Riverpod)
    ```bash
    flutter pub run build_runner build --delete-conflicting-outputs
    ```
