@@ -22,15 +22,20 @@ final GoRouter _goRouter = GoRouter(
   debugLogDiagnostics: true,
   initialLocation: '/auth',
   redirect: (context, state) async {
-    final container = ProviderScope.containerOf(context);
-    final user = await container.read(userRepositoryProvider).isLoggedIn();
+    try {
+      final container = ProviderScope.containerOf(context);
+      final user = await container.read(userRepositoryProvider).isLoggedIn();
 
-    final loggingIn = state.matchedLocation == '/auth';
+      final loggingIn = state.matchedLocation == '/auth';
 
-    if (!user) return loggingIn ? null : '/auth';
-    if (user && loggingIn) return '/products';
+      if (!user) return loggingIn ? null : '/auth';
+      if (user && loggingIn) return '/products';
 
-    return null;
+      return null;
+    } catch (e) {
+      debugPrint('⚠️ Router redirect error: $e');
+      return '/auth';
+    }
   },
   routes: [
     StatefulShellRoute.indexedStack(
@@ -116,4 +121,3 @@ final GoRouter _goRouter = GoRouter(
 );
 
 GoRouter get goRouter => _goRouter;
-

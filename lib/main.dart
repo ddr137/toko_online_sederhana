@@ -5,36 +5,54 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:toko_online_sederhana/core/router/router.dart';
 import 'package:toko_online_sederhana/core/services/alarm_service.dart';
 import 'package:toko_online_sederhana/core/services/notification_service.dart';
+import 'package:toko_online_sederhana/core/theme/app_theme.dart';
 
 import 'core/constants/constants.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await _requestNotificationPermission();
+  try {
+    await _requestNotificationPermission();
+  } catch (e) {
+    debugPrint('⚠️ Error requesting notification permission: $e');
+  }
 
-  await NotificationService().initialize();
-  await AlarmService().initialize();
+  try {
+    await NotificationService().initialize();
+  } catch (e) {
+    debugPrint('⚠️ Error initializing NotificationService: $e');
+  }
+
+  try {
+    await AlarmService().initialize();
+  } catch (e) {
+    debugPrint('⚠️ Error initializing AlarmService: $e');
+  }
 
   runApp(const ProviderScope(child: MyApp()));
 }
 
 Future<void> _requestNotificationPermission() async {
-  final status = await Permission.notification.status;
+  try {
+    final status = await Permission.notification.status;
 
-  if (status.isDenied) {
-    print('📱 Requesting notification permission...');
-    final result = await Permission.notification.request();
+    if (status.isDenied) {
+      debugPrint('📱 Requesting notification permission...');
+      final result = await Permission.notification.request();
 
-    if (result.isGranted) {
-      print('✅ Notification permission granted');
-    } else if (result.isDenied) {
-      print('❌ Notification permission denied');
-    } else if (result.isPermanentlyDenied) {
-      print('⚠️ Notification permission permanently denied');
+      if (result.isGranted) {
+        debugPrint('✅ Notification permission granted');
+      } else if (result.isDenied) {
+        debugPrint('❌ Notification permission denied');
+      } else if (result.isPermanentlyDenied) {
+        debugPrint('⚠️ Notification permission permanently denied');
+      }
+    } else if (status.isGranted) {
+      debugPrint('✅ Notification permission already granted');
     }
-  } else if (status.isGranted) {
-    print('✅ Notification permission already granted');
+  } catch (e) {
+    debugPrint('⚠️ Permission handler error: $e');
   }
 }
 

@@ -1,4 +1,7 @@
+import 'dart:io' show Platform;
+
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
+import 'package:flutter/foundation.dart';
 import 'package:toko_online_sederhana/core/db/app_database.dart';
 import 'package:toko_online_sederhana/core/services/notification_service.dart';
 import 'package:toko_online_sederhana/features/order/data/datasources/order_local_datasource.dart';
@@ -12,20 +15,33 @@ class AlarmService {
   static const int _alarmId = 0;
 
   Future<void> initialize() async {
-    await AndroidAlarmManager.initialize();
-    await schedulePeriodicCheck();
+    // Only initialize on Android
+    if (!kIsWeb && Platform.isAndroid) {
+      try {
+        await AndroidAlarmManager.initialize();
+        await schedulePeriodicCheck();
+        debugPrint('✅ AlarmService initialized on Android');
+      } catch (e) {
+        debugPrint('⚠️ Error initializing AlarmService: $e');
+      }
+    } else {
+      debugPrint('ℹ️ AlarmService skipped (not Android)');
+    }
   }
 
   Future<void> schedulePeriodicCheck() async {
-    await AndroidAlarmManager.periodic(
-      const Duration(hours: 1),
-      _alarmId,
-      _checkExpiredOrders,
-      wakeup: true,
-      rescheduleOnReboot: true,
-      exact: false,
-      allowWhileIdle: true,
-    );
+    // Only run on Android
+    if (!kIsWeb && Platform.isAndroid) {
+      await AndroidAlarmManager.periodic(
+        const Duration(hours: 1),
+        _alarmId,
+        _checkExpiredOrders,
+        wakeup: true,
+        rescheduleOnReboot: true,
+        exact: false,
+        allowWhileIdle: true,
+      );
+    }
   }
 
   @pragma('vm:entry-point')
