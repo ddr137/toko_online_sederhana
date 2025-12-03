@@ -45,13 +45,19 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
-	<!-- Permission for camera -->
+	<!-- iOS Permissions -->
+
+	<!-- Camera Permission -->
 	<key>NSCameraUsageDescription</key>
 	<string>Aplikasi memerlukan akses kamera untuk mengambil foto produk</string>
-	<!-- Permission for photo library -->
+
+	<!-- Photo Library Permissions -->
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Aplikasi memerlukan akses galeri untuk memilih foto produk</string>
-	<!-- Permission for notifications -->
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Aplikasi memerlukan izin untuk menyimpan foto produk ke galeri</string>
+
+	<!-- Background Modes for Notifications -->
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
